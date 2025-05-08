@@ -22,7 +22,6 @@ import knexConfig from './config/knexConfig';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    console.log(join(__dirname, '..', 'public'));
     consumer.apply(morgan('dev')).forRoutes('*');
   }
 }

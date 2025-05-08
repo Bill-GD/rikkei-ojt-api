@@ -6,9 +6,9 @@ import { InjectConnection } from 'nest-knexjs';
 export class UserService {
   constructor(@InjectConnection() private readonly knex: Knex) {}
 
-  getAll(): string {
-    // return this.knex('user').select('*');
-    return 'All users';
+  async getAll(): Promise<string> {
+    // console.log();
+    return (await this.knex.raw('select version()'))[0][0] as string;
   }
 
   getOne(id: number): string {
