@@ -1,12 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import * as morgan from 'morgan';
 import { join } from 'path';
 import 'dotenv/config';
-
-import { KnexModule } from 'nest-knexjs';
-import { UserModule } from './user/user.module';
-import knexConfig from './config/knexConfig';
+import typeOrmConfig from './config/typeOrmConfig';
 
 @Module({
   imports: [
@@ -16,11 +15,12 @@ import knexConfig from './config/knexConfig';
         fallthrough: false,
       },
     }),
-    UserModule,
-    KnexModule.forRoot({ config: knexConfig.development }),
+    TypeOrmModule.forRoot(typeOrmConfig),
   ],
 })
 export class AppModule implements NestModule {
+  constructor(private dataSource: DataSource) {}
+
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(morgan('dev')).forRoutes('*');
   }
