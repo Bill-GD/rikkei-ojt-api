@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-describe('AppController', () => {
+describe('AppModule', () => {
   let app: TestingModule;
 
   beforeEach(async () => {

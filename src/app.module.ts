@@ -9,6 +9,7 @@ import typeOrmConfig from './config/typeOrmConfig';
 import { FestivalModule } from './festival/festival.module';
 
 import { AuthModule } from './auth/auth.module';
+import { NewsModule } from './news/news.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRoot(typeOrmConfig),
     AuthModule,
     FestivalModule,
+    NewsModule,
   ],
 })
 export class AppModule implements NestModule {

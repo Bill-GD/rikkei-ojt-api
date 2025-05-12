@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { News } from '../../news/entities/news.entity';
 
 @Entity('festival')
 export class Festival {
@@ -16,4 +17,7 @@ export class Festival {
 
   @Column({ type: 'datetime', nullable: true })
   end_time: Date;
+
+  @OneToMany(() => News, (news) => news.festival)
+  news: News[];
 }

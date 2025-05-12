@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { News } from '../../news/entities/news.entity';
+import { NewsService } from '../../news/news.service';
 import { CreateFestivalDto } from '../dto/create-festival.dto';
 import { UpdateFestivalDto } from '../dto/update-festival.dto';
 import { Festival } from '../entities/festival.entity';
@@ -16,6 +18,17 @@ describe('FestivalController', () => {
         FestivalService,
         {
           provide: getRepositoryToken(Festival),
+          useValue: {
+            save: jest.fn(),
+            find: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+          },
+        },
+        NewsService,
+        {
+          provide: getRepositoryToken(News),
           useValue: {
             save: jest.fn(),
             find: jest.fn(),
