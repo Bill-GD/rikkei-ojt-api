@@ -11,6 +11,7 @@ import { FestivalModule } from './festival/festival.module';
 
 import { AuthModule } from './auth/auth.module';
 import { NewsModule } from './news/news.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { NewsModule } from './news/news.module';
     AuthModule,
     FestivalModule,
     NewsModule,
+    UsersModule,
   ],
 })
 export class AppModule implements NestModule {
