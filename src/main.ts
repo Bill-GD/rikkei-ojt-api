@@ -10,12 +10,11 @@ async function bootstrap() {
     .setTitle('Movie booking service')
     .setDescription('The API for the movie booking service')
     .setVersion('0.1')
-    .addTag('banners')
     .addBearerAuth()
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-docs', app, documentFactory);
 
   app.useGlobalPipes(new ValidationPipe());
 
