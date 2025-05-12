@@ -6,6 +6,7 @@ import * as morgan from 'morgan';
 import { join } from 'path';
 import 'dotenv/config';
 import typeOrmConfig from './config/typeOrmConfig';
+import { BannerModule } from './banner/banner.module';
 import { FestivalModule } from './festival/festival.module';
 
 import { AuthModule } from './auth/auth.module';
@@ -14,12 +15,14 @@ import { NewsModule } from './news/news.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(__dirname, '..', 'uploads-banner'),  
+      serveRoot: '/uploads-banner', 
       serveStaticOptions: {
-        fallthrough: false,
+        fallthrough: false, 
       },
     }),
     TypeOrmModule.forRoot(typeOrmConfig),
+    BannerModule,
     AuthModule,
     FestivalModule,
     NewsModule,
@@ -32,3 +35,8 @@ export class AppModule implements NestModule {
     consumer.apply(morgan('dev')).forRoutes('*');
   }
 }
+console.log('Kết nối tới DB:', {
+  host: process.env.DATABASE_HOST,
+  database: process.env.DATABASE_NAME,
+});
+
