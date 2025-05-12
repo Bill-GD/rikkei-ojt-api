@@ -6,6 +6,7 @@ import * as morgan from 'morgan';
 import { join } from 'path';
 import 'dotenv/config';
 import typeOrmConfig from './config/typeOrmConfig';
+import { BannerModule } from './banner/banner.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import typeOrmConfig from './config/typeOrmConfig';
       },
     }),
     TypeOrmModule.forRoot(typeOrmConfig),
+    BannerModule,
   ],
 })
 export class AppModule implements NestModule {
