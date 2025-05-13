@@ -14,9 +14,8 @@ export class NewsService {
     private readonly newsRepo: Repository<News>,
   ) {}
 
-  async create(dto: CreateNewsDto) {
-    await this.newsRepo.save(dto);
-    return { message: 'News added successfully' };
+  create(dto: CreateNewsDto) {
+    return this.newsRepo.save(dto);
   }
 
   findAll(query: NewsQuery) {

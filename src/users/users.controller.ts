@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ServiceResponse } from '../common/model/service-response';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UsersService } from './users.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -16,7 +17,6 @@ import multerStorage from '../config/multerStorage';
 import {
   ApiTags,
   ApiBearerAuth,
-  ApiOperation,
   ApiResponse,
   ApiConsumes,
 } from '@nestjs/swagger';
@@ -30,28 +30,30 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Patch('profile')
   @ApiConsumes('multipart/form-data')
-  @ApiResponse({
-    status: 200,
-    description: 'Profile updated successfully',
-  })
   @UseInterceptors(FileInterceptor('avatar', { storage: multerStorage }))
-  updateProfile(
+  @ApiResponse({ type: ServiceResponse })
+  async updateProfile(
     @Req() req,
     @Body() dto: UpdateProfileDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const avatarPath = file ? `uploads/${file.filename}` : undefined;
-    return this.userService.updateProfile(req.user.sub, dto, avatarPath);
+    const updatedUser = await this.userService.updateProfile(
+      req.user.sub,
+      dto,
+      avatarPath,
+    );
+    return ServiceResponse.success('Profile updated successfully', {
+      updatedUser,
+    });
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('change-password')
   @ApiConsumes('multipart/form-data')
-  @ApiResponse({
-    status: 200,
-    description: 'Đổi mật khẩu thành công',
-  })
-  changePassword(@Req() req, @Body() dto: ChangePasswordDto) {
-    return this.userService.changePassword(req.user.sub, dto);
+  @ApiResponse({ type: ServiceResponse })
+  async changePassword(@Req() req, @Body() dto: ChangePasswordDto) {
+    await this.userService.changePassword(req.user.sub, dto);
+    return ServiceResponse.success('Password changed successfully', null);
   }
 }

@@ -6,12 +6,10 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  UseInterceptors,
   Query,
-  ValidationPipe,
 } from '@nestjs/common';
-import { NoFilesInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiExtraModels } from '@nestjs/swagger';
+import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
+import { ServiceResponse } from '../common/model/service-response';
 import { NewsQuery } from './dto/news-query.dto';
 import { NewsService } from './news.service';
 import { UpdateNewsDto } from './dto/update-news.dto';
@@ -22,24 +20,34 @@ export class NewsController {
 
   @Get()
   @ApiExtraModels(NewsQuery)
-  findAll(@Query() query: NewsQuery) {
-    return this.newsService.findAll(query);
+  @ApiResponse({ type: ServiceResponse })
+  async findAll(@Query() query: NewsQuery) {
+    const allNews = await this.newsService.findAll(query);
+    return ServiceResponse.success('Got all news', allNews);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.newsService.findOne(id);
+  @ApiResponse({ type: ServiceResponse })
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const news = await this.newsService.findOne(id);
+    return ServiceResponse.success(`Found news #${id}`, news);
   }
 
-  @ApiConsumes('multipart/form-data', 'application/json')
-  @UseInterceptors(NoFilesInterceptor())
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateNewsDto) {
-    return this.newsService.update(id, dto);
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
+  @ApiResponse({ type: ServiceResponse })
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateNewsDto,
+  ) {
+    await this.newsService.update(id, dto);
+    return ServiceResponse.success(`Updated news #${id}`, null);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.newsService.remove(id);
+  @ApiResponse({ type: ServiceResponse })
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.newsService.remove(id);
+    return ServiceResponse.success(`Deleted news #${id}`, null);
   }
 }

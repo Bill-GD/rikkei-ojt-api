@@ -1,79 +1,102 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
-  UseInterceptors,
-  UploadedFile,
+  Patch,
+  Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiExtraModels } from '@nestjs/swagger';
+import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
+import { StatusCodes } from 'http-status-codes';
+import { ServiceResponse } from '../common/model/service-response';
 import multerStorage from '../config/multerStorage';
 import { CreateNewsDto } from '../news/dto/create-news.dto';
 import { NewsService } from '../news/news.service';
-import { FestivalQueries } from './dto/festival-queries.dto';
-import { FestivalService } from './festival.service';
 import { CreateFestivalDto } from './dto/create-festival.dto';
+import { FestivalQueries } from './dto/festival-queries.dto';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
+import { FestivalService } from './festival.service';
 
-@Controller('festival')
+@Controller('festivals')
 export class FestivalController {
   constructor(
     private readonly festivalService: FestivalService,
     private readonly newsService: NewsService,
   ) {}
 
+  @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
-  @Post()
-  create(
+  @ApiResponse({ type: ServiceResponse })
+  async create(
     @Body() dto: CreateFestivalDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     if (file) dto.image = `uploads/${file.filename}`;
-    return this.festivalService.create(dto);
+    const newFes = await this.festivalService.create(dto);
+
+    return ServiceResponse.success(
+      'Festival added successfully',
+      { id: newFes.id },
+      StatusCodes.CREATED,
+    );
   }
 
-  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @Post(':id/news')
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
+  @ApiResponse({ type: ServiceResponse })
   async createNews(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: CreateNewsDto,
   ) {
-    return this.newsService.create({ ...dto, festival_id: id });
-  }
-
-  @ApiExtraModels(FestivalQueries)
-  @Get()
-  findAll(@Query() query: FestivalQueries) {
-    return this.festivalService.findAll(
-      plainToInstance(FestivalQueries, query),
+    const newNews = await this.newsService.create({ ...dto, festival_id: id });
+    return ServiceResponse.success(
+      'News added successfully',
+      { id: newNews.id },
+      StatusCodes.CREATED,
     );
   }
 
+  @Get()
+  @ApiExtraModels(FestivalQueries)
+  @ApiResponse({ type: ServiceResponse })
+  async findAll(@Query() query: FestivalQueries) {
+    const festivals = await this.festivalService.findAll(
+      plainToInstance(FestivalQueries, query),
+    );
+
+    return ServiceResponse.success('Got all festivals', festivals);
+  }
+
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.festivalService.findOne(id);
+  @ApiResponse({ type: ServiceResponse })
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const fes = await this.festivalService.findOne(id);
+    return ServiceResponse.success(`Found festival #${id}`, fes);
   }
 
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
-  update(
+  @ApiResponse({ type: ServiceResponse })
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateFestivalDto,
   ) {
-    return this.festivalService.update(id, dto);
+    await this.festivalService.update(id, dto);
+    return ServiceResponse.success(`Updated festival #${id}`, null);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.festivalService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.festivalService.remove(id);
+    return ServiceResponse.success(`Deleted festival #${id}`, null);
   }
 }

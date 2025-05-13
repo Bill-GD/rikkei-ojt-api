@@ -29,7 +29,9 @@ describe('NewsController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should return all news', () => {
-    expect(controller.findAll({} as NewsQuery)).toBeInstanceOf(Array);
+  it('should return all news', async () => {
+    expect(
+      (await controller.findAll({} as NewsQuery)).responseObject,
+    ).toBeInstanceOf(Array);
   });
 });
