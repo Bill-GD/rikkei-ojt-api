@@ -24,6 +24,8 @@ export class CommonQueries {
   @IsOptional()
   sort: string;
 
+  sortFields: string[] = [];
+
   @ApiProperty({ required: false, enum: ['asc', 'desc'] })
   @IsOptional()
   @IsEnum(['asc', 'desc'])

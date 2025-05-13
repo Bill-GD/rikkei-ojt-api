@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
+import config from '../config/config';
 import { CreateFestivalDto } from './dto/create-festival.dto';
+import { FestivalQueries } from './dto/festival-queries.dto';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
 import { Festival } from './entities/festival.entity';
 
@@ -13,13 +15,24 @@ export class FestivalService {
   ) {}
 
   async create(dto: CreateFestivalDto) {
-    // this.festivalRepository.create({});
     await this.festivalRepository.save(dto);
     return { message: 'Added festival successfully' };
   }
 
-  findAll() {
-    return this.festivalRepository.find();
+  findAll(query: FestivalQueries) {
+    const limit = query.limit || config.queryLimit,
+      offset = query.page ? (query.page - 1) * query.limit : undefined;
+
+    return this.festivalRepository.find({
+      where: {
+        ...(query.title && { title: Like(`%${query.title}%`) }),
+      },
+      skip: offset ?? 0,
+      take: limit,
+      order: query.sortFields.includes(query.sort)
+        ? { [query.sort]: query.order || config.order }
+        : undefined,
+    });
   }
 
   findOne(id: number) {

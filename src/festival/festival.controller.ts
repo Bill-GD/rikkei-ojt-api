@@ -9,12 +9,15 @@ import {
   ParseIntPipe,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
-import { FileInterceptor, NoFilesInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes, ApiExtraModels } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
 import multerStorage from '../config/multerStorage';
 import { CreateNewsDto } from '../news/dto/create-news.dto';
 import { NewsService } from '../news/news.service';
+import { FestivalQueries } from './dto/festival-queries.dto';
 import { FestivalService } from './festival.service';
 import { CreateFestivalDto } from './dto/create-festival.dto';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
@@ -46,9 +49,12 @@ export class FestivalController {
     return this.newsService.create({ ...dto, festival_id: id });
   }
 
+  @ApiExtraModels(FestivalQueries)
   @Get()
-  findAll() {
-    return this.festivalService.findAll();
+  findAll(@Query() query: FestivalQueries) {
+    return this.festivalService.findAll(
+      plainToInstance(FestivalQueries, query),
+    );
   }
 
   @Get(':id')
