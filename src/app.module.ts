@@ -8,7 +8,7 @@ import 'dotenv/config';
 import typeOrmConfig from './config/typeOrmConfig';
 import { BannerModule } from './banner/banner.module';
 import { FestivalModule } from './festival/festival.module';
-
+import { TheaterModule } from './theater/theater.module';
 import { AuthModule } from './auth/auth.module';
 import { NewsModule } from './news/news.module';
 import { UsersModule } from './users/users.module';
@@ -27,6 +27,7 @@ import { UsersModule } from './users/users.module';
     FestivalModule,
     NewsModule,
     UsersModule,
+    TheaterModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -36,8 +37,3 @@ export class AppModule implements NestModule {
     consumer.apply(morgan('dev')).forRoutes('*');
   }
 }
-
-console.log('Kết nối tới DB:', {
-  host: process.env.DATABASE_HOST,
-  database: process.env.DATABASE_NAME,
-});
