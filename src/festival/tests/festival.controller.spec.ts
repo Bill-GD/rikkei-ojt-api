@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { News } from '../../news/entities/news.entity';
 import { NewsService } from '../../news/news.service';
 import { CreateFestivalDto } from '../dto/create-festival.dto';
+import { FestivalQueries } from '../dto/festival-queries.dto';
 import { UpdateFestivalDto } from '../dto/update-festival.dto';
 import { Festival } from '../entities/festival.entity';
 import { FestivalController } from '../festival.controller';
@@ -19,7 +20,7 @@ describe('FestivalController', () => {
         {
           provide: getRepositoryToken(Festival),
           useValue: {
-            save: jest.fn(),
+            save: jest.fn().mockReturnValue({ id: 1 }),
             find: jest.fn(),
             findOne: jest.fn(),
             update: jest.fn(),
@@ -62,7 +63,7 @@ describe('FestivalController', () => {
 
   it('should call service.findAll on findAll', async () => {
     jest.spyOn(service, 'findAll');
-    await controller.findAll();
+    await controller.findAll({} as FestivalQueries);
     expect(service.findAll).toHaveBeenCalled();
   });
 

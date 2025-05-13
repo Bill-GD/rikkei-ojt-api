@@ -37,8 +37,7 @@ export class AuthService {
       role_id: 2,
     });
     await this.userRoleRepo.save(userRole);
-
-    return { message: 'User registered successfully' };
+    return saved;
   }
 
   async login(dto: LoginDto) {
@@ -58,7 +57,6 @@ export class AuthService {
       roles: user.userRoles.map((ur) => ur.role.role_name),
     };
 
-    const token = await this.jwtService.signAsync(payload);
-    return { access_token: token };
+    return this.jwtService.signAsync(payload);
   }
 }

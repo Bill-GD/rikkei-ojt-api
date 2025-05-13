@@ -15,8 +15,7 @@ export class FestivalService {
   ) {}
 
   async create(dto: CreateFestivalDto) {
-    await this.festivalRepository.save(dto);
-    return { message: 'Added festival successfully' };
+    return await this.festivalRepository.save(dto);
   }
 
   findAll(query: FestivalQueries) {
@@ -40,8 +39,7 @@ export class FestivalService {
   }
 
   async update(id: number, dto: UpdateFestivalDto) {
-    await this.festivalRepository.update(id, dto);
-    return;
+    return await this.festivalRepository.update(id, dto);
   }
 
   remove(id: number) {

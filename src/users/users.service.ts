@@ -55,7 +55,7 @@ export class UsersService {
       ],
     });
 
-    return { message: 'Profile updated successfully', data: updatedUser };
+    return updatedUser;
   }
 
   async changePassword(userId: number, dto: ChangePasswordDto) {
@@ -69,6 +69,5 @@ export class UsersService {
     user.password = hashed;
     user.updated_at = new Date();
     await this.userRepo.save(user);
-    return { message: 'Password changed successfully' };
   }
 }

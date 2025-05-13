@@ -10,41 +10,42 @@ export class TheaterService {
   constructor(
     @InjectRepository(Theater)
     private theaterRepository: Repository<Theater>,
-  ){}
+  ) {}
 
-  async create(dto: CreateTheaterDto) {
-    await this.theaterRepository.save(dto);
-    return {message: 'Added theater sucessfully'}
+  create(dto: CreateTheaterDto) {
+    return this.theaterRepository.save(dto);
   }
 
-  async findAll(page: number, limit: number, sortBy: string, sortOrder: 'ASC'|'DESC') {
+  async findAll(
+    page: number,
+    limit: number,
+    sortBy: string,
+    sortOrder: 'ASC' | 'DESC',
+  ) {
     const [items, total] = await this.theaterRepository.findAndCount({
-      skip: (page-1)*limit,
+      skip: (page - 1) * limit,
       take: limit,
       order: {
         [sortBy]: sortOrder,
       },
     });
     return {
-      data:items,
+      data: items,
       total,
       page,
-      pageCount: Math.ceil(total/limit),
+      pageCount: Math.ceil(total / limit),
     };
   }
 
   findOne(id: number) {
-    return this.theaterRepository.findOne({where: {id} });
+    return this.theaterRepository.findOne({ where: { id } });
   }
 
-  async update(id: number, dto: UpdateTheaterDto) {
-    await this.theaterRepository.update(id,dto);
-    return {message: 'Updated theater successfully'};
+  update(id: number, dto: UpdateTheaterDto) {
+    return this.theaterRepository.update(id, dto);
   }
 
   remove(id: number) {
     return this.theaterRepository.delete(id);
   }
-
-  
 }
