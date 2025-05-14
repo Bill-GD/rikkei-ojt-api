@@ -1,10 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { CommonQueries } from '../../common/model/common-queries';
 
 export class FestivalQueries extends CommonQueries {
-  @ApiProperty({
-    required: false,
+  @ApiPropertyOptional({
     type: 'string',
     description: 'Search for festival with title containing this',
   })
@@ -12,5 +11,8 @@ export class FestivalQueries extends CommonQueries {
   @IsOptional()
   title: string;
 
-  sortFields: string[] = ['id', 'start_time', 'end_time'];
+  @ApiPropertyOptional({ enum: ['id', 'start_time', 'end_time'] })
+  @IsOptional()
+  @IsEnum(['id', 'start_time', 'end_time'])
+  declare sort: string;
 }

@@ -28,7 +28,7 @@ export class FestivalService {
       },
       skip: offset ?? 0,
       take: limit,
-      order: query.sortFields.includes(query.sort)
+      order: query.sort
         ? { [query.sort]: query.order || config.order }
         : undefined,
     });
