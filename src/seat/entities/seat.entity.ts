@@ -7,6 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import { Screen } from 'src/screen/entities/screen.entity';
 
 @Entity('seat')
 export class Seat {
@@ -27,6 +28,12 @@ export class Seat {
     enum: ['STANDARD', 'VIP', 'SWEETBOX'],
   })
   type: string;
+
+  @ManyToOne(() => Screen, (screen) => screen.seats, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'screen_id' })
+  screen: Screen;
 
   @CreateDateColumn()
   created_at: Date;
