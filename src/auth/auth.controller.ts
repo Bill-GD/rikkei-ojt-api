@@ -1,6 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
-import { StatusCodes } from 'http-status-codes';
 import { ServiceResponse } from '../common/model/service-response';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -17,7 +16,7 @@ export class AuthController {
     return ServiceResponse.success(
       'User registered successfully',
       { id: newUser.id },
-      StatusCodes.CREATED,
+      HttpStatus.CREATED,
     );
   }
 

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -13,9 +14,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { StatusCodes } from 'http-status-codes';
 import { ServiceResponse } from '../common/model/service-response';
-import { createSingleMulterStorage } from '../config/multerStorage';
+import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { BannerService } from './banner.service';
 import { BannerQueries } from './dto/banner-queries.dto';
 import { CreateBannerDto } from './dto/create-banner.dto';
@@ -42,7 +42,7 @@ export class BannerController {
       return ServiceResponse.failure(
         `Media type doesn't match`,
         null,
-        StatusCodes.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
       );
     }
 
@@ -50,7 +50,7 @@ export class BannerController {
     return ServiceResponse.success(
       'Banner added successfully',
       { id: newBanner.id },
-      StatusCodes.CREATED,
+      HttpStatus.CREATED,
     );
   }
 
@@ -72,7 +72,7 @@ export class BannerController {
       return ServiceResponse.failure(
         `Banner #${id} not found`,
         null,
-        StatusCodes.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
       );
     }
     return ServiceResponse.success(`Found banner #${id}`, banner);

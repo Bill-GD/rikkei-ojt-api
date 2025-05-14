@@ -8,8 +8,8 @@ import {
   Delete,
   ParseIntPipe,
   Query,
+  HttpStatus,
 } from '@nestjs/common';
-import { StatusCodes } from 'http-status-codes';
 import { ServiceResponse } from '../common/model/service-response';
 import { TheaterService } from './theater.service';
 import { CreateTheaterDto } from './dto/create-theater.dto';
@@ -28,7 +28,7 @@ export class TheaterController {
     return ServiceResponse.success(
       'Theater added successfully',
       { id: newTheater.id },
-      StatusCodes.CREATED,
+      HttpStatus.CREATED,
     );
   }
 

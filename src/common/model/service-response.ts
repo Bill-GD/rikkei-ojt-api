@@ -1,5 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { StatusCodes } from 'http-status-codes';
 
 export class ServiceResponse<T = null> {
   @ApiProperty({ type: 'boolean' })
@@ -29,7 +29,7 @@ export class ServiceResponse<T = null> {
   static success<T>(
     message: string,
     responseObject: T,
-    statusCode: StatusCodes = StatusCodes.OK,
+    statusCode: HttpStatus = HttpStatus.OK,
   ) {
     return new ServiceResponse(true, message, responseObject, statusCode);
   }
@@ -37,7 +37,7 @@ export class ServiceResponse<T = null> {
   static failure<T>(
     message: string,
     responseObject: T,
-    statusCode: StatusCodes = StatusCodes.BAD_REQUEST,
+    statusCode: HttpStatus = HttpStatus.BAD_REQUEST,
   ) {
     return new ServiceResponse(false, message, responseObject, statusCode);
   }
