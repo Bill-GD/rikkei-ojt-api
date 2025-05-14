@@ -8,24 +8,38 @@ import {
   Delete,
   Query,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ScreenService } from './screen.service';
 import { CreateScreenDto } from './dto/create-screen.dto';
 import { UpdateScreenDto } from './dto/update-screen.dto';
-import { ApiConsumes, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('screen')
 export class ScreenController {
   constructor(private readonly screenService: ScreenService) {}
 
+  @Post()
+  @Roles('ROLE_ADMIN')
   @ApiOperation({ summary: 'Create a screen' })
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
-  @Post()
   async create(@Body() dto: CreateScreenDto) {
     return this.screenService.create(dto);
   }
 
   @Get()
+  @Roles('ROLE_ADMIN')
   @ApiQuery({
     name: 'page',
     required: false,
@@ -72,19 +86,22 @@ export class ScreenController {
   }
 
   @Get(':id')
+  @Roles('ROLE_ADMIN')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.screenService.findOne(id);
   }
 
+  @Patch(':id')
+  @Roles('ROLE_ADMIN')
   @ApiOperation({ summary: 'Update a screen by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Screen ID' })
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
-  @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateScreenDto) {
     return this.screenService.update(id, dto);
   }
 
   @Delete(':id')
+  @Roles('ROLE_ADMIN')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.screenService.remove(id);
   }

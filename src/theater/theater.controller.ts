@@ -9,18 +9,30 @@ import {
   ParseIntPipe,
   Query,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { ServiceResponse } from '../common/model/service-response';
 import { TheaterService } from './theater.service';
 import { CreateTheaterDto } from './dto/create-theater.dto';
 import { UpdateTheaterDto } from './dto/update-theater.dto';
-import { ApiConsumes, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('theater')
 export class TheaterController {
   constructor(private readonly theaterService: TheaterService) {}
 
   @Post()
+  @Roles('ROLE_ADMIN')
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async create(@Body() dto: CreateTheaterDto) {
@@ -33,6 +45,7 @@ export class TheaterController {
   }
 
   @Get()
+  @Roles('ROLE_ADMIN')
   @ApiQuery({
     name: 'page',
     required: false,
@@ -82,6 +95,7 @@ export class TheaterController {
   }
 
   @Get(':id')
+  @Roles('ROLE_ADMIN')
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const theater = await this.theaterService.findOne(id);
@@ -89,6 +103,7 @@ export class TheaterController {
   }
 
   @Patch(':id')
+  @Roles('ROLE_ADMIN')
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async update(
@@ -100,6 +115,7 @@ export class TheaterController {
   }
 
   @Delete(':id')
+  @Roles('ROLE_ADMIN')
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.theaterService.remove(id);
