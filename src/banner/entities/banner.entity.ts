@@ -8,8 +8,8 @@ export class Banner {
   @Column()
   url: string;
 
-  @Column()
-  type: string;
+  @Column({ type: 'enum', enum: ['image', 'video'] })
+  type: 'image' | 'video';
 
   @Column()
   position: string;
