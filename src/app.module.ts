@@ -7,17 +7,28 @@ import { join } from 'path';
 import 'dotenv/config';
 import typeOrmConfig from './config/typeOrmConfig';
 import { BannerModule } from './banner/banner.module';
+import { FestivalModule } from './festival/festival.module';
+import { MovieModule } from './movies/movie.module';
+import { AuthModule } from './auth/auth.module';
+import { NewsModule } from './news/news.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(__dirname, '..', 'uploads-banner'),
+      serveRoot: '/uploads-banner',
       serveStaticOptions: {
         fallthrough: false,
       },
     }),
     TypeOrmModule.forRoot(typeOrmConfig),
     BannerModule,
+    AuthModule,
+    FestivalModule,
+    NewsModule,
+    UsersModule,
+    MovieModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -27,3 +38,7 @@ export class AppModule implements NestModule {
     consumer.apply(morgan('dev')).forRoutes('*');
   }
 }
+console.log('Kết nối tới DB:', {
+  host: process.env.DATABASE_HOST,
+  database: process.env.DATABASE_NAME,
+});

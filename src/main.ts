@@ -10,10 +10,22 @@ async function bootstrap() {
     .setTitle('Movie booking service')
     .setDescription('The API for the movie booking service')
     .setVersion('0.1')
+    .addTag('Banners')
+    .addTag('Movies')
+    .addBearerAuth()
     .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, documentFactory);
-  app.useGlobalPipes(new ValidationPipe());
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-docs', app, document);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
+
   await app.listen(process.env.PORT ?? 3000);
 }
 

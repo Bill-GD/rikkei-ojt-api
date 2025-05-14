@@ -1,16 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity() 
+@Entity()
 export class Banner {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    url: string;
+  @Column()
+  url: string;
 
-    @Column({ type: 'enum', enum: ['image', 'video'] })
-    type: 'image' | 'video';
+  @Column()
+  type: string;
 
-    @Column()
-    position: string;
-};
+  @Column()
+  position: string;
+}
