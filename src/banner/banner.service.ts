@@ -1,13 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { async } from 'rxjs';
-import { Repository, FindManyOptions, Like } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import config from '../config/config';
 import { BannerQueries } from './dto/banner-queries.dto';
 import { Banner } from './entities/banner.entity';
 import { CreateBannerDto } from './dto/create-banner.dto';
-import * as fs from 'fs';
-import { join } from 'path';
 
 @Injectable()
 export class BannerService {
