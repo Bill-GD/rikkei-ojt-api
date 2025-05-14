@@ -25,12 +25,12 @@ export class CreateMovieDto {
   @IsOptional()
   author?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ format: 'binary' })
   @IsString()
   @IsOptional()
   image?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ format: 'binary' })
   @IsString()
   @IsOptional()
   trailer?: string;

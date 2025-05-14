@@ -7,19 +7,14 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import {
-  ApiBody,
-  ApiConsumes,
-  ApiExtraModels,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { StatusCodes } from 'http-status-codes';
+import { join } from 'path';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../config/multerStorage';
 import { CreateMovieDto } from './dto/create.movie.dto';
@@ -45,17 +40,11 @@ export class MovieController {
   @ApiResponse({ type: ServiceResponse })
   async create(
     @UploadedFiles()
-    files: { image?: Express.Multer.File[]; trailer?: Express.Multer.File[] },
+    files: { image: Express.Multer.File[]; trailer: Express.Multer.File[] },
     @Body() dto: CreateMovieDto,
   ) {
-    if (files.image) {
-      dto.image = files.image
-        .map((file) => `uploads/movies/image/${file.filename}`)
-        .join(',');
-    }
-    if (files.trailer && files.trailer[0]) {
-      dto.trailer = `uploads/movies/trailer/${files.trailer[0].filename}`;
-    }
+    if (files.image) dto.image = `uploads/${files.image[0].filename}`;
+    if (files.trailer) dto.trailer = `uploads/${files.trailer[0].filename}`;
 
     const newMovie = await this.movieService.create(dto);
     return ServiceResponse.success(
@@ -88,44 +77,7 @@ export class MovieController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update a movie by ID' })
   @ApiConsumes('multipart/form-data')
-  @ApiParam({ name: 'id', required: true, type: Number })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        title: { type: 'string' },
-        descriptions: { type: 'string', nullable: true },
-        author: { type: 'string', nullable: true },
-        image: {
-          type: 'string',
-          format: 'binary',
-          nullable: true,
-        },
-        trailer: {
-          type: 'string',
-          format: 'binary',
-          nullable: true,
-        },
-        type: {
-          type: 'string',
-          enum: ['2D', '3D'],
-        },
-        duration_min: {
-          type: 'integer',
-          description: 'Duration of the movie in minutes',
-        },
-        release_date: {
-          type: 'string',
-          format: 'date-time',
-        },
-      },
-    },
-  })
-  @ApiResponse({ status: 200, description: 'Movie updated successfully' })
-  @ApiResponse({ status: 404, description: 'Movie not found' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -135,20 +87,18 @@ export class MovieController {
       { storage: createSingleMulterStorage(true, true) },
     ),
   )
+  @ApiResponse({ type: ServiceResponse })
   async update(
     @Param('id') id: number,
     @UploadedFiles()
-    files: { image?: Express.Multer.File[]; trailer?: Express.Multer.File[] },
-    @Body() updateMovieDto: UpdateMovieDto,
+    files: { image: Express.Multer.File[]; trailer: Express.Multer.File[] },
+    @Body() dto: UpdateMovieDto,
   ) {
-    if (files.image) {
-      updateMovieDto.image = files.image.map((file) => file.filename).join(',');
-    }
-    if (files.trailer && files.trailer[0]) {
-      updateMovieDto.trailer = files.trailer[0].filename;
-    }
+    if (files.image) dto.image = `uploads/${files.image[0].filename}`;
+    if (files.trailer) dto.trailer = `uploads/${files.trailer[0].filename}`;
 
-    return this.movieService.update(id, updateMovieDto);
+    await this.movieService.update(id, dto);
+    return ServiceResponse.success(`Updated movie #${id}`, null);
   }
 
   @Delete(':id')
