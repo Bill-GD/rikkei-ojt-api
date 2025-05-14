@@ -1,10 +1,12 @@
 import { Theater } from 'src/theater/entities/theater.entity';
+import { Seat } from 'src/seat/entities/seat.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -24,6 +26,12 @@ export class Screen {
   @ManyToOne(() => Theater, (theater) => theater.screen, {
     onDelete: 'CASCADE',
   })
+
+  @OneToMany(() => Seat, (seat) => seat.screen, {
+    onDelete: 'CASCADE',
+  })
+  seats: Seat[];
+
   @JoinColumn({ name: 'theater_id' })
   theater: Theater;
 
