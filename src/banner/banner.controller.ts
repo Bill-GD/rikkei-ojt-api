@@ -11,69 +11,42 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
 import { StatusCodes } from 'http-status-codes';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { ServiceResponse } from '../common/model/service-response';
+import { createSingleMulterStorage } from '../config/multerStorage';
 import { BannerService } from './banner.service';
+import { BannerQueries } from './dto/banner-queries.dto';
 import { CreateBannerDto } from './dto/create-banner.dto';
 import { UpdateBannerDto } from './dto/update-banner.dto';
 
-@ApiTags('banners')
 @Controller('banners')
 export class BannerController {
   constructor(private readonly bannerService: BannerService) {}
 
   @Post()
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-        type: {
-          type: 'string',
-          enum: ['image', 'video'],
-        },
-        position: {
-          type: 'string',
-        },
-      },
-      required: ['file', 'type', 'position'],
-    },
-  })
   @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads-banner',
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-        },
-      }),
+    FileInterceptor('url', {
+      storage: createSingleMulterStorage(true, true),
     }),
   )
   @ApiResponse({ type: ServiceResponse })
   async create(
+    @Body() dto: CreateBannerDto,
     @UploadedFile() file: Express.Multer.File,
-    @Body() createBannerDto: CreateBannerDto,
   ) {
-    if (!file) {
-      throw new Error('No file uploaded');
+    dto.url = `uploads/${file.filename}`;
+    if (dto.type !== file.mimetype.split('/')[0]) {
+      return ServiceResponse.failure(
+        `Media type doesn't match`,
+        null,
+        StatusCodes.BAD_REQUEST,
+      );
     }
 
-    const validTypes = ['image/', 'video/'];
-    if (!validTypes.some((type) => file.mimetype.startsWith(type))) {
-      throw new Error('Invalid file type. Only image or video allowed.');
-    }
-
-    const newBanner = await this.bannerService.create(file, createBannerDto);
+    const newBanner = await this.bannerService.create(dto);
     return ServiceResponse.success(
       'Banner added successfully',
       { id: newBanner.id },
@@ -82,9 +55,12 @@ export class BannerController {
   }
 
   @Get()
+  @ApiExtraModels(BannerQueries)
   @ApiResponse({ type: ServiceResponse })
-  async findAll(@Query() query: any) {
-    const banners = await this.bannerService.findAll(query);
+  async findAll(@Query() query: BannerQueries) {
+    const banners = await this.bannerService.findAll(
+      plainToInstance(BannerQueries, query),
+    );
     return ServiceResponse.success('Got all banners', banners);
   }
 
@@ -92,49 +68,31 @@ export class BannerController {
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id') id: number) {
     const banner = await this.bannerService.findOne(id);
+    if (!banner) {
+      return ServiceResponse.failure(
+        `Banner #${id} not found`,
+        null,
+        StatusCodes.NOT_FOUND,
+      );
+    }
     return ServiceResponse.success(`Found banner #${id}`, banner);
   }
 
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-        type: {
-          type: 'string',
-          enum: ['image', 'video'],
-        },
-        position: {
-          type: 'string',
-        },
-      },
-    },
-  })
   @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads-banner',
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-        },
-      }),
+    FileInterceptor('url', {
+      storage: createSingleMulterStorage(true, true),
     }),
   )
   @ApiResponse({ type: ServiceResponse })
   async update(
     @Param('id') id: number,
+    @Body() dto: UpdateBannerDto,
     @UploadedFile() file: Express.Multer.File,
-    @Body() updateBannerDto: UpdateBannerDto,
   ) {
-    await this.bannerService.update(id, updateBannerDto, file);
+    if (file) dto.url = `uploads/${file.filename}`;
+    await this.bannerService.update(id, dto);
     return ServiceResponse.success(`Updated banner #${id}`, null);
   }
 

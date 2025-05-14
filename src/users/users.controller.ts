@@ -14,10 +14,10 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ServiceResponse } from '../common/model/service-response';
+import { createSingleMulterStorage } from '../config/multerStorage';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UsersService } from './users.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import multerStorage from '../config/multerStorage';
 import { Roles } from '../common/decorators/roles.decorator';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UpdateUserStatusDto } from './dto/update-user-status.dto';
@@ -39,7 +39,11 @@ export class UsersController {
   @Patch('profile')
   @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('avatar', { storage: multerStorage }))
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: createSingleMulterStorage(true, false),
+    }),
+  )
   @ApiResponse({ type: ServiceResponse })
   async updateProfile(
     @Req() req,

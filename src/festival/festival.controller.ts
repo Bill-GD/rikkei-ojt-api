@@ -16,7 +16,7 @@ import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { StatusCodes } from 'http-status-codes';
 import { ServiceResponse } from '../common/model/service-response';
-import multerStorage from '../config/multerStorage';
+import { createSingleMulterStorage } from '../config/multerStorage';
 import { CreateNewsDto } from '../news/dto/create-news.dto';
 import { NewsService } from '../news/news.service';
 import { CreateFestivalDto } from './dto/create-festival.dto';
@@ -33,7 +33,11 @@ export class FestivalController {
 
   @Post()
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: createSingleMulterStorage(true, false),
+    }),
+  )
   @ApiResponse({ type: ServiceResponse })
   async create(
     @Body() dto: CreateFestivalDto,
@@ -84,7 +88,11 @@ export class FestivalController {
 
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: createSingleMulterStorage(true, false),
+    }),
+  )
   @ApiResponse({ type: ServiceResponse })
   async update(
     @Param('id', ParseIntPipe) id: number,
