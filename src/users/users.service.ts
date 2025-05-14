@@ -144,5 +144,7 @@ export class UsersService {
     user.status = status;
     user.updated_at = new Date();
     await this.userRepo.save(user);
+
+    return { message: 'User status updated successfully' };
   }
 }

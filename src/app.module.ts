@@ -13,6 +13,7 @@ import { NewsModule } from './news/news.module';
 import { TheaterModule } from './theater/theater.module';
 import { UsersModule } from './users/users.module';
 import { ScreenModule } from './screen/screen.module';
+import { TicketPriceModule } from './ticket-price/ticket-price.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ScreenModule } from './screen/screen.module';
     UsersModule,
     TheaterModule,
     ScreenModule,
+    TicketPriceModule,
   ],
 })
 export class AppModule implements NestModule {
