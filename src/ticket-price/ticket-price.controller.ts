@@ -1,18 +1,14 @@
 import {
   Body,
   Controller,
+  Delete,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiConsumes,
-  ApiOperation,
-  ApiParam,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiResponse } from '@nestjs/swagger';
 import { StatusCodes } from 'http-status-codes';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -31,6 +27,7 @@ export class TicketPriceController {
   @Post()
   @Roles('ROLE_ADMIN')
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
+  @ApiResponse({ type: ServiceResponse })
   async create(@Body() dto: CreateTicketPriceDto) {
     const newTicket = await this.ticketPriceService.create(dto);
     return ServiceResponse.success(
@@ -43,11 +40,20 @@ export class TicketPriceController {
   @Patch(':id')
   @Roles('ROLE_ADMIN')
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
+  @ApiResponse({ type: ServiceResponse })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateTicketPriceDto,
   ) {
     await this.ticketPriceService.update(id, dto);
     return ServiceResponse.success(`Updated ticket price #${id}`, null);
+  }
+
+  @Delete(':id')
+  @Roles('ROLE_ADMIN')
+  @ApiResponse({ type: ServiceResponse })
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    await this.ticketPriceService.delete(id);
+    return ServiceResponse.success(`Deleted ticket price #${id}`, null);
   }
 }

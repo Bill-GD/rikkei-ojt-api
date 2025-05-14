@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TicketPrice } from './entities/ticket-price.entity';
@@ -32,5 +36,13 @@ export class TicketPriceService {
 
     Object.assign(ticket, dto);
     return this.ticketPriceRepo.save(ticket);
+  }
+
+  async delete(id: number) {
+    const ticket = await this.ticketPriceRepo.findOne({ where: { id } });
+    if (!ticket) {
+      throw new NotFoundException('Ticket price not found');
+    }
+    await this.ticketPriceRepo.remove(ticket);
   }
 }
