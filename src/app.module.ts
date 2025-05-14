@@ -15,6 +15,8 @@ import { UsersModule } from './users/users.module';
 import { ScreenModule } from './screen/screen.module';
 import { TicketPriceModule } from './ticket-price/ticket-price.module';
 import { MovieModule } from './movies/movie.module';
+import { GenreModule } from './genre/genre.module';
+import { SeatModule } from './seat/seat.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { MovieModule } from './movies/movie.module';
     ScreenModule,
     TicketPriceModule,
     MovieModule,
+    GenreModule,
+    SeatModule,
   ],
 })
 export class AppModule implements NestModule {
