@@ -4,14 +4,14 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../entities/user/user.entity';
 import { Repository } from 'typeorm';
+import { Role } from '../users/entities/user/role.entity';
+import { UserRole } from '../users/entities/user/user-role.entity';
+import { User } from '../users/entities/user/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from '../entities/user/role.entity';
-import { UserRole } from '../entities/user/user-role.entity';
 
 @Injectable()
 export class AuthService {
