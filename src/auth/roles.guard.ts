@@ -19,7 +19,7 @@ export class RolesGuard implements CanActivate {
     );
 
     if (!requiredRoles) {
-      return true; 
+      return true;
     }
 
     const { user } = context.switchToHttp().getRequest();
@@ -28,7 +28,9 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('Access denied');
     }
 
-    const hasRole = user.roles?.some((role: string) => requiredRoles.includes(role));
+    const hasRole = user.roles?.some((role: string) =>
+      requiredRoles.includes(role),
+    );
     if (!hasRole) {
       throw new ForbiddenException('You do not have permission');
     }
