@@ -3,6 +3,8 @@ import {
   Patch,
   Body,
   UseGuards,
+  Get,
+  Query,
   Req,
   UseInterceptors,
   UploadedFile,
@@ -14,21 +16,25 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UsersService } from './users.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import multerStorage from '../config/multerStorage';
+import { Roles } from '../common/decorators/roles.decorator';
+import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import {
   ApiTags,
   ApiBearerAuth,
   ApiResponse,
   ApiConsumes,
 } from '@nestjs/swagger';
+import { RolesGuard } from '../auth/roles.guard';
 
 @ApiTags('Users')
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Patch('profile')
+  @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('avatar', { storage: multerStorage }))
   @ApiResponse({ type: ServiceResponse })
@@ -48,12 +54,20 @@ export class UsersController {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('change-password')
+  @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiResponse({ type: ServiceResponse })
   async changePassword(@Req() req, @Body() dto: ChangePasswordDto) {
     await this.userService.changePassword(req.user.sub, dto);
     return ServiceResponse.success('Password changed successfully', null);
+  }
+
+  @Get()
+  @Roles('ROLE_ADMIN')
+  @ApiConsumes('multipart/form-data')
+  async getUsers(@Query() query: GetUsersQueryDto) {
+    const { data } = await this.userService.getUsers(query);
+    return ServiceResponse.success('Got all users', data);
   }
 }
