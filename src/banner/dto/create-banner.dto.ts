@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString, IsEnum, IsOptional } from 'class-validator';
 
 export class CreateBannerDto {
-  @ApiProperty({ format: 'binary', required: false })
+  @ApiProperty({ format: 'binary' })
+  @IsOptional()
   @IsString()
   url: string;
 

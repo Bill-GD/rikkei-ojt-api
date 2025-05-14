@@ -36,6 +36,14 @@ export class BannerController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     dto.url = `uploads/${file.filename}`;
+    if (dto.type !== file.mimetype.split('/')[0]) {
+      return ServiceResponse.failure(
+        `Media type doesn't match`,
+        null,
+        StatusCodes.BAD_REQUEST,
+      );
+    }
+
     const newBanner = await this.bannerService.create(dto);
     return ServiceResponse.success(
       'Banner added successfully',
