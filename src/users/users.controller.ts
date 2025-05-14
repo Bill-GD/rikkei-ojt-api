@@ -5,6 +5,8 @@ import {
   UseGuards,
   Get,
   Query,
+  Param,
+  ParseIntPipe,
   Req,
   UseInterceptors,
   UploadedFile,
@@ -18,6 +20,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import multerStorage from '../config/multerStorage';
 import { Roles } from '../common/decorators/roles.decorator';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
+import { UpdateUserStatusDto } from './dto/update-user-status.dto';
 import {
   ApiTags,
   ApiBearerAuth,
@@ -69,5 +72,16 @@ export class UsersController {
   async getUsers(@Query() query: GetUsersQueryDto) {
     const { data } = await this.userService.getUsers(query);
     return ServiceResponse.success('Got all users', data);
+  }
+
+  @Patch(':id/status')
+  @Roles('ROLE_ADMIN')
+  @ApiResponse({ type: ServiceResponse })
+  async updateUserStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateUserStatusDto,
+  ) {
+    await this.userService.updateUserStatus(id, dto.status);
+    return ServiceResponse.success(`Updated status of user #${id}`, null);
   }
 }
