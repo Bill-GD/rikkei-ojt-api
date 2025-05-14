@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Movie {
@@ -21,7 +27,7 @@ export class Movie {
   trailer?: string;
 
   @Column({ type: 'enum', enum: ['2D', '3D'] })
-  type: '2D' | '3D';
+  type: string;
 
   @Column({ type: 'int' })
   duration_min: number;
@@ -29,9 +35,9 @@ export class Movie {
   @Column({ type: 'datetime' })
   release_date: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ type: 'datetime' })
   created_at: Date;
 
-  @Column({ type: 'timestamp', nullable: true, onUpdate: 'CURRENT_TIMESTAMP' })
-  updated_at: Date;
+  @UpdateDateColumn({ type: 'datetime' })
+  updated_at: Date | null;
 }

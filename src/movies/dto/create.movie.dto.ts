@@ -6,7 +6,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 export class CreateMovieDto {
@@ -15,31 +15,35 @@ export class CreateMovieDto {
   @IsNotEmpty()
   title: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   @IsString()
   @IsOptional()
   descriptions?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   @IsString()
   @IsOptional()
   author?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   @IsString()
   @IsOptional()
   image?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   @IsString()
   @IsOptional()
   trailer?: string;
 
   @ApiProperty({ enum: ['2D', '3D'] })
   @IsEnum(['2D', '3D'])
-  type: '2D' | '3D';
+  type: string;
 
-  @ApiProperty({ type: 'integer', minimum: 1 })
+  @ApiProperty({
+    type: 'integer',
+    minimum: 1,
+    description: 'The duration of the movie in minutes',
+  })
   @Type(() => Number)
   @IsInt()
   @Min(1)
