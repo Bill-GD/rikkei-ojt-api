@@ -3,20 +3,18 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Query,
-  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
-import { StatusCodes } from 'http-status-codes';
-import { join } from 'path';
 import { ServiceResponse } from '../common/model/service-response';
-import { createSingleMulterStorage } from '../config/multerStorage';
+import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { CreateMovieDto } from './dto/create.movie.dto';
 import { MovieQueries } from './dto/movie-queries.dto';
 import { UpdateMovieDto } from './dto/update.movie.dto';
@@ -50,7 +48,7 @@ export class MovieController {
     return ServiceResponse.success(
       'Movie added successfully',
       { id: newMovie.id },
-      StatusCodes.CREATED,
+      HttpStatus.CREATED,
     );
   }
 
@@ -70,7 +68,7 @@ export class MovieController {
       return ServiceResponse.failure(
         `Movie #${id} not found`,
         null,
-        StatusCodes.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
       );
     }
     return ServiceResponse.success(`Found movie #${id}`, movie);
@@ -108,7 +106,7 @@ export class MovieController {
       return ServiceResponse.failure(
         `Movie #${id} not found`,
         null,
-        StatusCodes.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
       );
     }
     await this.movieService.remove(id);

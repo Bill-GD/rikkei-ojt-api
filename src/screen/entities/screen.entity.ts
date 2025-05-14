@@ -10,7 +10,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { number } from 'zod';
 
 @Entity('screen')
 export class Screen {
@@ -26,7 +25,6 @@ export class Screen {
   @ManyToOne(() => Theater, (theater) => theater.screen, {
     onDelete: 'CASCADE',
   })
-
   @OneToMany(() => Seat, (seat) => seat.screen, {
     onDelete: 'CASCADE',
   })

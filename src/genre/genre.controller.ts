@@ -3,12 +3,12 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
-import { StatusCodes } from 'http-status-codes';
 import { ServiceResponse } from '../common/model/service-response';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
@@ -24,7 +24,7 @@ export class GenreController {
     return ServiceResponse.success(
       'Genre added successfully',
       { id: newGenre.id },
-      StatusCodes.CREATED,
+      HttpStatus.CREATED,
     );
   }
 

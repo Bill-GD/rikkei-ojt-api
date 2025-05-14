@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -11,7 +12,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiResponse } from '@nestjs/swagger';
-import { StatusCodes } from 'http-status-codes';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -36,7 +36,7 @@ export class TicketPriceController {
     return ServiceResponse.success(
       'Ticket price created successfully',
       { id: newTicket.id },
-      StatusCodes.CREATED,
+      HttpStatus.CREATED,
     );
   }
 

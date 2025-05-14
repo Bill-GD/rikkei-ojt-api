@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -14,9 +15,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { StatusCodes } from 'http-status-codes';
 import { ServiceResponse } from '../common/model/service-response';
-import { createSingleMulterStorage } from '../config/multerStorage';
+import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { CreateNewsDto } from '../news/dto/create-news.dto';
 import { NewsService } from '../news/news.service';
 import { CreateFestivalDto } from './dto/create-festival.dto';
@@ -49,7 +49,7 @@ export class FestivalController {
     return ServiceResponse.success(
       'Festival added successfully',
       { id: newFes.id },
-      StatusCodes.CREATED,
+      HttpStatus.CREATED,
     );
   }
 
@@ -64,7 +64,7 @@ export class FestivalController {
     return ServiceResponse.success(
       'News added successfully',
       { id: newNews.id },
-      StatusCodes.CREATED,
+      HttpStatus.CREATED,
     );
   }
 
