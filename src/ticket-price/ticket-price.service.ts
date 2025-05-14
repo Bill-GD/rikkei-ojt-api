@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { TicketPrice } from './entities/ticket-price.entity';
 import { CreateTicketPriceDto } from './dto/create-ticket-price.dto';
 import { UpdateTicketPriceDto } from './dto/update-ticket-price.dto';
+import { GetTicketPricesQueryDto } from './dto/get-ticket-prices-query.dto';
 
 @Injectable()
 export class TicketPriceService {
@@ -44,5 +45,43 @@ export class TicketPriceService {
       throw new NotFoundException('Ticket price not found');
     }
     await this.ticketPriceRepo.remove(ticket);
+  }
+
+  async getAll(query: GetTicketPricesQueryDto) {
+    const {
+      type_seat,
+      type_movie,
+      sort_by = 'created_at',
+      sort_order = 'DESC',
+      page = '1',
+      limit = '10',
+    } = query;
+
+    const take = +limit;
+    const skip = (+page - 1) * take;
+
+    const qb = this.ticketPriceRepo.createQueryBuilder('ticket_price');
+
+    if (type_seat) {
+      qb.andWhere('ticket_price.type_seat = :type_seat', { type_seat });
+    }
+
+    if (type_movie) {
+      qb.andWhere('ticket_price.type_movie = :type_movie', { type_movie });
+    }
+
+    qb.orderBy(`ticket_price.${sort_by}`, sort_order).skip(skip).take(take);
+
+    const [items, total] = await qb.getManyAndCount();
+
+    return {
+      data: items,
+      pagination: {
+        total,
+        page: +page,
+        limit: take,
+        totalPages: Math.ceil(total / take),
+      },
+    };
   }
 }

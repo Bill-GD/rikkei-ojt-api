@@ -2,10 +2,12 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiResponse } from '@nestjs/swagger';
@@ -17,12 +19,13 @@ import { ServiceResponse } from '../common/model/service-response';
 import { CreateTicketPriceDto } from './dto/create-ticket-price.dto';
 import { UpdateTicketPriceDto } from './dto/update-ticket-price.dto';
 import { TicketPriceService } from './ticket-price.service';
+import { GetTicketPricesQueryDto } from './dto/get-ticket-prices-query.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('ticket-price')
 export class TicketPriceController {
-  constructor(private ticketPriceService: TicketPriceService) {}
+  constructor(private readonly ticketPriceService: TicketPriceService) {}
 
   @Post()
   @Roles('ROLE_ADMIN')
@@ -55,5 +58,16 @@ export class TicketPriceController {
   async delete(@Param('id', ParseIntPipe) id: number) {
     await this.ticketPriceService.delete(id);
     return ServiceResponse.success(`Deleted ticket price #${id}`, null);
+  }
+
+  @Get()
+  @Roles('ROLE_ADMIN')
+  @ApiResponse({ type: ServiceResponse })
+  async getAll(@Query() query: GetTicketPricesQueryDto) {
+    const result = await this.ticketPriceService.getAll(query);
+    return ServiceResponse.success(
+      'Fetched ticket prices successfully',
+      result,
+    );
   }
 }
