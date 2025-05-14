@@ -10,7 +10,7 @@ import {
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
-import createSingleMulterStorage from '../config/multerStorage';
+import { createSingleMulterStorage } from '../config/multerStorage';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create.movie.dto';
 import { UpdateMovieDto } from './dto/update.movie.dto';

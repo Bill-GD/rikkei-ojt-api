@@ -1,6 +1,6 @@
 import { diskStorage } from 'multer';
 
-export default function createSingleMulterStorage(allowImage: boolean, allowVideo: boolean) {
+export function createSingleMulterStorage(allowImage: boolean, allowVideo: boolean) {
   return diskStorage({
     destination: './public/uploads',
     filename: (req, file, callback) => {

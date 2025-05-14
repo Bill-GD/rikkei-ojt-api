@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindManyOptions } from 'typeorm';
 import { Banner } from './entities/banner.entity';
@@ -17,27 +13,8 @@ export class BannerService {
     private readonly bannerRepository: Repository<Banner>,
   ) {}
 
-  create(file: Express.Multer.File, createBannerDto: CreateBannerDto) {
-    if (!file) {
-      throw new BadRequestException('No file provided');
-    }
-
-    // Check if the file has a valid filename (which should be created by multer)
-    const fileUrl = `/uploads-banner/${file.filename}`;
-
-    // Create the banner instance with the provided details
-    const banner = this.bannerRepository.create({
-      ...createBannerDto,
-      url: fileUrl,
-    });
-
-    try {
-      // Save the banner to the database
-      return this.bannerRepository.save(banner);
-    } catch (error) {
-      // Handle potential database errors
-      throw new Error('Error saving the banner: ' + error.message);
-    }
+  async create(dto: CreateBannerDto) {
+    return await this.bannerRepository.save(dto);
   }
 
   findAll(options?: FindManyOptions<Banner>) {
