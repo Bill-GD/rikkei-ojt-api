@@ -4,8 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Screen } from 'src/screen/entities/screen.entity';
 
 @Entity('theater')
 export class Theater {
@@ -22,10 +24,13 @@ export class Theater {
   phone: string;
 
   @ApiProperty()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'datetime' })
   created_at: Date;
 
   @ApiProperty()
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ type: 'datetime' })
+  updated_at: Date | null;
+
+  @OneToMany(() => Screen, (screen) => screen.theater)
+  screen: Screen[];
 }

@@ -8,10 +8,11 @@ import 'dotenv/config';
 import typeOrmConfig from './config/typeOrmConfig';
 import { BannerModule } from './banner/banner.module';
 import { FestivalModule } from './festival/festival.module';
-import { TheaterModule } from './theater/theater.module';
 import { AuthModule } from './auth/auth.module';
 import { NewsModule } from './news/news.module';
+import { TheaterModule } from './theater/theater.module';
 import { UsersModule } from './users/users.module';
+import { ScreenModule } from './screen/screen.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { UsersModule } from './users/users.module';
     NewsModule,
     UsersModule,
     TheaterModule,
+    ScreenModule,
   ],
 })
 export class AppModule implements NestModule {
