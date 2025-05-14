@@ -1,16 +1,16 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('banner')
 export class Banner {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   url: string;
 
   @Column({ type: 'enum', enum: ['image', 'video'] })
-  type: 'image' | 'video';
+  type: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   position: string;
 }
