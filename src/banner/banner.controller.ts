@@ -11,11 +11,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiResponse } from '@nestjs/swagger';
+import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
 import { StatusCodes } from 'http-status-codes';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../config/multerStorage';
 import { BannerService } from './banner.service';
+import { BannerQueries } from './dto/banner-queries.dto';
 import { CreateBannerDto } from './dto/create-banner.dto';
 import { UpdateBannerDto } from './dto/update-banner.dto';
 
@@ -53,9 +55,12 @@ export class BannerController {
   }
 
   @Get()
+  @ApiExtraModels(BannerQueries)
   @ApiResponse({ type: ServiceResponse })
-  async findAll(@Query() query: any) {
-    const banners = await this.bannerService.findAll(query);
+  async findAll(@Query() query: BannerQueries) {
+    const banners = await this.bannerService.findAll(
+      plainToInstance(BannerQueries, query),
+    );
     return ServiceResponse.success('Got all banners', banners);
   }
 

@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { async } from 'rxjs';
-import { Repository, FindManyOptions } from 'typeorm';
+import { Repository, FindManyOptions, Like } from 'typeorm';
+import config from '../config/config';
+import { BannerQueries } from './dto/banner-queries.dto';
 import { Banner } from './entities/banner.entity';
 import { CreateBannerDto } from './dto/create-banner.dto';
 import * as fs from 'fs';
@@ -18,8 +20,18 @@ export class BannerService {
     return this.bannerRepository.save(dto);
   }
 
-  findAll(options?: FindManyOptions<Banner>) {
-    return this.bannerRepository.find(options);
+  findAll(query: BannerQueries) {
+    const limit = query.limit || config.queryLimit,
+      offset = query.page ? (query.page - 1) * query.limit : undefined;
+
+    return this.bannerRepository.find({
+      where: query.type ? { type: Like(`%${query.type}%`) } : undefined,
+      skip: offset ?? 0,
+      take: limit,
+      order: query.sort
+        ? { [query.sort]: query.order || config.order }
+        : undefined,
+    });
   }
 
   findOne(id: number) {
