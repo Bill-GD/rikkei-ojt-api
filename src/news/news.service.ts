@@ -12,7 +12,7 @@ export class NewsService {
   constructor(
     @InjectRepository(News)
     private readonly newsRepo: Repository<News>,
-  ) {}
+  ) { }
 
   create(dto: CreateNewsDto) {
     return this.newsRepo.save(dto);
