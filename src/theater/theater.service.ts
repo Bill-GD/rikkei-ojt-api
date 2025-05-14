@@ -41,9 +41,8 @@ export class TheaterService {
     return this.theaterRepository.findOne({ where: { id } });
   }
 
-  async update(id: number, dto: UpdateTheaterDto) {
-    await this.theaterRepository.update(id,dto);
-    return {message: 'Updated theater successfully'};
+  update(id: number, dto: UpdateTheaterDto) {
+    return this.theaterRepository.update(id, dto);
   }
 
   remove(id: number) {
