@@ -10,11 +10,11 @@ import {
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
+import createSingleMulterStorage from '../config/multerStorage';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create.movie.dto';
 import { UpdateMovieDto } from './dto/update.movie.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { multerStorageByField } from 'src/config/multerStorageByField';
 import {
   ApiTags,
   ApiOperation,
@@ -71,24 +71,10 @@ export class MovieController {
   @UseInterceptors(
     FileFieldsInterceptor(
       [
-        { name: 'image', maxCount: 5 },
+        { name: 'image', maxCount: 1 },
         { name: 'trailer', maxCount: 1 },
       ],
-      {
-        storage: multerStorageByField('movies'),
-        fileFilter: (req, file, cb) => {
-          if (file.fieldname === 'image') {
-            if (!file.mimetype.startsWith('image/')) {
-              return cb(new Error('Invalid image file type'), false);
-            }
-          } else if (file.fieldname === 'trailer') {
-            if (!file.mimetype.startsWith('video/')) {
-              return cb(new Error('Invalid video file type'), false);
-            }
-          }
-          cb(null, true);
-        },
-      },
+      { storage: createSingleMulterStorage(true, true) },
     ),
   )
   async create(
@@ -173,24 +159,10 @@ export class MovieController {
   @UseInterceptors(
     FileFieldsInterceptor(
       [
-        { name: 'image', maxCount: 5 },
+        { name: 'image', maxCount: 1 },
         { name: 'trailer', maxCount: 1 },
       ],
-      {
-        storage: multerStorageByField('movies'),
-        fileFilter: (req, file, cb) => {
-          if (file.fieldname === 'image') {
-            if (!file.mimetype.startsWith('image/')) {
-              return cb(new Error('Invalid image file type'), false);
-            }
-          } else if (file.fieldname === 'trailer') {
-            if (!file.mimetype.startsWith('video/')) {
-              return cb(new Error('Invalid video file type'), false);
-            }
-          }
-          cb(null, true);
-        },
-      },
+      { storage: createSingleMulterStorage(true, true) },
     ),
   )
   async update(
