@@ -12,9 +12,8 @@ export class ScreenService {
     private readonly screenRepo: Repository<Screen>,
   ) {}
 
-  async create(dto: CreateScreenDto) {
-    await this.screenRepo.save(dto);
-    return { message: 'Screen added successfully' };
+  create(dto: CreateScreenDto) {
+    return this.screenRepo.save(dto);
   }
 
   async findAll(
