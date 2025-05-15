@@ -51,8 +51,8 @@ export class CreateMovieDto {
   @IsNotEmpty()
   release_date: Date;
 
-  @ApiProperty({ type: 'number', example: 1 })
-  @IsInt()
-  @Min(1)
-  genre_id: number;
+  // @ApiProperty({ type: 'number', example: 1 })
+  // @IsInt()
+  // @Min(1)
+  // genre_id: number;
 }

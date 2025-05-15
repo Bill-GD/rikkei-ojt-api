@@ -4,5 +4,5 @@ export class CreateGenreDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
-  genreName: string;
+  genre_name: string;
 }

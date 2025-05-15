@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import config from '../config/config';
-import { Movie } from '../movies/entities/movie.entity';
 import { GenreQueries } from './dto/genre-queries.dto';
 import { Genre } from './entities/genre.entity';
 import { CreateGenreDto } from './dto/create-genre.dto';
@@ -24,8 +23,9 @@ export class GenreService {
       offset = query.page ? (query.page - 1) * query.limit : 0;
 
     const where: FindOptionsWhere<Genre>[] = [];
-    if (query.genre_name)
-      where.push({ genreName: ILike(`%${query.genre_name}%`) });
+    if (query.genre_name) {
+      where.push({ genre_name: ILike(`%${query.genre_name}%`) });
+    }
 
     return this.genreRepository.find({
       where,

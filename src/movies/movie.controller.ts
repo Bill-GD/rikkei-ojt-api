@@ -49,8 +49,8 @@ export class MovieController {
     if (files.image) dto.image = `uploads/${files.image[0].filename}`;
     if (files.trailer) dto.trailer = `uploads/${files.trailer[0].filename}`;
 
-    const genre = await this.genreService.findOne(dto.genre_id);
-    if (!genre) throw new NotFoundException('Genre not found');
+    // const genre = await this.genreService.findOne(dto.genre_id);
+    // if (!genre) throw new NotFoundException('Genre not found');
 
     const newMovie = await this.movieService.create(dto);
     return ServiceResponse.success(
