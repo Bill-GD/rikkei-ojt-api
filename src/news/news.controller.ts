@@ -9,7 +9,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiExtraModels,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { ServiceResponse } from '../common/model/service-response';
 import { NewsQuery } from './dto/news-query.dto';
 import { NewsService } from './news.service';
@@ -19,7 +24,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard,RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('news')
 export class NewsController {
   constructor(private readonly newsService: NewsService) {}
