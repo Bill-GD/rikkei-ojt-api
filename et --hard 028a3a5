@@ -1,0 +1,55 @@
+[33m33c915e[m[33m ([m[1;36mHEAD -> [m[1;32mfix/miss-relationship[m[33m)[m HEAD@{0}: reset: moving to HEAD~1
+[33m028a3a5[m[33m ([m[1;31morigin/fix/miss-relationship[m[33m)[m HEAD@{1}: checkout: moving from dev to fix/miss-relationship
+[33mf61e00d[m[33m ([m[1;31morigin/dev[m[33m, [m[1;32mdev[m[33m)[m HEAD@{2}: checkout: moving from fix/miss-relationship to dev
+[33m028a3a5[m[33m ([m[1;31morigin/fix/miss-relationship[m[33m)[m HEAD@{3}: commit: Add: relationship movie and genre
+[33m33c915e[m[33m ([m[1;36mHEAD -> [m[1;32mfix/miss-relationship[m[33m)[m HEAD@{4}: checkout: moving from dev to fix/miss-relationship
+[33mf61e00d[m[33m ([m[1;31morigin/dev[m[33m, [m[1;32mdev[m[33m)[m HEAD@{5}: pull: Fast-forward
+[33m33c915e[m[33m ([m[1;36mHEAD -> [m[1;32mfix/miss-relationship[m[33m)[m HEAD@{6}: checkout: moving from fix/miss-relationship to dev
+[33m33c915e[m[33m ([m[1;36mHEAD -> [m[1;32mfix/miss-relationship[m[33m)[m HEAD@{7}: checkout: moving from dev to fix/miss-relationship
+[33m33c915e[m[33m ([m[1;36mHEAD -> [m[1;32mfix/miss-relationship[m[33m)[m HEAD@{8}: pull: Fast-forward
+[33m470df86[m[33m ([m[1;31morigin/other-fix/api-docs-improvement[m[33m, [m[1;31morigin/feature/logout[m[33m)[m HEAD@{9}: checkout: moving from feature/movie-genre-relationship to dev
+[33m470df86[m[33m ([m[1;31morigin/other-fix/api-docs-improvement[m[33m, [m[1;31morigin/feature/logout[m[33m)[m HEAD@{10}: checkout: moving from dev to feature/movie-genre-relationship
+[33m470df86[m[33m ([m[1;31morigin/other-fix/api-docs-improvement[m[33m, [m[1;31morigin/feature/logout[m[33m)[m HEAD@{11}: pull origin dev: Fast-forward
+[33m79dfba5[m HEAD@{12}: reset: moving to 79dfba5bc6527265f0d3f8934725a79f006fd2b6
+[33m470df86[m[33m ([m[1;31morigin/other-fix/api-docs-improvement[m[33m, [m[1;31morigin/feature/logout[m[33m)[m HEAD@{13}: checkout: moving from fix/movies-relationship to dev
+[33m470df86[m[33m ([m[1;31morigin/other-fix/api-docs-improvement[m[33m, [m[1;31morigin/feature/logout[m[33m)[m HEAD@{14}: checkout: moving from dev to fix/movies-relationship
+[33m470df86[m[33m ([m[1;31morigin/other-fix/api-docs-improvement[m[33m, [m[1;31morigin/feature/logout[m[33m)[m HEAD@{15}: checkout: moving from fix/movies-relationship to dev
+[33m470df86[m[33m ([m[1;31morigin/other-fix/api-docs-improvement[m[33m, [m[1;31morigin/feature/logout[m[33m)[m HEAD@{16}: checkout: moving from dev to fix/movies-relationship
+[33m470df86[m[33m ([m[1;31morigin/other-fix/api-docs-improvement[m[33m, [m[1;31morigin/feature/logout[m[33m)[m HEAD@{17}: checkout: moving from dev to dev
+[33m470df86[m[33m ([m[1;31morigin/other-fix/api-docs-improvement[m[33m, [m[1;31morigin/feature/logout[m[33m)[m HEAD@{18}: reset: moving to origin/dev
+[33m470df86[m[33m ([m[1;31morigin/other-fix/api-docs-improvement[m[33m, [m[1;31morigin/feature/logout[m[33m)[m HEAD@{19}: reset: moving to origin/dev
+[33mc3a3220[m HEAD@{20}: pull: Merge made by the 'ort' strategy.
+[33mb37989c[m HEAD@{21}: commit (merge): Merge branch 'dev' of https://git.rikkei.edu.vn/ojt-phenikaa/group01/api into dev
+[33mabb48f2[m HEAD@{22}: checkout: moving from feature/movies to dev
+[33m323f7d6[m[33m ([m[1;32mfeature/movies[m[33m)[m HEAD@{23}: commit: resolve conflict
+[33mabb48f2[m HEAD@{24}: checkout: moving from dev to feature/movies
+[33mabb48f2[m HEAD@{25}: reset: moving to HEAD
+[33mabb48f2[m HEAD@{26}: checkout: moving from feature/movies to dev
+[33m46cc9ff[m HEAD@{27}: checkout: moving from dev to feature/movies
+[33mabb48f2[m HEAD@{28}: checkout: moving from feature/movies to dev
+[33m46cc9ff[m HEAD@{29}: commit: push again
+[33mabb48f2[m HEAD@{30}: reset: moving to HEAD~1
+[33m853f082[m HEAD@{31}: commit: Basic CRUD for movie
+[33mabb48f2[m HEAD@{32}: checkout: moving from dev to feature/movies
+[33mabb48f2[m HEAD@{33}: checkout: moving from feature/banners to dev
+[33md70ca0f[m[33m ([m[1;32mfeature/banners[m[33m)[m HEAD@{34}: checkout: moving from dev to feature/banners
+[33mabb48f2[m HEAD@{35}: reset: moving to ORIG_HEAD
+[33mabb48f2[m HEAD@{36}: reset: moving to ORIG_HEAD
+[33mabb48f2[m HEAD@{37}: checkout: moving from feature/movies to dev
+[33md70ca0f[m[33m ([m[1;32mfeature/banners[m[33m)[m HEAD@{38}: checkout: moving from feature/banners to feature/movies
+[33md70ca0f[m[33m ([m[1;32mfeature/banners[m[33m)[m HEAD@{39}: commit: delete images test
+[33m22f54d5[m HEAD@{40}: checkout: moving from dev to feature/banners
+[33mabb48f2[m HEAD@{41}: checkout: moving from feature/movies to dev
+[33m22f54d5[m HEAD@{42}: checkout: moving from feature/banners to feature/movies
+[33m22f54d5[m HEAD@{43}: commit: Update banner with Multer
+[33m96a63e3[m HEAD@{44}: commit: Upload file image/video by Multer
+[33mabb48f2[m HEAD@{45}: checkout: moving from dev to feature/banners
+[33mabb48f2[m HEAD@{46}: reset: moving to abb48f2
+[33m4c2a1cd[m HEAD@{47}: reset: moving to 4c2a1cd
+[33m3d219f4[m HEAD@{48}: pull: Fast-forward
+[33m4c2a1cd[m HEAD@{49}: checkout: moving from feature/banner to dev
+[33mabb48f2[m HEAD@{50}: checkout: moving from feature/banners to feature/banner
+[33mabb48f2[m HEAD@{51}: commit: feature banner
+[33m4c2a1cd[m HEAD@{52}: checkout: moving from dev to feature/banners
+[33m4c2a1cd[m HEAD@{53}: checkout: moving from main to dev
+[33m876f6f3[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/35-movie-genre-missing-relationship-swagger-for-genre[m[33m, [m[1;32mmain[m[33m)[m HEAD@{54}: clone: from https://git.rikkei.edu.vn/ojt-phenikaa/group01/api.git
