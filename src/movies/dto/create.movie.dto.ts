@@ -5,11 +5,8 @@ import {
   IsOptional,
   IsString,
   Min,
-  IsArray,
-  ArrayNotEmpty,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type, Transform } from 'class-transformer';
 
 export class CreateMovieDto {
   @ApiProperty()
@@ -46,7 +43,6 @@ export class CreateMovieDto {
     minimum: 1,
     description: 'The duration of the movie in minutes',
   })
-  @Type(() => Number)
   @IsInt()
   @Min(1)
   duration_min: number;
@@ -55,31 +51,8 @@ export class CreateMovieDto {
   @IsNotEmpty()
   release_date: Date;
 
-  // @ApiProperty({
-  //   type: [Number],
-  //   description: 'List of genre IDs',
-  //   example: [1, 2, 3],
-  // })
-  // @Transform(({ value }) => {
-  //   console.log('value', value);
-  //   if (typeof value === 'string') {
-  //     return value
-  //       .split(',')
-  //       .map((id) => parseInt(id, 10))
-  //       .filter((id) => !isNaN(id));
-  //   }
-  //   return value;
-  // })
-  // @ArrayNotEmpty()
-  // @IsArray()
-  // genreIds: number[];
-  @ApiProperty({
-    type: Number,
-    description: 'ID of the genre',
-    example: 1,
-  })
-  @Type(() => Number)
+  @ApiProperty({ type: 'number', example: 1 })
   @IsInt()
   @Min(1)
-  genreId: number;
+  genre_id: number;
 }
