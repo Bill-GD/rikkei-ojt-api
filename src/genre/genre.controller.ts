@@ -52,7 +52,7 @@ export class GenreController {
   @ApiResponse({ type: ServiceResponse })
   async findAll(@Query() query: GenreQueries) {
     const genres = await this.genreService.findAll(query);
-    return ServiceResponse.success('Got all genres', genres);
+    return ServiceResponse.success('Fetched all genres', genres);
   }
 
   @Get(':id')
@@ -61,7 +61,7 @@ export class GenreController {
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const genre = await this.genreService.findOne(id);
     // if (!genre) throw new NotFoundException(`Genre #${id} not found`);
-    return ServiceResponse.success(`Found genre #${id}`, genre);
+    return ServiceResponse.success(`Fetched genre #${id}`, genre);
   }
 
   @Patch(':id')
@@ -73,7 +73,7 @@ export class GenreController {
     @Body() dto: UpdateGenreDto,
   ) {
     await this.genreService.update(id, dto);
-    return ServiceResponse.success(`Updated genre #${id}`, null);
+    return ServiceResponse.success(`Updated genre #${id} successfully`, null);
   }
 
   @Delete(':id')
@@ -81,6 +81,6 @@ export class GenreController {
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.genreService.remove(id);
-    return ServiceResponse.success(`Deleted genre #${id}`, null);
+    return ServiceResponse.success(`Deleted genre #${id} successfully`, null);
   }
 }

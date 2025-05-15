@@ -22,6 +22,8 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ServiceResponse } from '../common/model/service-response';
+import { CreateSeatDto } from '../seat/dto/create-seat.dto';
+import { SeatService } from '../seat/seat.service';
 import { CreateScreenDto } from './dto/create-screen.dto';
 import { UpdateScreenDto } from './dto/update-screen.dto';
 import { ScreenService } from './screen.service';
@@ -30,7 +32,10 @@ import { ScreenService } from './screen.service';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('screen')
 export class ScreenController {
-  constructor(private readonly screenService: ScreenService) {}
+  constructor(
+    private readonly screenService: ScreenService,
+    private readonly seatService: SeatService,
+  ) {}
 
   @Post()
   @Roles('ROLE_ADMIN')
@@ -41,6 +46,21 @@ export class ScreenController {
     return ServiceResponse.success(
       'Screen added successfully',
       { id: newScreen.id },
+      HttpStatus.CREATED,
+    );
+  }
+
+  @Post(':id/seat')
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
+  @ApiResponse({ type: ServiceResponse })
+  async createSeat(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: CreateSeatDto,
+  ) {
+    const newSeat = await this.seatService.create({ ...dto, screen_id: id });
+    return ServiceResponse.success(
+      'Seat added successfully',
+      { id: newSeat.id },
       HttpStatus.CREATED,
     );
   }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateSeatDto } from './dto/create-seat.dto';
@@ -13,28 +13,22 @@ export class SeatService {
   ) {}
 
   create(dto: CreateSeatDto) {
-    const seat = this.seatRepository.create(dto);
-    return this.seatRepository.save(seat);
+    return this.seatRepository.save(dto);
   }
 
   findAll() {
     return this.seatRepository.find();
   }
 
-  async findOne(id: number) {
-    const seat = await this.seatRepository.findOneBy({ id });
-    if (!seat) throw new NotFoundException('Seat not found');
-    return seat;
+  findOne(id: number) {
+    return this.seatRepository.findOneBy({ id });
   }
 
-  async update(id: number, dto: UpdateSeatDto) {
-    const seat = await this.findOne(id);
-    Object.assign(seat, dto);
-    return this.seatRepository.save(seat);
+  update(id: number, dto: UpdateSeatDto) {
+    return this.seatRepository.update(id, dto);
   }
 
-  async remove(id: number) {
-    const seat = await this.findOne(id);
-    return this.seatRepository.remove(seat);
+  remove(id: number) {
+    return this.seatRepository.delete(id);
   }
 }
