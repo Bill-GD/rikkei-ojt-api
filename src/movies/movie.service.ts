@@ -1,21 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike, FindOptionsWhere } from 'typeorm';
+import { Repository, ILike, FindOptionsWhere, In } from 'typeorm';
 import config from '../config/config';
 import { MovieQueries } from './dto/movie-queries.dto';
 import { UpdateMovieDto } from './dto/update.movie.dto';
 import { Movie } from './entities/movie.entity';
 import { CreateMovieDto } from './dto/create.movie.dto';
-
+import { Genre } from '../genre/entities/genre.entity';
 @Injectable()
 export class MovieService {
   constructor(
     @InjectRepository(Movie)
     private readonly movieRepository: Repository<Movie>,
+    @InjectRepository(Genre)
+    private readonly genreRepository: Repository<Genre>,
   ) {}
 
   async create(createMovieDto: CreateMovieDto): Promise<Movie> {
-    const movie = this.movieRepository.create(createMovieDto);
+    const { genreIds, ...movieData } = createMovieDto;
+
+    const genres = await this.genreRepository.findBy({
+      id: In(genreIds),
+    });
+
+    const movie = this.movieRepository.create({
+      ...movieData,
+      genres,
+    });
+
     return this.movieRepository.save(movie);
   }
 
