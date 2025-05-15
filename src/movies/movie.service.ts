@@ -58,7 +58,21 @@ export class MovieService {
     return this.movieRepo.findOne({ where: { id } });
   }
 
-  update(id: number, dto: UpdateMovieDto) {
+  async update(id: number, dto: UpdateMovieDto) {
+    if (dto.genre_ids !== undefined) {
+      await this.movieGenreRepo.delete({ movie_id: id });
+      for (const genreId of dto.genre_ids) {
+        const genre = await this.genreRepo.findOneBy({ id: genreId });
+        if (!genre) continue;
+
+        const newMovieGenre = this.movieGenreRepo.create({
+          movie_id: id,
+          genre_id: genreId,
+        });
+        await this.movieGenreRepo.save(newMovieGenre);
+      }
+    }
+    delete dto.genre_ids;
     return this.movieRepo.update(id, dto);
   }
 
