@@ -1,28 +1,30 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  Query,
+  Get,
+  HttpStatus,
+  NotFoundException,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ScreenService } from './screen.service';
-import { CreateScreenDto } from './dto/create-screen.dto';
-import { UpdateScreenDto } from './dto/update-screen.dto';
 import {
   ApiBearerAuth,
   ApiConsumes,
-  ApiOperation,
-  ApiParam,
   ApiQuery,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { ServiceResponse } from '../common/model/service-response';
+import { CreateScreenDto } from './dto/create-screen.dto';
+import { UpdateScreenDto } from './dto/update-screen.dto';
+import { ScreenService } from './screen.service';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -32,10 +34,15 @@ export class ScreenController {
 
   @Post()
   @Roles('ROLE_ADMIN')
-  @ApiOperation({ summary: 'Create a screen' })
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
+  @ApiResponse({ type: ServiceResponse })
   async create(@Body() dto: CreateScreenDto) {
-    return this.screenService.create(dto);
+    const newScreen = await this.screenService.create(dto);
+    return ServiceResponse.success(
+      'Screen added successfully',
+      { id: newScreen.id },
+      HttpStatus.CREATED,
+    );
   }
 
   @Get()
@@ -68,7 +75,8 @@ export class ScreenController {
     example: 'DESC',
     description: 'Thứ tự sắp xếp',
   })
-  findAll(
+  @ApiResponse({ type: ServiceResponse })
+  async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('sortBy') sortBy = 'createdAt', //giá trị default của sortBy
@@ -77,32 +85,43 @@ export class ScreenController {
     const pageNumber = parseInt(page || '1', 10);
     const limitNumber = parseInt(limit || '3', 10);
 
-    return this.screenService.findAll(
+    const { data } = await this.screenService.findAll(
       pageNumber,
       limitNumber,
       sortBy,
       sortOrder,
     );
+    return ServiceResponse.success('Fetched all screens', data);
   }
 
   @Get(':id')
   @Roles('ROLE_ADMIN')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.screenService.findOne(id);
+  @ApiResponse({ type: ServiceResponse })
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const screen = await this.screenService.findOne(id);
+    if (!screen) {
+      throw new NotFoundException(`Screen #${id} not found`);
+    }
+    return ServiceResponse.success(`Found screen #${id}`, screen);
   }
 
   @Patch(':id')
   @Roles('ROLE_ADMIN')
-  @ApiOperation({ summary: 'Update a screen by ID' })
-  @ApiParam({ name: 'id', type: Number, description: 'Screen ID' })
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateScreenDto) {
-    return this.screenService.update(id, dto);
+  @ApiResponse({ type: ServiceResponse })
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateScreenDto,
+  ) {
+    await this.screenService.update(id, dto);
+    return ServiceResponse.success(`Deleted screen #${id}`, null);
   }
 
   @Delete(':id')
   @Roles('ROLE_ADMIN')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.screenService.remove(id);
+  @ApiResponse({ type: ServiceResponse })
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.screenService.remove(id);
+    return ServiceResponse.success(`Deleted screen #${id}`, null);
   }
 }
