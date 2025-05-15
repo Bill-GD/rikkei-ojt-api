@@ -17,15 +17,26 @@ export class MovieService {
   ) {}
 
   async create(createMovieDto: CreateMovieDto): Promise<Movie> {
-    const { genreIds, ...movieData } = createMovieDto;
+    // const { genreIds, ...movieData } = createMovieDto;
 
-    const genres = await this.genreRepository.findBy({
-      id: In(genreIds),
+    // const genres = await this.genreRepository.findBy({
+    //   id: In(genreIds),
+    // });
+
+    // const movie = this.movieRepository.create({
+    //   ...movieData,
+    //   genres,
+    // });
+    const genre = await this.genreRepository.findOneBy({
+      id: createMovieDto.genreId,
     });
 
+    if (!genre) {
+      throw new Error('Genre not found');
+    }
     const movie = this.movieRepository.create({
-      ...movieData,
-      genres,
+      ...createMovieDto,
+      genres: [genre],
     });
 
     return this.movieRepository.save(movie);

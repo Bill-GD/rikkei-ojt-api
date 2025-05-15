@@ -55,22 +55,31 @@ export class CreateMovieDto {
   @IsNotEmpty()
   release_date: Date;
 
+  // @ApiProperty({
+  //   type: [Number],
+  //   description: 'List of genre IDs',
+  //   example: [1, 2, 3],
+  // })
+  // @Transform(({ value }) => {
+  //   console.log('value', value);
+  //   if (typeof value === 'string') {
+  //     return value
+  //       .split(',')
+  //       .map((id) => parseInt(id, 10))
+  //       .filter((id) => !isNaN(id));
+  //   }
+  //   return value;
+  // })
+  // @ArrayNotEmpty()
+  // @IsArray()
+  // genreIds: number[];
   @ApiProperty({
-    type: [Number],
-    description: 'List of genre IDs',
-    example: [1, 2, 3],
+    type: Number,
+    description: 'ID of the genre',
+    example: 1,
   })
-  @Transform(({ value }) => {
-    console.log('value', value);
-    if (typeof value === 'string') {
-      return value
-        .split(',')
-        .map((id) => parseInt(id, 10))
-        .filter((id) => !isNaN(id));
-    }
-    return value;
-  })
-  @ArrayNotEmpty()
-  @IsArray()
-  genreIds: number[];
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  genreId: number;
 }
