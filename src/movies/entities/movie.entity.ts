@@ -5,9 +5,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   ManyToMany,
-  JoinTable,
 } from 'typeorm';
-import { Genre } from 'src/genre/entities/genre.entity';
+import { MovieGenre } from './movie-genre.entity';
 
 @Entity()
 export class Movie {
@@ -44,20 +43,6 @@ export class Movie {
   @UpdateDateColumn({ type: 'datetime' })
   updated_at: Date | null;
 
-  @ManyToMany(() => Genre, (genre) => genre.movies, {
-    cascade: true,
-    eager: true,
-  })
-  @JoinTable({
-    name: 'movie_genre',
-    joinColumn: {
-      name: 'movie_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'genre_id',
-      referencedColumnName: 'id',
-    },
-  })
-  genres: Genre[];
+  @ManyToMany(() => MovieGenre, (mg) => mg.movie)
+  movieGenres: MovieGenre[];
 }

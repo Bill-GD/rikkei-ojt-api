@@ -1,4 +1,5 @@
 import {
+  ArrayNotEmpty, IsArray,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -51,8 +52,17 @@ export class CreateMovieDto {
   @IsNotEmpty()
   release_date: Date;
 
-  // @ApiProperty({ type: 'number', example: 1 })
-  // @IsInt()
-  // @Min(1)
-  // genre_id: number;
+  @ApiProperty({ type: 'array', example: [1, 2, 3] })
+  // @Transform(({ value }) => {
+  //   if (typeof value === 'string') {
+  //     return value
+  //       .split(',')
+  //       .map((id) => parseInt(id, 10))
+  //       .filter((id) => !isNaN(id));
+  //   }
+  //   return value;
+  // })
+  @ArrayNotEmpty()
+  @IsArray()
+  genre_id: number[];
 }
