@@ -52,7 +52,7 @@ export class CreateMovieDto {
   @IsNotEmpty()
   release_date: Date;
 
-  @ApiProperty({ type: 'array', example: [1, 2, 3] })
+  @ApiProperty({ type: 'array', example: [1] })
   // @Transform(({ value }) => {
   //   if (typeof value === 'string') {
   //     return value
@@ -64,5 +64,5 @@ export class CreateMovieDto {
   // })
   @ArrayNotEmpty()
   @IsArray()
-  genre_id: number[];
+  genre_ids: number[];
 }

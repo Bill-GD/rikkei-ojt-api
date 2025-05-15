@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpStatus,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -16,7 +15,6 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
-import { GenreService } from '../genre/genre.service';
 import { CreateMovieDto } from './dto/create.movie.dto';
 import { MovieQueries } from './dto/movie-queries.dto';
 import { UpdateMovieDto } from './dto/update.movie.dto';
@@ -24,10 +22,7 @@ import { MovieService } from './movie.service';
 
 @Controller('movies')
 export class MovieController {
-  constructor(
-    private readonly movieService: MovieService,
-    private readonly genreService: GenreService,
-  ) {}
+  constructor(private readonly movieService: MovieService) {}
 
   @Post()
   @ApiConsumes('multipart/form-data')
@@ -49,8 +44,7 @@ export class MovieController {
     if (files.image) dto.image = `uploads/${files.image[0].filename}`;
     if (files.trailer) dto.trailer = `uploads/${files.trailer[0].filename}`;
 
-    // const genre = await this.genreService.findOne(dto.genre_id);
-    // if (!genre) throw new NotFoundException('Genre not found');
+    console.log(dto.genre_ids);
 
     const newMovie = await this.movieService.create(dto);
     return ServiceResponse.success(

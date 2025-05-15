@@ -4,7 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToMany,
+  OneToMany,
 } from 'typeorm';
 import { MovieGenre } from './movie-genre.entity';
 
@@ -43,6 +43,6 @@ export class Movie {
   @UpdateDateColumn({ type: 'datetime' })
   updated_at: Date | null;
 
-  @ManyToMany(() => MovieGenre, (mg) => mg.movie)
+  @OneToMany(() => MovieGenre, (mg) => mg.movie)
   movieGenres: MovieGenre[];
 }
