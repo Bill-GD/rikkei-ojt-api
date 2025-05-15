@@ -18,6 +18,7 @@ import { UpdateGenreDto } from './dto/update-genre.dto';
 import { GenreService } from './genre.service';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConsumes,
   ApiExtraModels,
   ApiResponse,
