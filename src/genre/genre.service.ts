@@ -1,6 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
+import config from '../config/config';
+import { GenreQueries } from './dto/genre-queries.dto';
 import { Genre } from './entities/genre.entity';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
@@ -12,29 +14,38 @@ export class GenreService {
     private readonly genreRepository: Repository<Genre>,
   ) {}
 
-  create(createGenreDto: CreateGenreDto) {
-    const genre = this.genreRepository.create(createGenreDto);
-    return this.genreRepository.save(genre);
+  create(dto: CreateGenreDto) {
+    return this.genreRepository.save(dto);
   }
 
-  findAll() {
-    return this.genreRepository.find();
+  findAll(query: GenreQueries) {
+    const limit = query.limit || config.queryLimit,
+      offset = query.page ? (query.page - 1) * query.limit : 0;
+
+    const where: FindOptionsWhere<Genre>[] = [];
+    if (query.genre_name) {
+      where.push({ genre_name: ILike(`%${query.genre_name}%`) });
+    }
+
+    return this.genreRepository.find({
+      where,
+      order: query.sort
+        ? { [query.sort]: query.order || config.order }
+        : undefined,
+      skip: offset,
+      take: limit,
+    });
   }
 
-  async findOne(id: number) {
-    const genre = await this.genreRepository.findOneBy({ id });
-    if (!genre) throw new NotFoundException('Genre not found');
-    return genre;
+  findOne(id: number) {
+    return this.genreRepository.findOneBy({ id });
   }
 
-  async update(id: number, updateGenreDto: UpdateGenreDto) {
-    const genre = await this.findOne(id);
-    Object.assign(genre, updateGenreDto);
-    return this.genreRepository.save(genre);
+  update(id: number, dto: UpdateGenreDto) {
+    return this.genreRepository.update(id, dto);
   }
 
   async remove(id: number) {
-    const genre = await this.findOne(id);
-    return this.genreRepository.remove(genre);
+    return this.genreRepository.delete(id);
   }
 }
