@@ -20,7 +20,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard,RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('genres')
 export class GenreController {
   constructor(private readonly genreService: GenreService) {}

@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
 import { Movie } from 'src/movies/entities/movie.entity';
+
 @Entity()
 export class Genre {
   @PrimaryGeneratedColumn()

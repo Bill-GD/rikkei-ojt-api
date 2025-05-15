@@ -8,6 +8,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Genre } from 'src/genre/entities/genre.entity';
+
 @Entity()
 export class Movie {
   @PrimaryGeneratedColumn()

@@ -7,4 +7,3 @@ export class UpdateShowtimeDto extends PartialType(CreateShowtimeDto) {
   start_time?: Date;
   end_time?: Date;
 }
-
