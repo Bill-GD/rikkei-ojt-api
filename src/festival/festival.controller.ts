@@ -14,7 +14,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiExtraModels,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
@@ -29,7 +34,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard,RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('festivals')
 export class FestivalController {
   constructor(

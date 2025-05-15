@@ -1,4 +1,5 @@
 import {
+  ArrayNotEmpty, IsArray,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -7,7 +8,6 @@ import {
   Min,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 
 export class CreateMovieDto {
   @ApiProperty()
@@ -44,7 +44,6 @@ export class CreateMovieDto {
     minimum: 1,
     description: 'The duration of the movie in minutes',
   })
-  @Type(() => Number)
   @IsInt()
   @Min(1)
   duration_min: number;
@@ -52,4 +51,9 @@ export class CreateMovieDto {
   @ApiProperty()
   @IsNotEmpty()
   release_date: Date;
+
+  @ApiProperty({ type: 'array', example: [1] })
+  @ArrayNotEmpty()
+  @IsArray()
+  genre_ids: number[];
 }
