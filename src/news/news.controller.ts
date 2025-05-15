@@ -7,18 +7,25 @@ import {
   Delete,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { ServiceResponse } from '../common/model/service-response';
 import { NewsQuery } from './dto/news-query.dto';
 import { NewsService } from './news.service';
 import { UpdateNewsDto } from './dto/update-news.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('news')
 export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
   @Get()
+  @Roles('ROLE_ADMIN')
   @ApiExtraModels(NewsQuery)
   @ApiResponse({ type: ServiceResponse })
   async findAll(@Query() query: NewsQuery) {
@@ -27,6 +34,7 @@ export class NewsController {
   }
 
   @Get(':id')
+  @Roles('ROLE_ADMIN')
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const news = await this.newsService.findOne(id);
@@ -34,6 +42,7 @@ export class NewsController {
   }
 
   @Patch(':id')
+  @Roles('ROLE_ADMIN')
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async update(
@@ -45,6 +54,7 @@ export class NewsController {
   }
 
   @Delete(':id')
+  @Roles('ROLE_ADMIN')
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.newsService.remove(id);
