@@ -6,8 +6,8 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
-  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -16,7 +16,12 @@ import { CreateGenreDto } from './dto/create-genre.dto';
 import { GenreQueries } from './dto/genre-queries.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { GenreService } from './genre.service';
-import { ApiBearerAuth, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiExtraModels,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -29,6 +34,7 @@ export class GenreController {
 
   @Post()
   @Roles('ROLE_ADMIN')
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async create(@Body() dto: CreateGenreDto) {
     const newGenre = await this.genreService.create(dto);
@@ -57,8 +63,9 @@ export class GenreController {
     return ServiceResponse.success(`Found genre #${id}`, genre);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @Roles('ROLE_ADMIN')
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async update(
     @Param('id', ParseIntPipe) id: number,
