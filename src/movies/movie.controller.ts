@@ -44,8 +44,6 @@ export class MovieController {
     if (files.image) dto.image = `uploads/${files.image[0].filename}`;
     if (files.trailer) dto.trailer = `uploads/${files.trailer[0].filename}`;
 
-    console.log(dto.genre_ids);
-
     const newMovie = await this.movieService.create(dto);
     return ServiceResponse.success(
       'Movie added successfully',

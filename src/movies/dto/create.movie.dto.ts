@@ -53,15 +53,6 @@ export class CreateMovieDto {
   release_date: Date;
 
   @ApiProperty({ type: 'array', example: [1] })
-  // @Transform(({ value }) => {
-  //   if (typeof value === 'string') {
-  //     return value
-  //       .split(',')
-  //       .map((id) => parseInt(id, 10))
-  //       .filter((id) => !isNaN(id));
-  //   }
-  //   return value;
-  // })
   @ArrayNotEmpty()
   @IsArray()
   genre_ids: number[];
