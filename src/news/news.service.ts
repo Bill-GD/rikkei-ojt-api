@@ -37,7 +37,7 @@ export class NewsService {
   }
 
   findOne(id: number) {
-    return this.newsRepo.findOne({ where: { id } });
+    return this.newsRepo.findOneBy({ id });
   }
 
   update(id: number, dto: UpdateNewsDto) {

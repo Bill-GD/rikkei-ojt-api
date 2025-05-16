@@ -55,7 +55,7 @@ export class MovieService {
   }
 
   findOne(id: number) {
-    return this.movieRepo.findOne({ where: { id } });
+    return this.movieRepo.findOneBy({ id });
   }
 
   async update(id: number, dto: UpdateMovieDto) {

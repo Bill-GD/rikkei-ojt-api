@@ -40,7 +40,7 @@ export class TheaterService {
   }
 
   findOne(id: number) {
-    return this.theaterRepository.findOne({ where: { id } });
+    return this.theaterRepository.findOneBy({ id });
   }
 
   update(id: number, dto: UpdateTheaterDto) {

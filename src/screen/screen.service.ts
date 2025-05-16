@@ -38,7 +38,7 @@ export class ScreenService {
   }
 
   findOne(id: number) {
-    return this.screenRepo.findOne({ where: { id } });
+    return this.screenRepo.findOneBy({ id });
   }
 
   update(id: number, dto: UpdateScreenDto) {

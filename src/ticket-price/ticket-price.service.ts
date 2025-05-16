@@ -27,7 +27,7 @@ export class TicketPriceService {
   }
 
   async update(id: number, dto: UpdateTicketPriceDto) {
-    const ticket = await this.ticketPriceRepo.findOne({ where: { id } });
+    const ticket = await this.ticketPriceRepo.findOneBy({ id });
     if (!ticket) {
       throw new NotFoundException('Ticket price not found');
     }
@@ -41,7 +41,7 @@ export class TicketPriceService {
   }
 
   async delete(id: number) {
-    const ticket = await this.ticketPriceRepo.findOne({ where: { id } });
+    const ticket = await this.ticketPriceRepo.findOneBy({ id });
     if (!ticket) {
       throw new NotFoundException('Ticket price not found');
     }

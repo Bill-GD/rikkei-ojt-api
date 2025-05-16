@@ -32,7 +32,7 @@ export class BannerService {
   }
 
   findOne(id: number) {
-    return this.bannerRepository.findOne({ where: { id } });
+    return this.bannerRepository.findOneBy({ id });
   }
 
   update(id: number, dto: Partial<CreateBannerDto>) {
