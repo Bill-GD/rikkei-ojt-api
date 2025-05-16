@@ -63,7 +63,7 @@ export class UsersController {
 
   @Patch('change-password')
   @UseGuards(JwtAuthGuard)
-  @ApiConsumes('multipart/form-data')
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async changePassword(@Req() req, @Body() dto: ChangePasswordDto) {
     await this.userService.changePassword(req.user.sub, dto);
@@ -72,20 +72,20 @@ export class UsersController {
 
   @Get()
   @Roles('ROLE_ADMIN')
-  @ApiConsumes('multipart/form-data')
   async getUsers(@Query() query: GetUsersQueryDto) {
     const { data } = await this.userService.getUsers(query);
-    return ServiceResponse.success('Got all users', data);
+    return ServiceResponse.success('Fetched all users', data);
   }
 
   @Patch(':id/status')
   @Roles('ROLE_ADMIN')
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async updateUserStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateUserStatusDto,
   ) {
     await this.userService.updateUserStatus(id, dto.status);
-    return ServiceResponse.success(`Updated status of user #${id}`, null);
+    return ServiceResponse.success(`Updated status of user #${id} successfully`, null);
   }
 }
