@@ -25,9 +25,7 @@ export class BannerService {
       where: query.type ? { type: Like(`%${query.type}%`) } : undefined,
       skip: query.getOffset(),
       take: query.getLimit(),
-      order: query.sort
-        ? { [query.sort]: query.order || config.order }
-        : undefined,
+      order: query.sort ? { [query.sort]: query.getOrder() } : undefined,
     });
   }
 

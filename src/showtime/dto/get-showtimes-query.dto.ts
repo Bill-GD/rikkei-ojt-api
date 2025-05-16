@@ -6,7 +6,7 @@ export class GetShowtimesQueryDto extends CommonQueries {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  movieTitle: string;
+  title: string;
 
   @ApiPropertyOptional({
     name: 'sort',

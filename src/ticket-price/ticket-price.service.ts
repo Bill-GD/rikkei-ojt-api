@@ -26,26 +26,16 @@ export class TicketPriceService {
     return this.ticketPriceRepo.save(ticketPrice);
   }
 
+  findOne(id: number) {
+    return this.ticketPriceRepo.findOneBy({ id });
+  }
+
   async update(id: number, dto: UpdateTicketPriceDto) {
-    const ticket = await this.ticketPriceRepo.findOneBy({ id });
-    if (!ticket) {
-      throw new NotFoundException('Ticket price not found');
-    }
-
-    if (dto.start_time && dto.end_time && dto.end_time <= dto.start_time) {
-      throw new BadRequestException('End time must be greater than start time');
-    }
-
-    Object.assign(ticket, dto);
-    return this.ticketPriceRepo.save(ticket);
+    return this.ticketPriceRepo.update(id, dto);
   }
 
   async delete(id: number) {
-    const ticket = await this.ticketPriceRepo.findOneBy({ id });
-    if (!ticket) {
-      throw new NotFoundException('Ticket price not found');
-    }
-    await this.ticketPriceRepo.remove(ticket);
+    await this.ticketPriceRepo.delete(id);
   }
 
   getAll(query: GetTicketPricesQueryDto) {

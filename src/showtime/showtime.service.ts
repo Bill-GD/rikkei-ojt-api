@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
-import { Repository, ILike } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Showtime } from './entities/showtime.entity';
 import { CreateShowtimeDto } from './dto/create-showtime.dto';
 import { UpdateShowtimeDto } from './dto/update-showtime.dto';
@@ -19,7 +19,7 @@ export class ShowtimeService {
   }
 
   findAll(query: GetShowtimesQueryDto) {
-    const { movieTitle } = query;
+    const { title } = query;
     query = plainToInstance(GetShowtimesQueryDto, query);
 
     const qb = this.showtimeRepo
@@ -27,9 +27,9 @@ export class ShowtimeService {
       .leftJoinAndSelect('showtime.movie', 'movie')
       .leftJoinAndSelect('showtime.screen', 'screen');
 
-    if (movieTitle) {
+    if (title) {
       qb.where('LOWER(movie.title) LIKE LOWER(:title)', {
-        title: `%${movieTitle}%`,
+        title: `%${title}%`,
       });
     }
 
@@ -47,15 +47,15 @@ export class ShowtimeService {
     // return { data, total, page, limit };
   }
 
+  findOne(id: number) {
+    return this.showtimeRepo.findOneBy({ id });
+  }
+
   async update(id: number, dto: UpdateShowtimeDto) {
-    const existing = await this.showtimeRepo.findOneBy({ id });
-    if (!existing) throw new NotFoundException('Showtime not found');
     await this.showtimeRepo.update(id, dto);
   }
 
   async delete(id: number) {
-    const existing = await this.showtimeRepo.findOneBy({ id });
-    if (!existing) throw new NotFoundException('Showtime not found');
-    await this.showtimeRepo.remove(existing);
+    await this.showtimeRepo.delete(id);
   }
 }
