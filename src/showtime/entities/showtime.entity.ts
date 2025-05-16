@@ -6,7 +6,9 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Booking } from '../../booking/entities/booking.entity';
 import { Movie } from '../../movies/entities/movie.entity';
 import { Screen } from '../../screen/entities/screen.entity';
 
@@ -40,4 +42,7 @@ export class Showtime {
   @ManyToOne(() => Screen)
   @JoinColumn({ name: 'screen_id' })
   screen: Screen;
+
+  @OneToMany(() => Booking, (booking) => booking.showtime)
+  bookings: Booking[];
 }
