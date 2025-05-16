@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import config from '../config/config';
 import { CreateNewsDto } from './dto/create-news.dto';
-import { NewsQuery } from './dto/news-query.dto';
+import { NewsQueries } from './dto/news-queries.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { News } from './entities/news.entity';
 
@@ -18,7 +18,7 @@ export class NewsService {
     return this.newsRepo.save(dto);
   }
 
-  findAll(query: NewsQuery) {
+  findAll(query: NewsQueries) {
     const limit = query.limit || config.queryLimit,
       offset = query.page ? (query.page - 1) * query.limit : undefined;
     const entityFields = Object.getOwnPropertyNames(new News());

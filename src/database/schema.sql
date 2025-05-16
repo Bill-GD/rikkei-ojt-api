@@ -43,7 +43,6 @@ create table if not exists screen (
   updated_at    datetime default null,
   constraint positive_seat_capacity check (seat_capacity >= 0),
   foreign key (theater_id) references theater (id) on delete cascade
-
 );
 
 create table if not exists genre (

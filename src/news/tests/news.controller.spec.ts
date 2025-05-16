@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { NewsQuery } from '../dto/news-query.dto';
+import { NewsQueries } from '../dto/news-queries.dto';
 import { News } from '../entities/news.entity';
 import { NewsController } from '../news.controller';
 import { NewsService } from '../news.service';
@@ -31,7 +31,7 @@ describe('NewsController', () => {
 
   it('should return all news', async () => {
     expect(
-      (await controller.findAll({} as NewsQuery)).responseObject,
+      (await controller.findAll({} as NewsQueries)).responseObject,
     ).toBeInstanceOf(Array);
   });
 });

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpStatus,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -88,7 +89,7 @@ export class FestivalController {
   async findAll(@Query() query: FestivalQueries) {
     const festivals = await this.festivalService.findAll(query);
 
-    return ServiceResponse.success('Got all festivals', festivals);
+    return ServiceResponse.success('Fetched all festivals', festivals);
   }
 
   @Get(':id')
@@ -96,7 +97,8 @@ export class FestivalController {
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const fes = await this.festivalService.findOne(id);
-    return ServiceResponse.success(`Found festival #${id}`, fes);
+    if (!fes) throw new NotFoundException(`Festival #${id} not found`);
+    return ServiceResponse.success(`Fetched festival #${id}`, fes);
   }
 
   @Patch(':id')
@@ -112,14 +114,22 @@ export class FestivalController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateFestivalDto,
   ) {
+    await this.findOne(id);
     await this.festivalService.update(id, dto);
-    return ServiceResponse.success(`Updated festival #${id}`, null);
+    return ServiceResponse.success(
+      `Updated festival #${id} successfully`,
+      null,
+    );
   }
 
   @Delete(':id')
   @Roles('ROLE_ADMIN')
   async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.findOne(id);
     await this.festivalService.remove(id);
-    return ServiceResponse.success(`Deleted festival #${id}`, null);
+    return ServiceResponse.success(
+      `Deleted festival #${id} successfully`,
+      null,
+    );
   }
 }

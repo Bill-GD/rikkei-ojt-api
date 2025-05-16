@@ -86,6 +86,9 @@ export class UsersController {
     @Body() dto: UpdateUserStatusDto,
   ) {
     await this.userService.updateUserStatus(id, dto.status);
-    return ServiceResponse.success(`Updated status of user #${id} successfully`, null);
+    return ServiceResponse.success(
+      `Updated status of user #${id} successfully`,
+      null,
+    );
   }
 }
