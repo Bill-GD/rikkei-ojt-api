@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 import { Like, Repository } from 'typeorm';
-import config from '../config/config';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { NewsQueries } from './dto/news-queries.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
@@ -19,20 +19,16 @@ export class NewsService {
   }
 
   findAll(query: NewsQueries) {
-    const limit = query.limit || config.queryLimit,
-      offset = query.page ? (query.page - 1) * query.limit : undefined;
-    const entityFields = Object.getOwnPropertyNames(new News());
+    query = plainToInstance(NewsQueries, query);
 
     return this.newsRepo.find({
       where: {
         ...(query.festival_id && { festival_id: query.festival_id }),
         ...(query.title && { title: Like(`%${query.title}%`) }),
       },
-      skip: offset ?? 0,
-      take: limit,
-      order: entityFields.includes(query.sort)
-        ? { [query.sort]: query.order || config.order }
-        : undefined,
+      skip: query.getOffset(),
+      take: query.getLimit(),
+      order: query.sort ? { [query.sort]: query.getOrder() } : undefined,
     });
   }
 

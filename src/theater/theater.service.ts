@@ -29,7 +29,7 @@ export class TheaterService {
       where,
       skip: query.getOffset(),
       take: query.getLimit(),
-      order: { [query.sort]: query.order },
+      order: query.sort ? { [query.sort]: query.getOrder() } : undefined,
     });
     // return {
     //   data: items,

@@ -1,9 +1,11 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   HttpStatus,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -48,6 +50,13 @@ export class TicketPriceController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateTicketPriceDto,
   ) {
+    if (!(await this.ticketPriceService.findOne(id))) {
+      throw new NotFoundException(`Ticket price #${id} not found`);
+    }
+    if (dto.start_time && dto.end_time && dto.end_time <= dto.start_time) {
+      throw new BadRequestException('End time must be greater than start time');
+    }
+
     await this.ticketPriceService.update(id, dto);
     return ServiceResponse.success(`Updated ticket price #${id}`, null);
   }
@@ -56,6 +65,9 @@ export class TicketPriceController {
   @Roles('ROLE_ADMIN')
   @ApiResponse({ type: ServiceResponse })
   async delete(@Param('id', ParseIntPipe) id: number) {
+    if (!(await this.ticketPriceService.findOne(id))) {
+      throw new NotFoundException(`Ticket price #${id} not found`);
+    }
     await this.ticketPriceService.delete(id);
     return ServiceResponse.success(`Deleted ticket price #${id}`, null);
   }
