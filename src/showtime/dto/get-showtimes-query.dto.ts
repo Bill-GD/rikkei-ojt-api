@@ -1,34 +1,35 @@
-import { IsOptional, IsString, IsInt, Min } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsOptional, IsString, IsEnum } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { CommonQueries } from '../../common/model/common-queries';
 
-export class GetShowtimesQueryDto {
+export class GetShowtimesQueryDto extends CommonQueries {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  movieTitle?: string;
+  movieTitle: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    name: 'sort',
+    enum: [
+      'id',
+      'screen_id',
+      'movie_id',
+      'start_time',
+      'end_time',
+      'created_at',
+      'updated_at',
+    ],
+    description: `Sort by one of the entity's properties`,
+  })
   @IsOptional()
-  @IsString()
-  sortBy?: 'start_time' | 'end_time';
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  sortOrder?: 'ASC' | 'DESC';
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  page?: number = 1;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  limit?: number = 10;
+  @IsEnum([
+    'id',
+    'screen_id',
+    'movie_id',
+    'start_time',
+    'end_time',
+    'created_at',
+    'updated_at',
+  ])
+  declare sort: string;
 }

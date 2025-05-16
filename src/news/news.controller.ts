@@ -16,7 +16,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { ServiceResponse } from '../common/model/service-response';
-import { NewsQuery } from './dto/news-query.dto';
+import { NewsQueries } from './dto/news-queries.dto';
 import { NewsService } from './news.service';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -31,9 +31,9 @@ export class NewsController {
 
   @Get()
   @Roles('ROLE_ADMIN')
-  @ApiExtraModels(NewsQuery)
+  @ApiExtraModels(NewsQueries)
   @ApiResponse({ type: ServiceResponse })
-  async findAll(@Query() query: NewsQuery) {
+  async findAll(@Query() query: NewsQueries) {
     const allNews = await this.newsService.findAll(query);
     return ServiceResponse.success('Got all news', allNews);
   }
@@ -54,6 +54,7 @@ export class NewsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateNewsDto,
   ) {
+    await this.findOne(id);
     await this.newsService.update(id, dto);
     return ServiceResponse.success(`Updated news #${id}`, null);
   }
@@ -62,6 +63,7 @@ export class NewsController {
   @Roles('ROLE_ADMIN')
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.findOne(id);
     await this.newsService.remove(id);
     return ServiceResponse.success(`Deleted news #${id}`, null);
   }

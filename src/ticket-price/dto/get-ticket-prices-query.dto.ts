@@ -1,36 +1,25 @@
-import { IsOptional, IsEnum, IsNumberString } from 'class-validator';
+import { IsOptional, IsEnum } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { CommonQueries } from '../../common/model/common-queries';
 import { SeatType, MovieType } from '../entities/ticket-price.entity';
 
-export class GetTicketPricesQueryDto {
+export class GetTicketPricesQueryDto extends CommonQueries {
   @ApiPropertyOptional({ enum: SeatType, description: 'Loại ghế' })
   @IsOptional()
   @IsEnum(SeatType)
-  type_seat?: SeatType;
+  type_seat: SeatType;
 
   @ApiPropertyOptional({ enum: MovieType, description: 'Loại phim' })
   @IsOptional()
   @IsEnum(MovieType)
-  type_movie?: MovieType;
-
-  @ApiPropertyOptional({ description: 'Sắp xếp theo trường', example: 'price' })
-  @IsOptional()
-  sort_by?: string;
+  type_movie: MovieType;
 
   @ApiPropertyOptional({
-    description: 'Thứ tự sắp xếp: ASC | DESC',
-    example: 'DESC',
+    name: 'sort',
+    enum: ['id', 'price', 'start_time', 'end_time'],
+    description: `Sort by one of the entity's properties`,
   })
   @IsOptional()
-  sort_order?: 'ASC' | 'DESC';
-
-  @ApiPropertyOptional({ description: 'Trang hiện tại', example: '1' })
-  @IsOptional()
-  @IsNumberString()
-  page?: string;
-
-  @ApiPropertyOptional({ description: 'Số lượng mỗi trang', example: '10' })
-  @IsOptional()
-  @IsNumberString()
-  limit?: string;
+  @IsEnum(['id', 'price', 'start_time', 'end_time'])
+  declare sort: string;
 }
