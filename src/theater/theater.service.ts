@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { CreateTheaterDto } from './dto/create-theater.dto';
+import { TheaterQueries } from './dto/theater-queries.dto';
 import { UpdateTheaterDto } from './dto/update-theater.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Theater } from './entities/theater.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Like, Repository } from 'typeorm';
 
 @Injectable()
 export class TheaterService {
@@ -16,25 +18,25 @@ export class TheaterService {
     return this.theaterRepository.save(dto);
   }
 
-  async findAll(
-    page: number,
-    limit: number,
-    sortBy: string,
-    sortOrder: 'ASC' | 'DESC',
-  ) {
-    const [items, total] = await this.theaterRepository.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-      order: {
-        [sortBy]: sortOrder,
-      },
+  findAll(query: TheaterQueries) {
+    query = plainToInstance(TheaterQueries, query);
+
+    const where: FindOptionsWhere<Theater>[] = [];
+    if (query.name) where.push({ name: Like(`%${query.name}%`) });
+    if (query.location) where.push({ location: Like(`%${query.location}%`) });
+
+    return this.theaterRepository.find({
+      where,
+      skip: query.getOffset(),
+      take: query.getLimit(),
+      order: { [query.sort]: query.order },
     });
-    return {
-      data: items,
-      total,
-      page,
-      pageCount: Math.ceil(total / limit),
-    };
+    // return {
+    //   data: items,
+    //   total,
+    //   page,
+    //   pageCount: Math.ceil(total / limit),
+    // };
   }
 
   findOne(id: number) {
