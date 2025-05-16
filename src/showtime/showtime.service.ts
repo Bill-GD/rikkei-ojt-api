@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 import { Repository, ILike } from 'typeorm';
 import { Showtime } from './entities/showtime.entity';
 import { CreateShowtimeDto } from './dto/create-showtime.dto';
@@ -12,13 +13,14 @@ export class ShowtimeService {
     @InjectRepository(Showtime) private showtimeRepo: Repository<Showtime>,
   ) {}
 
-  async create(dto: CreateShowtimeDto) {
+  create(dto: CreateShowtimeDto) {
     const showtime = this.showtimeRepo.create(dto);
     return this.showtimeRepo.save(showtime);
   }
 
-  async findAll(query: GetShowtimesQueryDto) {
-    const { movieTitle, sortBy, sortOrder, page = 1, limit = 10 } = query;
+  findAll(query: GetShowtimesQueryDto) {
+    const { movieTitle } = query;
+    query = plainToInstance(GetShowtimesQueryDto, query);
 
     const qb = this.showtimeRepo
       .createQueryBuilder('showtime')
@@ -31,21 +33,18 @@ export class ShowtimeService {
       });
     }
 
-    if (sortBy) {
-      qb.orderBy(`showtime.${sortBy}`, sortOrder || 'ASC').addOrderBy(
-        'showtime.id',
-        'ASC',
-      );
+    if (query.sort) {
+      qb.orderBy(
+        `showtime.${query.sort}`,
+        query.order.toUpperCase() as 'ASC' | 'DESC' | undefined,
+      ).addOrderBy('showtime.id', 'ASC');
     } else {
       qb.orderBy('showtime.id', 'ASC');
     }
 
-    const [data, total] = await qb
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
+    return qb.skip(query.getOffset()).take(query.getLimit()).getMany();
 
-    return { data, total, page, limit };
+    // return { data, total, page, limit };
   }
 
   async update(id: number, dto: UpdateShowtimeDto) {

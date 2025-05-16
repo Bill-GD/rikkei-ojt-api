@@ -48,7 +48,7 @@ export class TicketPriceService {
     await this.ticketPriceRepo.remove(ticket);
   }
 
-  async getAll(query: GetTicketPricesQueryDto) {
+  getAll(query: GetTicketPricesQueryDto) {
     query = plainToInstance(GetTicketPricesQueryDto, query);
     const { type_seat, type_movie } = query;
 
@@ -72,7 +72,7 @@ export class TicketPriceService {
       .skip(skip)
       .take(take);
 
-    return (await qb.getManyAndCount())[0];
+    return qb.getMany();
 
     // return {
     //   data: items,

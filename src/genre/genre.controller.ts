@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpStatus,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -60,7 +61,7 @@ export class GenreController {
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const genre = await this.genreService.findOne(id);
-    // if (!genre) throw new NotFoundException(`Genre #${id} not found`);
+    if (!genre) throw new NotFoundException(`Genre #${id} not found`);
     return ServiceResponse.success(`Fetched genre #${id}`, genre);
   }
 
@@ -72,6 +73,7 @@ export class GenreController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateGenreDto,
   ) {
+    await this.findOne(id);
     await this.genreService.update(id, dto);
     return ServiceResponse.success(`Updated genre #${id} successfully`, null);
   }
@@ -80,6 +82,7 @@ export class GenreController {
   @Roles('ROLE_ADMIN')
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.findOne(id);
     await this.genreService.remove(id);
     return ServiceResponse.success(`Deleted genre #${id} successfully`, null);
   }

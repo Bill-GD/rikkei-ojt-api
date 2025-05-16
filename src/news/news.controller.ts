@@ -54,6 +54,7 @@ export class NewsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateNewsDto,
   ) {
+    await this.findOne(id);
     await this.newsService.update(id, dto);
     return ServiceResponse.success(`Updated news #${id}`, null);
   }
@@ -62,6 +63,7 @@ export class NewsController {
   @Roles('ROLE_ADMIN')
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.findOne(id);
     await this.newsService.remove(id);
     return ServiceResponse.success(`Deleted news #${id}`, null);
   }

@@ -88,7 +88,6 @@ export class FestivalController {
   @ApiResponse({ type: ServiceResponse })
   async findAll(@Query() query: FestivalQueries) {
     const festivals = await this.festivalService.findAll(query);
-
     return ServiceResponse.success('Fetched all festivals', festivals);
   }
 
