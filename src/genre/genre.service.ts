@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { FindOptionsWhere, ILike, Repository } from 'typeorm';
-import config from '../config/config';
 import { GenreQueries } from './dto/genre-queries.dto';
 import { Genre } from './entities/genre.entity';
 import { CreateGenreDto } from './dto/create-genre.dto';

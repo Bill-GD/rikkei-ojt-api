@@ -9,7 +9,7 @@ import {
   ParseIntPipe,
   Query,
   HttpStatus,
-  UseGuards,
+  UseGuards, NotFoundException,
 } from '@nestjs/common';
 import { ServiceResponse } from '../common/model/service-response';
 import { TheaterQueries } from './dto/theater-queries.dto';
@@ -20,7 +20,6 @@ import {
   ApiBearerAuth,
   ApiConsumes,
   ApiExtraModels,
-  ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -60,6 +59,7 @@ export class TheaterController {
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const theater = await this.theaterService.findOne(id);
+    if (!theater) throw new NotFoundException(`Theater #${id} not found`);
     return ServiceResponse.success(`Fetched theater #${id}`, theater);
   }
 
@@ -71,6 +71,7 @@ export class TheaterController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateTheaterDto,
   ) {
+    await this.findOne(id);
     await this.theaterService.update(id, dto);
     return ServiceResponse.success(`Updated theater #${id} successfully`, null);
   }
@@ -79,6 +80,7 @@ export class TheaterController {
   @Roles('ROLE_ADMIN')
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.findOne(id);
     await this.theaterService.remove(id);
     return ServiceResponse.success(`Deleted theater #${id} successfully`, null);
   }

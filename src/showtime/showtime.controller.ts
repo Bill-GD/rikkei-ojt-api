@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   UseGuards,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { ShowtimeService } from './showtime.service';
 import { CreateShowtimeDto } from './dto/create-showtime.dto';
@@ -50,7 +51,7 @@ export class ShowtimeController {
   @ApiResponse({ type: ServiceResponse })
   async getAll(@Query() query: GetShowtimesQueryDto) {
     const result = await this.showtimeService.findAll(query);
-    return ServiceResponse.success('Fetched showtimes', result);
+    return ServiceResponse.success('Fetched all showtimes', result);
   }
 
   @Patch(':id')
@@ -60,6 +61,9 @@ export class ShowtimeController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateShowtimeDto,
   ) {
+    if (!(await this.showtimeService.findOne(id))) {
+      throw new NotFoundException(`Showtime #${id} not found`);
+    }
     await this.showtimeService.update(id, dto);
     return ServiceResponse.success(`Updated showtime #${id}`, null);
   }
@@ -67,6 +71,9 @@ export class ShowtimeController {
   @Delete(':id')
   @ApiResponse({ type: ServiceResponse })
   async delete(@Param('id', ParseIntPipe) id: number) {
+    if (!(await this.showtimeService.findOne(id))) {
+      throw new NotFoundException(`Showtime #${id} not found`);
+    }
     await this.showtimeService.delete(id);
     return ServiceResponse.success(`Deleted showtime #${id}`, null);
   }
