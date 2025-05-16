@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -27,6 +28,7 @@ export class SeatController {
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const seat = await this.seatService.findOne(id);
+    if (!seat) throw new NotFoundException(`Seat #${id} not found`);
     return ServiceResponse.success(`Fetched seat #${id}`, seat);
   }
 
@@ -37,6 +39,7 @@ export class SeatController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateSeatDto,
   ) {
+    await this.findOne(id);
     await this.seatService.update(id, dto);
     return ServiceResponse.success(`Updated seat #${id} successfully`, null);
   }
@@ -44,6 +47,7 @@ export class SeatController {
   @Delete(':id')
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.findOne(id);
     await this.seatService.remove(id);
     return ServiceResponse.success(`Deleted seat #${id} successfully`, null);
   }

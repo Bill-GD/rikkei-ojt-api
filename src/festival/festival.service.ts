@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { Like, Repository } from 'typeorm';
-import config from '../config/config';
 import { CreateFestivalDto } from './dto/create-festival.dto';
 import { FestivalQueries } from './dto/festival-queries.dto';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
@@ -26,9 +25,7 @@ export class FestivalService {
       where: query.title ? { title: Like(`%${query.title}%`) } : undefined,
       skip: query.getOffset(),
       take: query.getLimit(),
-      order: query.sort
-        ? { [query.sort]: query.order || config.order }
-        : undefined,
+      order: query.sort ? { [query.sort]: query.getOrder() } : undefined,
     });
   }
 

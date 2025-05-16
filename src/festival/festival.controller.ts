@@ -21,7 +21,6 @@ import {
   ApiExtraModels,
   ApiResponse,
 } from '@nestjs/swagger';
-import { plainToInstance } from 'class-transformer';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { CreateNewsDto } from '../news/dto/create-news.dto';
