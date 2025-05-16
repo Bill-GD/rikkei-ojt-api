@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
 import { TicketPrice } from './entities/ticket-price.entity';
 import { CreateTicketPriceDto } from './dto/create-ticket-price.dto';
@@ -26,7 +27,7 @@ export class TicketPriceService {
   }
 
   async update(id: number, dto: UpdateTicketPriceDto) {
-    const ticket = await this.ticketPriceRepo.findOne({ where: { id } });
+    const ticket = await this.ticketPriceRepo.findOneBy({ id });
     if (!ticket) {
       throw new NotFoundException('Ticket price not found');
     }
@@ -40,25 +41,19 @@ export class TicketPriceService {
   }
 
   async delete(id: number) {
-    const ticket = await this.ticketPriceRepo.findOne({ where: { id } });
+    const ticket = await this.ticketPriceRepo.findOneBy({ id });
     if (!ticket) {
       throw new NotFoundException('Ticket price not found');
     }
     await this.ticketPriceRepo.remove(ticket);
   }
 
-  async getAll(query: GetTicketPricesQueryDto) {
-    const {
-      type_seat,
-      type_movie,
-      sort_by = 'created_at',
-      sort_order = 'DESC',
-      page = '1',
-      limit = '10',
-    } = query;
+  getAll(query: GetTicketPricesQueryDto) {
+    query = plainToInstance(GetTicketPricesQueryDto, query);
+    const { type_seat, type_movie } = query;
 
-    const take = +limit;
-    const skip = (+page - 1) * take;
+    const take = query.getLimit();
+    const skip = query.getOffset();
 
     const qb = this.ticketPriceRepo.createQueryBuilder('ticket_price');
 
@@ -70,18 +65,23 @@ export class TicketPriceService {
       qb.andWhere('ticket_price.type_movie = :type_movie', { type_movie });
     }
 
-    qb.orderBy(`ticket_price.${sort_by}`, sort_order).skip(skip).take(take);
+    qb.orderBy(
+      `ticket_price.${query.sort}`,
+      query.order.toUpperCase() as 'ASC' | 'DESC' | undefined,
+    )
+      .skip(skip)
+      .take(take);
 
-    const [items, total] = await qb.getManyAndCount();
+    return qb.getMany();
 
-    return {
-      data: items,
-      pagination: {
-        total,
-        page: +page,
-        limit: take,
-        totalPages: Math.ceil(total / take),
-      },
-    };
+    // return {
+    //   data: items,
+    //   pagination: {
+    //     total,
+    //     page: +page,
+    //     limit: take,
+    //     totalPages: Math.ceil(total / take),
+    //   },
+    // };
   }
 }

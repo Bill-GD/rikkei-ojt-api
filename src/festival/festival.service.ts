@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 import { Like, Repository } from 'typeorm';
 import config from '../config/config';
 import { CreateFestivalDto } from './dto/create-festival.dto';
@@ -19,15 +20,12 @@ export class FestivalService {
   }
 
   findAll(query: FestivalQueries) {
-    const limit = query.limit || config.queryLimit,
-      offset = query.page ? (query.page - 1) * query.limit : undefined;
+    query = plainToInstance(FestivalQueries, query);
 
     return this.festivalRepository.find({
-      where: {
-        ...(query.title && { title: Like(`%${query.title}%`) }),
-      },
-      skip: offset ?? 0,
-      take: limit,
+      where: query.title ? { title: Like(`%${query.title}%`) } : undefined,
+      skip: query.getOffset(),
+      take: query.getLimit(),
       order: query.sort
         ? { [query.sort]: query.order || config.order }
         : undefined,
@@ -35,7 +33,7 @@ export class FestivalService {
   }
 
   findOne(id: number) {
-    return this.festivalRepository.findOne({ where: { id } });
+    return this.festivalRepository.findOneBy({ id });
   }
 
   async update(id: number, dto: UpdateFestivalDto) {

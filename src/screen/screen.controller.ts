@@ -15,6 +15,7 @@ import {
 import {
   ApiBearerAuth,
   ApiConsumes,
+  ApiExtraModels,
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
@@ -22,7 +23,10 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ServiceResponse } from '../common/model/service-response';
+import { CreateSeatDto } from '../seat/dto/create-seat.dto';
+import { SeatService } from '../seat/seat.service';
 import { CreateScreenDto } from './dto/create-screen.dto';
+import { ScreenQueries } from './dto/screen-queries.dto';
 import { UpdateScreenDto } from './dto/update-screen.dto';
 import { ScreenService } from './screen.service';
 
@@ -30,7 +34,10 @@ import { ScreenService } from './screen.service';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('screen')
 export class ScreenController {
-  constructor(private readonly screenService: ScreenService) {}
+  constructor(
+    private readonly screenService: ScreenService,
+    private readonly seatService: SeatService,
+  ) {}
 
   @Post()
   @Roles('ROLE_ADMIN')
@@ -45,53 +52,28 @@ export class ScreenController {
     );
   }
 
+  @Post(':id/seat')
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
+  @ApiResponse({ type: ServiceResponse })
+  async createSeat(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: CreateSeatDto,
+  ) {
+    const newSeat = await this.seatService.create({ ...dto, screen_id: id });
+    return ServiceResponse.success(
+      'Seat added successfully',
+      { id: newSeat.id },
+      HttpStatus.CREATED,
+    );
+  }
+
   @Get()
   @Roles('ROLE_ADMIN')
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    type: Number,
-    example: 1,
-    description: 'Trang hiện xem',
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: Number,
-    example: 3,
-    description: 'Số bản ghi mỗi trang',
-  })
-  @ApiQuery({
-    name: 'sortBy',
-    required: false,
-    type: String,
-    example: 'createdAt',
-    description: 'Trường để sắp xếp',
-  })
-  @ApiQuery({
-    name: 'sortOrder',
-    required: false,
-    enum: ['ASC', 'DESC'],
-    example: 'DESC',
-    description: 'Thứ tự sắp xếp',
-  })
+  @ApiExtraModels(ScreenQueries)
   @ApiResponse({ type: ServiceResponse })
-  async findAll(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-    @Query('sortBy') sortBy = 'createdAt', //giá trị default của sortBy
-    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'DESC',
-  ) {
-    const pageNumber = parseInt(page || '1', 10);
-    const limitNumber = parseInt(limit || '3', 10);
-
-    const { data } = await this.screenService.findAll(
-      pageNumber,
-      limitNumber,
-      sortBy,
-      sortOrder,
-    );
-    return ServiceResponse.success('Fetched all screens', data);
+  async findAll(@Query() query: ScreenQueries) {
+    const screens = await this.screenService.findAll(query);
+    return ServiceResponse.success('Fetched all screens', screens);
   }
 
   @Get(':id')
@@ -99,9 +81,7 @@ export class ScreenController {
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const screen = await this.screenService.findOne(id);
-    if (!screen) {
-      throw new NotFoundException(`Screen #${id} not found`);
-    }
+    if (!screen) throw new NotFoundException(`Screen #${id} not found`);
     return ServiceResponse.success(`Found screen #${id}`, screen);
   }
 
@@ -113,6 +93,7 @@ export class ScreenController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateScreenDto,
   ) {
+    await this.findOne(id);
     await this.screenService.update(id, dto);
     return ServiceResponse.success(`Deleted screen #${id}`, null);
   }
@@ -121,6 +102,7 @@ export class ScreenController {
   @Roles('ROLE_ADMIN')
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.findOne(id);
     await this.screenService.remove(id);
     return ServiceResponse.success(`Deleted screen #${id}`, null);
   }

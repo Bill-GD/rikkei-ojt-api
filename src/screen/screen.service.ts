@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { CreateScreenDto } from './dto/create-screen.dto';
+import { ScreenQueries } from './dto/screen-queries.dto';
 import { UpdateScreenDto } from './dto/update-screen.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,29 +18,24 @@ export class ScreenService {
     return this.screenRepo.save(dto);
   }
 
-  async findAll(
-    page: number,
-    limit: number,
-    sortBy: string,
-    sortOrder: 'ASC' | 'DESC',
-  ) {
-    const [items, total] = await this.screenRepo.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-      order: {
-        [sortBy]: sortOrder,
-      },
+  async findAll(query: ScreenQueries) {
+    query = plainToInstance(ScreenQueries, query);
+
+    return this.screenRepo.find({
+      skip: query.getOffset(),
+      take: query.getLimit(),
+      order: { [query.sort]: query.order },
     });
-    return {
-      data: items,
-      total,
-      page,
-      pageCount: Math.ceil(total / limit),
-    };
+    // return {
+    //   data: items,
+    //   total,
+    //   page,
+    //   pageCount: Math.ceil(total / limit),
+    // };
   }
 
   findOne(id: number) {
-    return this.screenRepo.findOne({ where: { id } });
+    return this.screenRepo.findOneBy({ id });
   }
 
   update(id: number, dto: UpdateScreenDto) {
