@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 import { Repository, Like } from 'typeorm';
 import config from '../config/config';
 import { BannerQueries } from './dto/banner-queries.dto';
@@ -18,13 +19,12 @@ export class BannerService {
   }
 
   findAll(query: BannerQueries) {
-    const limit = query.limit || config.queryLimit,
-      offset = query.page ? (query.page - 1) * query.limit : undefined;
+    query = plainToInstance(BannerQueries, query);
 
     return this.bannerRepository.find({
       where: query.type ? { type: Like(`%${query.type}%`) } : undefined,
-      skip: offset ?? 0,
-      take: limit,
+      skip: query.getOffset(),
+      take: query.getLimit(),
       order: query.sort
         ? { [query.sort]: query.order || config.order }
         : undefined,
