@@ -10,6 +10,7 @@ import {
   Req,
   UseInterceptors,
   UploadedFile,
+  UnauthorizedException, NotFoundException,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -85,6 +86,9 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateUserStatusDto,
   ) {
+    const user = await this.userService.findOne(id);
+    if (!user) throw new NotFoundException(`User #${id} not found`);
+
     await this.userService.updateUserStatus(id, dto.status);
     return ServiceResponse.success(
       `Updated status of user #${id} successfully`,
