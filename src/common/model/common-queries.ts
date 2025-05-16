@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional } from 'class-validator';
+import config from '../../config/config';
 
 export class CommonQueries {
   @ApiPropertyOptional({ type: 'integer' })
@@ -28,4 +29,16 @@ export class CommonQueries {
   @IsOptional()
   @IsEnum(['asc', 'desc'])
   order: string;
+
+  getOffset() {
+    return this.page ? (this.page - 1) * this.limit : 0;
+  }
+
+  getLimit() {
+    return this.limit || config.queryLimit;
+  }
+
+  getOrder() {
+    return this.order || config.order;
+  }
 }

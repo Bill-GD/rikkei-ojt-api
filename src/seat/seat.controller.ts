@@ -1,43 +1,50 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
+  Controller,
   Delete,
-  Put,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
 } from '@nestjs/common';
-import { SeatService } from './seat.service';
-import { CreateSeatDto } from './dto/create-seat.dto';
+import { ApiConsumes, ApiResponse } from '@nestjs/swagger';
+import { ServiceResponse } from '../common/model/service-response';
 import { UpdateSeatDto } from './dto/update-seat.dto';
+import { SeatService } from './seat.service';
 
 @Controller('seats')
 export class SeatController {
   constructor(private readonly seatService: SeatService) {}
 
-  @Post()
-  create(@Body() dto: CreateSeatDto) {
-    return this.seatService.create(dto);
-  }
-
   @Get()
-  findAll() {
-    return this.seatService.findAll();
+  @ApiResponse({ type: ServiceResponse })
+  async findAll() {
+    const seats = await this.seatService.findAll();
+    return ServiceResponse.success('Fetched all seats', seats);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.seatService.findOne(id);
+  @ApiResponse({ type: ServiceResponse })
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const seat = await this.seatService.findOne(id);
+    return ServiceResponse.success(`Fetched seat #${id}`, seat);
   }
 
-  @Put(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateSeatDto) {
-    return this.seatService.update(id, dto);
+  @Patch(':id')
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
+  @ApiResponse({ type: ServiceResponse })
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateSeatDto,
+  ) {
+    await this.seatService.update(id, dto);
+    return ServiceResponse.success(`Updated seat #${id} successfully`, null);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.seatService.remove(id);
+  @ApiResponse({ type: ServiceResponse })
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.seatService.remove(id);
+    return ServiceResponse.success(`Deleted seat #${id} successfully`, null);
   }
 }

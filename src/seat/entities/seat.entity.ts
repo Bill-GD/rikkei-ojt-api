@@ -8,6 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Screen } from 'src/screen/entities/screen.entity';
+import SeatType from './seat-type.enum';
 
 @Entity('seat')
 export class Seat {
@@ -23,10 +24,7 @@ export class Seat {
   @Column({ default: false })
   is_booked: boolean;
 
-  @Column({
-    type: 'enum',
-    enum: ['STANDARD', 'VIP', 'SWEETBOX'],
-  })
+  @Column({ type: 'enum', enum: SeatType })
   type: string;
 
   @ManyToOne(() => Screen, (screen) => screen.seats, {
@@ -35,9 +33,9 @@ export class Seat {
   @JoinColumn({ name: 'screen_id' })
   screen: Screen;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'datetime' })
   created_at: Date;
 
-  @UpdateDateColumn({ nullable: true })
-  updated_at: Date;
+  @UpdateDateColumn({ type: 'datetime' })
+  updated_at: Date | null;
 }

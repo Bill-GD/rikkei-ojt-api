@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import config from '../config/config';
 import { GenreQueries } from './dto/genre-queries.dto';
@@ -19,8 +20,7 @@ export class GenreService {
   }
 
   findAll(query: GenreQueries) {
-    const limit = query.limit || config.queryLimit,
-      offset = query.page ? (query.page - 1) * query.limit : 0;
+    query = plainToInstance(GenreQueries, query);
 
     const where: FindOptionsWhere<Genre>[] = [];
     if (query.genre_name) {
@@ -29,11 +29,9 @@ export class GenreService {
 
     return this.genreRepository.find({
       where,
-      order: query.sort
-        ? { [query.sort]: query.order || config.order }
-        : undefined,
-      skip: offset,
-      take: limit,
+      order: query.sort ? { [query.sort]: query.getOrder() } : undefined,
+      skip: query.getOffset(),
+      take: query.getLimit(),
     });
   }
 

@@ -1,9 +1,11 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -19,7 +21,6 @@ import {
   ApiExtraModels,
   ApiResponse,
 } from '@nestjs/swagger';
-import { plainToInstance } from 'class-transformer';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { BannerService } from './banner.service';
@@ -51,11 +52,7 @@ export class BannerController {
   ) {
     dto.url = `uploads/${file.filename}`;
     if (dto.type !== file.mimetype.split('/')[0]) {
-      return ServiceResponse.failure(
-        `Media type doesn't match`,
-        null,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException(`Media type doesn't match`);
     }
 
     const newBanner = await this.bannerService.create(dto);
@@ -71,10 +68,8 @@ export class BannerController {
   @ApiExtraModels(BannerQueries)
   @ApiResponse({ type: ServiceResponse })
   async findAll(@Query() query: BannerQueries) {
-    const banners = await this.bannerService.findAll(
-      plainToInstance(BannerQueries, query),
-    );
-    return ServiceResponse.success('Got all banners', banners);
+    const banners = await this.bannerService.findAll(query);
+    return ServiceResponse.success('Fetched all banners', banners);
   }
 
   @Get(':id')
@@ -82,14 +77,8 @@ export class BannerController {
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id') id: number) {
     const banner = await this.bannerService.findOne(id);
-    if (!banner) {
-      return ServiceResponse.failure(
-        `Banner #${id} not found`,
-        null,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return ServiceResponse.success(`Found banner #${id}`, banner);
+    if (!banner) throw new NotFoundException(`Banner #${id} not found`);
+    return ServiceResponse.success(`Fetched banner #${id}`, banner);
   }
 
   @Patch(':id')
@@ -106,15 +95,17 @@ export class BannerController {
     @Body() dto: UpdateBannerDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    await this.findOne(id);
     if (file) dto.url = `uploads/${file.filename}`;
     await this.bannerService.update(id, dto);
-    return ServiceResponse.success(`Updated banner #${id}`, null);
+    return ServiceResponse.success(`Updated banner #${id} successfully`, null);
   }
 
   @Delete(':id')
   @Roles('ROLE_ADMIN')
   async remove(@Param('id') id: number) {
+    await this.findOne(id);
     await this.bannerService.remove(id);
-    return ServiceResponse.success(`Deleted banner #${id}`, null);
+    return ServiceResponse.success(`Deleted banner #${id} successfully`, null);
   }
 }

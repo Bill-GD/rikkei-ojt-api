@@ -12,12 +12,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ServiceResponse } from '../common/model/service-response';
+import { TheaterQueries } from './dto/theater-queries.dto';
 import { TheaterService } from './theater.service';
 import { CreateTheaterDto } from './dto/create-theater.dto';
 import { UpdateTheaterDto } from './dto/update-theater.dto';
 import {
   ApiBearerAuth,
   ApiConsumes,
+  ApiExtraModels,
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
@@ -46,52 +48,11 @@ export class TheaterController {
 
   @Get()
   @Roles('ROLE_ADMIN')
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    type: Number,
-    example: 1,
-    description: 'Trang hiện xem',
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: Number,
-    example: 3,
-    description: 'Số bản ghi mỗi trang',
-  })
-  @ApiQuery({
-    name: 'sortBy',
-    required: false,
-    type: String,
-    example: 'createdAt',
-    description: 'Trường để sắp xếp',
-  })
-  @ApiQuery({
-    name: 'sortOrder',
-    required: false,
-    enum: ['ASC', 'DESC'],
-    example: 'DESC',
-    description: 'Thứ tự sắp xếp',
-  })
+  @ApiExtraModels(TheaterQueries)
   @ApiResponse({ type: ServiceResponse })
-  async findAll(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-    @Query('sortBy') sortBy = 'createdAt', //giá trị default của sortBy
-    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'DESC',
-  ) {
-    const pageNumber = parseInt(page || '1', 10);
-    const limitNumber = parseInt(limit || '3', 10);
-
-    const theaters = await this.theaterService.findAll(
-      pageNumber,
-      limitNumber,
-      sortBy,
-      sortOrder,
-    );
-
-    return ServiceResponse.success(`Got all theaters`, theaters);
+  async findAll(@Query() query: TheaterQueries) {
+    const theaters = await this.theaterService.findAll(query);
+    return ServiceResponse.success(`Fetched all theaters`, theaters);
   }
 
   @Get(':id')
@@ -99,7 +60,7 @@ export class TheaterController {
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const theater = await this.theaterService.findOne(id);
-    return ServiceResponse.success(`Found theater #${id}`, theater);
+    return ServiceResponse.success(`Fetched theater #${id}`, theater);
   }
 
   @Patch(':id')
@@ -111,7 +72,7 @@ export class TheaterController {
     @Body() dto: UpdateTheaterDto,
   ) {
     await this.theaterService.update(id, dto);
-    return ServiceResponse.success(`Updated theater #${id}`, null);
+    return ServiceResponse.success(`Updated theater #${id} successfully`, null);
   }
 
   @Delete(':id')
@@ -119,6 +80,6 @@ export class TheaterController {
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.theaterService.remove(id);
-    return ServiceResponse.success(`Deleted theater #${id}`, null);
+    return ServiceResponse.success(`Deleted theater #${id} successfully`, null);
   }
 }

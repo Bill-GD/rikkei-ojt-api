@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -57,21 +58,15 @@ export class MovieController {
   @ApiResponse({ type: ServiceResponse })
   async findAll(@Query() query: MovieQueries) {
     const movies = await this.movieService.findAll(query);
-    return ServiceResponse.success('Got all movies', movies);
+    return ServiceResponse.success('Fetched all movies', movies);
   }
 
   @Get(':id')
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id') id: number) {
     const movie = await this.movieService.findOne(id);
-    if (!movie) {
-      return ServiceResponse.failure(
-        `Movie #${id} not found`,
-        null,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return ServiceResponse.success(`Found movie #${id}`, movie);
+    if (!movie) throw new NotFoundException(`Movie #${id} not found`);
+    return ServiceResponse.success(`Fetched movie #${id}`, movie);
   }
 
   @Patch(':id')
@@ -92,24 +87,20 @@ export class MovieController {
     files: { image: Express.Multer.File[]; trailer: Express.Multer.File[] },
     @Body() dto: UpdateMovieDto,
   ) {
+    await this.findOne(id);
+
     if (files.image) dto.image = `uploads/${files.image[0].filename}`;
     if (files.trailer) dto.trailer = `uploads/${files.trailer[0].filename}`;
 
     await this.movieService.update(id, dto);
-    return ServiceResponse.success(`Updated movie #${id}`, null);
+    return ServiceResponse.success(`Updated movie #${id} successfully`, null);
   }
 
   @Delete(':id')
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id') id: number) {
-    if (!(await this.findOne(id)).success) {
-      return ServiceResponse.failure(
-        `Movie #${id} not found`,
-        null,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    await this.findOne(id);
     await this.movieService.remove(id);
-    return ServiceResponse.success(`Deleted movie #${id}`, null);
+    return ServiceResponse.success(`Deleted movie #${id} successfully`, null);
   }
 }
