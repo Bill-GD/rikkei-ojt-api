@@ -16,7 +16,6 @@ import {
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
-import e from 'express';
 import { BookingService } from '../booking/booking.service';
 import { CreateBookingDto } from '../booking/dto/create-booking.dto';
 import { ServiceResponse } from '../common/model/service-response';
@@ -95,6 +94,10 @@ export class MovieController {
     const newBooking = await this.bookingService.create({
       ...dto,
       movie_id: movieId,
+      total_price: await this.bookingService.getTotalPrice({
+        seat_ids: dto.seat_ids,
+        movie_id: dto.movie_id,
+      }),
     });
 
     return ServiceResponse.success(

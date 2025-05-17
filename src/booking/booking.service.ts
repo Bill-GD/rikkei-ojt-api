@@ -9,6 +9,7 @@ import {
   MovieType,
   TicketPrice,
 } from '../ticket-price/entities/ticket-price.entity';
+import { BookingPriceDto } from './dto/booking-price.dto';
 import { BookingQueries } from './dto/booking-queries.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
@@ -38,6 +39,29 @@ export class BookingService {
       seats.push((await this.seatRepo.findOneBy({ id }))!);
     }
 
+    const newBooking = await this.bookingRepo.save(
+      this.bookingRepo.create({
+        user_id: dto.user_id,
+        showtime_id: dto.showtime_id,
+        total_seat: seatCount,
+        total_price_movie: dto.total_price,
+      }),
+    );
+    const SeatBookings = seats.map((seat) =>
+      this.SeatBookingRepo.create({
+        booking: newBooking,
+        seat: seat,
+        quantity: seatCount,
+      }),
+    );
+    await this.SeatBookingRepo.save(SeatBookings);
+    return newBooking;
+  }
+
+  async getTotalPrice(dto: BookingPriceDto) {
+    const seats = await Promise.all(
+      dto.seat_ids.map(async (id) => (await this.seatRepo.findOneBy({ id }))!),
+    );
     const movie = (await this.movieRepo.findOneBy({ id: dto.movie_id }))!;
 
     const ticketPrices = await Promise.all(
@@ -55,28 +79,8 @@ export class BookingService {
       }),
     );
 
-    const totalCost = ticketPrices.reduce((p, c) => p + c, 0);
-
-    const newBooking = await this.bookingRepo.save(
-      this.bookingRepo.create({
-        user_id: dto.user_id,
-        showtime_id: dto.showtime_id,
-        total_seat: seatCount,
-        total_price_movie: totalCost,
-      }),
-    );
-    const SeatBookings = seats.map((seat) =>
-      this.SeatBookingRepo.create({
-        booking: newBooking,
-        seat: seat,
-        quantity: seatCount,
-      }),
-    );
-    await this.SeatBookingRepo.save(SeatBookings);
-    return newBooking;
+    return ticketPrices.reduce((p, c) => p + c, 0);
   }
-
-  // getTotalPrice() {}
 
   findAll(query: BookingQueries) {
     query = plainToInstance(BookingQueries, query);

@@ -18,4 +18,13 @@ export class CreateBookingDto {
   seat_ids: number[];
 
   movie_id: number;
+
+  @ApiProperty({
+    type: 'integer',
+    description:
+      'The calculated total price of the booking, ' +
+      'should use the `/price` POST request.',
+  })
+  @IsInt()
+  total_price: number;
 }

@@ -1,4 +1,3 @@
-import { Transform } from 'class-transformer';
 import { IsEnum, IsNumber, Min, IsNotEmpty, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { SeatType, MovieType } from '../entities/ticket-price.entity';

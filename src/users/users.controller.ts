@@ -10,7 +10,7 @@ import {
   Req,
   UseInterceptors,
   UploadedFile,
-  UnauthorizedException, NotFoundException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';

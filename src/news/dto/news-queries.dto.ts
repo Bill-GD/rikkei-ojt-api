@@ -1,11 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
 import { IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
 import { CommonQueries } from '../../common/model/common-queries';
 
 export class NewsQueries extends CommonQueries {
   @ApiProperty({ required: false, type: 'integer' })
-  @Transform(({ value }) => parseInt(value))
   @IsInt()
   @IsPositive()
   @IsOptional()
