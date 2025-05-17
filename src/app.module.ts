@@ -19,6 +19,7 @@ import { GenreModule } from './genre/genre.module';
 import { SeatModule } from './seat/seat.module';
 import { ShowtimeModule } from './showtime/showtime.module';
 import { BookingModule } from './booking/booking.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { BookingModule } from './booking/booking.module';
     SeatModule,
     ShowtimeModule,
     BookingModule,
+    PaymentModule,
   ],
 })
 export class AppModule implements NestModule {
