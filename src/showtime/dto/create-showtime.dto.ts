@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsInt, IsDateString } from 'class-validator';
+import { IsInt, IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateShowtimeDto {

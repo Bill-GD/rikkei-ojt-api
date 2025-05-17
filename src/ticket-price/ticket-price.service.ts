@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
@@ -19,11 +15,7 @@ export class TicketPriceService {
   ) {}
 
   async create(dto: CreateTicketPriceDto) {
-    if (dto.end_time <= dto.start_time) {
-      throw new BadRequestException('End time must be greater than start time');
-    }
-    const ticketPrice = this.ticketPriceRepo.create(dto);
-    return this.ticketPriceRepo.save(ticketPrice);
+    return this.ticketPriceRepo.save(dto);
   }
 
   findOne(id: number) {
@@ -55,12 +47,13 @@ export class TicketPriceService {
       qb.andWhere('ticket_price.type_movie = :type_movie', { type_movie });
     }
 
-    qb.orderBy(
-      `ticket_price.${query.sort}`,
-      query.order.toUpperCase() as 'ASC' | 'DESC' | undefined,
-    )
-      .skip(skip)
-      .take(take);
+    if (query.sort) {
+      qb.orderBy(
+        `ticket_price.${query.sort}`,
+        query.getOrder().toUpperCase() as 'ASC' | 'DESC' | undefined,
+      );
+    }
+    qb.skip(skip).take(take);
 
     return qb.getMany();
 

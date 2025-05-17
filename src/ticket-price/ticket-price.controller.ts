@@ -34,6 +34,10 @@ export class TicketPriceController {
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async create(@Body() dto: CreateTicketPriceDto) {
+    if (dto.end_time <= dto.start_time) {
+      throw new BadRequestException('End time must be greater than start time');
+    }
+    dto.day_type = Boolean(dto.day_type);
     const newTicket = await this.ticketPriceService.create(dto);
     return ServiceResponse.success(
       'Ticket price created successfully',
