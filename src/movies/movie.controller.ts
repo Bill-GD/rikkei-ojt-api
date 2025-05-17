@@ -6,6 +6,7 @@ import {
   HttpStatus,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -14,6 +15,8 @@ import {
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
+import { BookingService } from '../booking/booking.service';
+import { CreateBookingDto } from '../booking/dto/create-booking.dto';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { CreateMovieDto } from './dto/create.movie.dto';
@@ -23,7 +26,10 @@ import { MovieService } from './movie.service';
 
 @Controller('movies')
 export class MovieController {
-  constructor(private readonly movieService: MovieService) {}
+  constructor(
+    private readonly movieService: MovieService,
+    private readonly bookingService: BookingService,
+  ) {}
 
   @Post()
   @ApiConsumes('multipart/form-data')
@@ -49,6 +55,23 @@ export class MovieController {
     return ServiceResponse.success(
       'Movie added successfully',
       { id: newMovie.id },
+      HttpStatus.CREATED,
+    );
+  }
+
+  @Post(':id')
+  @ApiResponse({ type: ServiceResponse })
+  async bookMovie(
+    @Query('id', ParseIntPipe) movieId: number,
+    dto: CreateBookingDto,
+  ) {
+    const newBooking = await this.bookingService.create({
+      ...dto,
+      movie_id: movieId,
+    });
+    return ServiceResponse.success(
+      `Booked seat successfully`,
+      { id: newBooking.id },
       HttpStatus.CREATED,
     );
   }
