@@ -12,7 +12,7 @@ export class CreateBookingDto {
   @IsPositive()
   showtime_id: number;
 
-  @ApiProperty({ type: 'array', example: ['A1', 'A2'] })
+  @ApiProperty({ type: 'array', example: [1, 2] })
   @IsArray()
   @ArrayNotEmpty()
   seat_ids: number[];

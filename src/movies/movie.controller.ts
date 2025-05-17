@@ -15,10 +15,13 @@ import {
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
+import e from 'express';
 import { BookingService } from '../booking/booking.service';
 import { CreateBookingDto } from '../booking/dto/create-booking.dto';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
+import { SeatService } from '../seat/seat.service';
+import { ShowtimeService } from '../showtime/showtime.service';
 import { CreateMovieDto } from './dto/create.movie.dto';
 import { MovieQueries } from './dto/movie-queries.dto';
 import { UpdateMovieDto } from './dto/update.movie.dto';
@@ -29,6 +32,8 @@ export class MovieController {
   constructor(
     private readonly movieService: MovieService,
     private readonly bookingService: BookingService,
+    private readonly seatService: SeatService,
+    private readonly showtimeService: ShowtimeService,
   ) {}
 
   @Post()
@@ -59,12 +64,26 @@ export class MovieController {
     );
   }
 
-  @Post(':id')
+  @Post(':id/book')
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async bookMovie(
     @Query('id', ParseIntPipe) movieId: number,
-    dto: CreateBookingDto,
+    @Body() dto: CreateBookingDto,
   ) {
+    dto.seat_ids = (dto.seat_ids as unknown as string)
+      .split(',')
+      .map((e) => e.trim())
+      .map((e) => parseInt(e, 10))
+      .filter((e) => !isNaN(e));
+    for (const seatId of dto.seat_ids) {
+      if (!(await this.seatService.findOne(seatId))) {
+        throw new NotFoundException(`Seat #${seatId} not found`);
+      }
+    }
+    if (!(await this.showtimeService.findOne(dto.showtime_id))) {
+      throw new NotFoundException(`Showtime #${dto.showtime_id} not found`);
+    }
     const newBooking = await this.bookingService.create({
       ...dto,
       movie_id: movieId,

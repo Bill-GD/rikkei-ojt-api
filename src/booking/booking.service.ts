@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { plainToInstance } from 'class-transformer';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { Movie } from '../movies/entities/movie.entity';
 import SeatType from '../seat/entities/seat-type.enum';
 import { Seat } from '../seat/entities/seat.entity';
@@ -8,9 +9,10 @@ import {
   MovieType,
   TicketPrice,
 } from '../ticket-price/entities/ticket-price.entity';
+import { BookingQueries } from './dto/booking-queries.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
-import { BookingSeat } from './entities/booking-seat-entity';
+import { SeatBooking } from './entities/seat-booking-entity';
 import { Booking } from './entities/booking.entity';
 
 @Injectable()
@@ -18,8 +20,8 @@ export class BookingService {
   constructor(
     @InjectRepository(Booking)
     private readonly bookingRepo: Repository<Booking>,
-    @InjectRepository(BookingSeat)
-    private readonly bookingSeatRepo: Repository<BookingSeat>,
+    @InjectRepository(SeatBooking)
+    private readonly SeatBookingRepo: Repository<SeatBooking>,
     @InjectRepository(Seat)
     private readonly seatRepo: Repository<Seat>,
     @InjectRepository(Movie)
@@ -39,7 +41,7 @@ export class BookingService {
     const movie = (await this.movieRepo.findOneBy({ id: dto.movie_id }))!;
 
     const ticketPrices = await Promise.all(
-      seats.map(async (seat) => {
+      seats.map(async (seat: Seat) => {
         const ticketPrice = await this.ticketPriceRepo.findOneBy({
           type_seat: seat.type as SeatType,
           type_movie: movie.type as MovieType,
@@ -63,32 +65,43 @@ export class BookingService {
         total_price_movie: totalCost,
       }),
     );
-    const bookingSeats = seats.map((seat) =>
-      this.bookingSeatRepo.create({
+    const SeatBookings = seats.map((seat) =>
+      this.SeatBookingRepo.create({
         booking: newBooking,
         seat: seat,
         quantity: seatCount,
       }),
     );
-    await this.bookingSeatRepo.save(bookingSeats);
+    await this.SeatBookingRepo.save(SeatBookings);
     return newBooking;
   }
 
   // getTotalPrice() {}
 
-  findAll() {
-    return `This action returns all booking`;
+  findAll(query: BookingQueries) {
+    query = plainToInstance(BookingQueries, query);
+
+    const where: FindOptionsWhere<Booking>[] = [];
+    if (query.user_id) where.push({ user_id: query.user_id });
+    if (query.showtime_id) where.push({ showtime_id: query.showtime_id });
+
+    return this.bookingRepo.find({
+      where,
+      order: query.sort ? { [query.sort]: query.getOrder() } : undefined,
+      skip: query.getOffset(),
+      take: query.getLimit(),
+    });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} booking`;
+    return this.bookingRepo.findOneBy({ id });
   }
 
   update(id: number, dto: UpdateBookingDto) {
-    return `This action updates a #${id} booking`;
+    return this.bookingRepo.update(id, dto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} booking`;
+    return this.bookingRepo.delete(id);
   }
 }

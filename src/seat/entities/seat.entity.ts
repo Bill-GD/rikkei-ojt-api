@@ -9,7 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Screen } from 'src/screen/entities/screen.entity';
-import { BookingSeat } from '../../booking/entities/booking-seat-entity';
+import { SeatBooking } from '../../booking/entities/seat-booking-entity';
 import SeatType from './seat-type.enum';
 
 @Entity('seat')
@@ -41,6 +41,6 @@ export class Seat {
   @UpdateDateColumn({ type: 'datetime' })
   updated_at: Date | null;
 
-  @OneToMany(() => BookingSeat, (bs) => bs.seat)
-  booking_seats: BookingSeat[];
+  @OneToMany(() => SeatBooking, (bs) => bs.seat)
+  booking_seats: SeatBooking[];
 }

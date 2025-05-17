@@ -11,7 +11,7 @@ import { Seat } from '../../seat/entities/seat.entity';
 import { Booking } from './booking.entity';
 
 @Entity()
-export class BookingSeat {
+export class SeatBooking {
   @PrimaryGeneratedColumn()
   id: number;
 

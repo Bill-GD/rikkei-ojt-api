@@ -3,13 +3,14 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne, OneToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Showtime } from '../../showtime/entities/showtime.entity';
 import { User } from '../../users/entities/user/user.entity';
-import { BookingSeat } from './booking-seat-entity';
+import { SeatBooking } from './seat-booking-entity';
 
 @Entity('booking')
 export class Booking {
@@ -42,6 +43,6 @@ export class Booking {
   @UpdateDateColumn({ type: 'datetime' })
   updated_at: Date | null;
 
-  @OneToMany(() => BookingSeat, (bs) => bs.booking)
-  booking_seats: BookingSeat[];
+  @OneToMany(() => SeatBooking, (bs) => bs.booking, { eager: true })
+  booking_seats: SeatBooking[];
 }
