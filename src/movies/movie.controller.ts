@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpStatus,
   NotFoundException,
@@ -76,18 +77,26 @@ export class MovieController {
       .map((e) => e.trim())
       .map((e) => parseInt(e, 10))
       .filter((e) => !isNaN(e));
+
     for (const seatId of dto.seat_ids) {
-      if (!(await this.seatService.findOne(seatId))) {
+      const seat = await this.seatService.findOne(seatId);
+      if (!seat) {
         throw new NotFoundException(`Seat #${seatId} not found`);
       }
+      if (seat.is_booked) {
+        throw new ForbiddenException(`Seat #${seatId} already booked`);
+      }
     }
+
     if (!(await this.showtimeService.findOne(dto.showtime_id))) {
       throw new NotFoundException(`Showtime #${dto.showtime_id} not found`);
     }
+
     const newBooking = await this.bookingService.create({
       ...dto,
       movie_id: movieId,
     });
+
     return ServiceResponse.success(
       `Booked seat successfully`,
       { id: newBooking.id },
