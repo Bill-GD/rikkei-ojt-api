@@ -5,13 +5,13 @@ import config from '../../config/config';
 
 export class CommonQueries {
   @ApiPropertyOptional({ type: 'integer' })
-  @Transform(({ value }) => parseInt(value))
+  @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   @IsOptional()
   page: number;
 
   @ApiPropertyOptional({ type: 'integer' })
-  @Transform(({ value }) => parseInt(value))
+  @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   @IsOptional()
   limit: number;

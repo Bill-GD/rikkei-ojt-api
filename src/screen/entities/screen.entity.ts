@@ -22,14 +22,14 @@ export class Screen {
   @Column()
   seat_capacity: number;
 
-  @ManyToOne(() => Theater, (theater) => theater.screen, {
-    onDelete: 'CASCADE',
-  })
   @OneToMany(() => Seat, (seat) => seat.screen, {
     onDelete: 'CASCADE',
   })
   seats: Seat[];
 
+  @ManyToOne(() => Theater, (theater) => theater.screen, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'theater_id' })
   theater: Theater;
 
