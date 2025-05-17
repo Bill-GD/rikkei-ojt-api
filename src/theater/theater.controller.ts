@@ -9,7 +9,8 @@ import {
   ParseIntPipe,
   Query,
   HttpStatus,
-  UseGuards, NotFoundException,
+  UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { ServiceResponse } from '../common/model/service-response';
 import { TheaterQueries } from './dto/theater-queries.dto';

@@ -6,8 +6,10 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Screen } from 'src/screen/entities/screen.entity';
+import { SeatBooking } from '../../booking/entities/seat-booking-entity';
 import SeatType from './seat-type.enum';
 
 @Entity('seat')
@@ -38,4 +40,7 @@ export class Seat {
 
   @UpdateDateColumn({ type: 'datetime' })
   updated_at: Date | null;
+
+  @OneToMany(() => SeatBooking, (bs) => bs.seat)
+  booking_seats: SeatBooking[];
 }

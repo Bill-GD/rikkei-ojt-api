@@ -137,14 +137,13 @@ export class UsersService {
     };
   }
 
-  async updateUserStatus(userId: number, status: 'ACTIVE' | 'BLOCKED') {
-    const user = await this.userRepo.findOne({ where: { id: userId } });
-    if (!user) throw new UnauthorizedException('User not found');
+  findOne(id: number) {
+    return this.userRepo.findOneBy({ id });
+  }
 
+  async updateUserStatus(id: number, status: 'ACTIVE' | 'BLOCKED') {
+    const user = (await this.findOne(id))!;
     user.status = status;
-    user.updated_at = new Date();
-    await this.userRepo.save(user);
-
-    return { message: 'User status updated successfully' };
+    await this.userRepo.update(id, user);
   }
 }

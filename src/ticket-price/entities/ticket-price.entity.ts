@@ -25,7 +25,7 @@ export class TicketPrice {
   @Column({ type: 'double' })
   price: number;
 
-  @Column({ type: 'tinyint', width: 1, default: 0 })
+  @Column({ type: 'bit' })
   // 0 - ngày thường; 1 - cuối tuần/ngày lễ
   day_type: boolean;
 
