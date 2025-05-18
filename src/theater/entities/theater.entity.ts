@@ -6,7 +6,6 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
 import { Screen } from 'src/screen/entities/screen.entity';
 
 @Entity('theater')
@@ -23,11 +22,9 @@ export class Theater {
   @Column({ type: 'varchar', length: 11 })
   phone: string;
 
-  @ApiProperty()
   @CreateDateColumn({ type: 'datetime' })
   created_at: Date;
 
-  @ApiProperty()
   @UpdateDateColumn({ type: 'datetime' })
   updated_at: Date | null;
 

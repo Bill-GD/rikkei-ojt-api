@@ -19,7 +19,7 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, documentFactory);
 
   app.useGlobalFilters(new CatchAllExceptionFilter(app.get(HttpAdapterHost)));
-  // app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   app.use(cookieParser());
 
   await app.listen(process.env.PORT ?? 3000);

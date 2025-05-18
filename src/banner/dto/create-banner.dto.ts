@@ -5,7 +5,7 @@ export class CreateBannerDto {
   @ApiProperty({ format: 'binary' })
   @IsOptional()
   @IsString()
-  url: string;
+  url?: string;
 
   @ApiProperty({ enum: ['image', 'video'] })
   @IsNotEmpty()
