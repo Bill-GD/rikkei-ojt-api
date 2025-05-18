@@ -11,8 +11,11 @@ import {
   UseInterceptors,
   UploadedFile,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Request } from 'express';
+import { JwtPayload } from '../auth/dto/jwt-payload.dto';
 import { UserRoles } from '../common/enum/user-role.enum';
 import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { RolesGuard } from '../common/guard/roles.guard';
@@ -32,7 +35,6 @@ export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @Patch(':id/profile')
-  @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('avatar', {
@@ -41,23 +43,33 @@ export class UsersController {
   )
   @ApiResponse({ type: ServiceResponse })
   async updateProfile(
-    @Req() req,
+    @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateProfileDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    if (file) dto.avatar = `uploads/${file.filename}`;
+    if ((req.user as JwtPayload).sub !== id) {
+      throw new ForbiddenException(`User doesn't own the specified account`);
+    }
 
+    if (file) dto.avatar = `uploads/${file.filename}`;
     await this.userService.updateProfile(id, dto);
     return ServiceResponse.success(`Updated profile #${id} successfully`, null);
   }
 
   @Patch('change-password')
-  @UseGuards(JwtAuthGuard)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
-  async changePassword(@Req() req, @Body() dto: ChangePasswordDto) {
-    await this.userService.changePassword(req.user.sub, dto);
+  async changePassword(
+    @Req() req: Request,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: ChangePasswordDto,
+  ) {
+    if ((req.user as JwtPayload).sub !== id) {
+      throw new ForbiddenException(`User doesn't own the specified account`);
+    }
+
+    await this.userService.changePassword(id, dto);
     return ServiceResponse.success('Password changed successfully', null);
   }
 
