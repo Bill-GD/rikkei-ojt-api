@@ -4,6 +4,13 @@ import { IsArray, IsInt, IsNotEmpty } from 'class-validator';
 
 export class BookingPriceDto {
   @ApiProperty({ type: 'array', example: [1, 2] })
+  @Transform(({ value }) =>
+    (value as string)
+      .split(',')
+      .map((e) => e.trim())
+      .map((e) => parseInt(e, 10))
+      .filter((e) => !isNaN(e)),
+  )
   @IsArray()
   @IsNotEmpty()
   seat_ids: number[];

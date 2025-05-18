@@ -39,12 +39,6 @@ export class BookingController {
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async getPrice(@Body() dto: BookingPriceDto) {
-    dto.seat_ids = (dto.seat_ids as unknown as string)
-      .split(',')
-      .map((e) => e.trim())
-      .map((e) => parseInt(e, 10))
-      .filter((e) => !isNaN(e));
-
     for (const seatId of dto.seat_ids) {
       const seat = await this.seatService.findOne(seatId);
       if (!seat) {
