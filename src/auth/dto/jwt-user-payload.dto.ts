@@ -1,4 +1,4 @@
-export class JwtPayload {
+export class JwtUserPayload {
   sub: number;
   email: string;
   roles: string[];

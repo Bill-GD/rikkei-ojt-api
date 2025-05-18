@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
-import { JwtPayload } from '../auth/dto/jwt-payload.dto';
+import { JwtUserPayload } from '../auth/dto/jwt-user-payload.dto';
 import { UserRoles } from '../common/enum/user-role.enum';
 import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { RolesGuard } from '../common/guard/roles.guard';
@@ -48,7 +48,7 @@ export class UsersController {
     @Body() dto: UpdateProfileDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    if ((req.user as JwtPayload).sub !== id) {
+    if ((req.user as JwtUserPayload).sub !== id) {
       throw new ForbiddenException(`User doesn't own the specified account`);
     }
 
@@ -65,7 +65,7 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: ChangePasswordDto,
   ) {
-    if ((req.user as JwtPayload).sub !== id) {
+    if ((req.user as JwtUserPayload).sub !== id) {
       throw new ForbiddenException(`User doesn't own the specified account`);
     }
 
