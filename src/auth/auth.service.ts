@@ -5,6 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { instanceToPlain } from 'class-transformer';
 import { Repository } from 'typeorm';
 import { UserStatus } from '../users/dto/update-user-status.dto';
 import { Role } from '../users/entities/role.entity';
@@ -64,6 +65,6 @@ export class AuthService {
       user.userRoles!.map((ur) => ur.role.role_name),
     );
 
-    return this.jwtService.sign(payload);
+    return this.jwtService.sign(instanceToPlain(payload));
   }
 }
