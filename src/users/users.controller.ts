@@ -12,6 +12,7 @@ import {
   UploadedFile,
   NotFoundException,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserRoles } from '../common/enum/user-role.enum';
@@ -67,10 +68,10 @@ export class UsersController {
   }
 
   @Get()
-  @Roles(UserRoles.ROLE_USER)
+  @Roles(UserRoles.ROLE_ADMIN)
   async getUsers(@Query() query: GetUsersQueryDto) {
-    const { data } = await this.userService.getUsers(query);
-    return ServiceResponse.success('Fetched all users', data);
+    const users = await this.userService.getUsers(query);
+    return ServiceResponse.success('Fetched all users', users);
   }
 
   @Patch(':id/status')

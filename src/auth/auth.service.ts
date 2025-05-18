@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Role } from '../users/entities/user/role.entity';
-import { UserRole } from '../users/entities/user/user-role.entity';
-import { User } from '../users/entities/user/user.entity';
+import { Role } from '../users/entities/role.entity';
+import { UserRole } from '../users/entities/user-role.entity';
+import { User } from '../users/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
@@ -23,9 +23,7 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    const existing = await this.userRepo.findOne({
-      where: { email: dto.email },
-    });
+    const existing = await this.userRepo.findOneBy({ email: dto.email });
     if (existing) throw new ConflictException('Email already exists');
 
     const hashed = await bcrypt.hash(dto.password, 10);

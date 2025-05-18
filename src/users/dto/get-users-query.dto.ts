@@ -1,8 +1,9 @@
-import { IsOptional, IsEnum, IsInt } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import { IsOptional, IsEnum } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { CommonQueries } from '../../common/model/common-queries';
 
-export class GetUsersQueryDto {
+export class GetUsersQueryDto extends CommonQueries {
   @IsOptional()
   @Transform(({ value }) => value.trim())
   @ApiPropertyOptional({
@@ -35,27 +36,8 @@ export class GetUsersQueryDto {
   @ApiPropertyOptional()
   address?: string;
 
+  @ApiPropertyOptional({ enum: ['created_at', 'first_name', 'email'] })
   @IsOptional()
-  @IsEnum(['ASC', 'DESC'])
-  @ApiPropertyOptional({ enum: ['ASC', 'DESC'], default: 'DESC' })
-  order: 'ASC' | 'DESC' = 'DESC';
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @ApiPropertyOptional({ default: 1, minimum: 1 })
-  page: number = 1;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @ApiPropertyOptional({ default: 10, minimum: 1 })
-  limit: number = 10;
-
-  @IsOptional()
-  @ApiPropertyOptional({
-    enum: ['created_at', 'first_name', 'email'],
-    default: 'created_at',
-  })
-  sort_by: 'created_at' | 'first_name' | 'email' = 'created_at';
+  @IsEnum(['created_at', 'first_name', 'email'])
+  declare sort: string;
 }
