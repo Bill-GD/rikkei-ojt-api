@@ -18,6 +18,7 @@ export class RegisterDto {
 
   @ApiProperty({ example: '12345' })
   @IsNotEmpty()
+  @IsString()
   password: string;
 
   @ApiProperty({ example: '0123456789' })
