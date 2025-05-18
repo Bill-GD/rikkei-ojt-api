@@ -10,13 +10,13 @@ export class TheaterQueries extends CommonQueries {
   })
   @IsOptional()
   @IsEnum(['id', 'name', 'created_at', 'updated_at'])
-  declare sort: string;
+  declare sort?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  name: string;
+  name?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  location: string;
+  location?: string;
 }

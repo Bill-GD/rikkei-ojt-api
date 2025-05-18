@@ -8,13 +8,13 @@ export class CommonQueries {
   @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   @IsOptional()
-  page: number;
+  page?: number;
 
   @ApiPropertyOptional({ type: 'integer' })
   @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   @IsOptional()
-  limit: number;
+  limit?: number;
 
   @ApiPropertyOptional({
     name: 'sort',
@@ -23,15 +23,15 @@ export class CommonQueries {
   })
   @IsOptional()
   @IsEnum([''])
-  sort: string;
+  sort?: string;
 
   @ApiPropertyOptional({ enum: ['asc', 'desc'] })
   @IsOptional()
   @IsEnum(['asc', 'desc'])
-  order: string;
+  order?: string;
 
   getOffset() {
-    return this.page ? (this.page - 1) * this.limit : 0;
+    return this.page && this.limit ? (this.page - 1) * this.limit : 0;
   }
 
   getLimit() {

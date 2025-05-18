@@ -10,7 +10,7 @@ export class CreateNewsDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  content: string;
+  content?: string;
 
   festival_id: number;
 }

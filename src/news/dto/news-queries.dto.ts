@@ -7,7 +7,7 @@ export class NewsQueries extends CommonQueries {
   @IsInt()
   @IsPositive()
   @IsOptional()
-  festival_id: number;
+  festival_id?: number;
 
   @ApiProperty({
     required: false,
@@ -16,5 +16,5 @@ export class NewsQueries extends CommonQueries {
   })
   @IsString()
   @IsOptional()
-  title: string;
+  title?: string;
 }

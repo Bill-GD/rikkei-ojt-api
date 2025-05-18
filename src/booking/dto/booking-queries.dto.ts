@@ -10,17 +10,17 @@ export class BookingQueries extends CommonQueries {
   })
   @IsOptional()
   @IsEnum(['id', 'total_seat', 'total_price_movie', 'created_at', 'updated_at'])
-  declare sort: string;
+  declare sort?: string;
 
   @ApiPropertyOptional({ type: 'integer' })
   @IsOptional()
   @IsInt()
   @IsPositive()
-  user_id: number;
+  user_id?: number;
 
   @ApiPropertyOptional({ type: 'integer' })
   @IsOptional()
   @IsInt()
   @IsPositive()
-  showtime_id: number;
+  showtime_id?: number;
 }

@@ -10,10 +10,10 @@ export class GenreQueries extends CommonQueries {
   })
   @IsOptional()
   @IsEnum(['id', 'genre_name'])
-  declare sort: string;
+  declare sort?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  genre_name: string;
+  genre_name?: string;
 }

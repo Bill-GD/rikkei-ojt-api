@@ -9,10 +9,10 @@ export class FestivalQueries extends CommonQueries {
   })
   @IsString()
   @IsOptional()
-  title: string;
+  title?: string;
 
   @ApiPropertyOptional({ enum: ['id', 'start_time', 'end_time'] })
   @IsOptional()
   @IsEnum(['id', 'start_time', 'end_time'])
-  declare sort: string;
+  declare sort?: string;
 }

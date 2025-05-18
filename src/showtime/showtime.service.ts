@@ -36,7 +36,7 @@ export class ShowtimeService {
     if (query.sort) {
       qb.orderBy(
         `showtime.${query.sort}`,
-        query.order.toUpperCase() as 'ASC' | 'DESC' | undefined,
+        query.order?.toUpperCase() as 'ASC' | 'DESC' | undefined,
       ).addOrderBy('showtime.id', 'ASC');
     } else {
       qb.orderBy('showtime.id', 'ASC');

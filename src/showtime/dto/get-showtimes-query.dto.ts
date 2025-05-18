@@ -6,7 +6,7 @@ export class GetShowtimesQueryDto extends CommonQueries {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  title: string;
+  title?: string;
 
   @ApiPropertyOptional({
     name: 'sort',
@@ -31,5 +31,5 @@ export class GetShowtimesQueryDto extends CommonQueries {
     'created_at',
     'updated_at',
   ])
-  declare sort: string;
+  declare sort?: string;
 }

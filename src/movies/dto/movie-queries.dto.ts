@@ -10,15 +10,15 @@ export class MovieQueries extends CommonQueries {
   })
   @IsOptional()
   @IsEnum(['id', 'duration_min', 'release_date'])
-  declare sort: string;
+  declare sort?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  title: string;
+  title?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  author: string;
+  author?: string;
 }

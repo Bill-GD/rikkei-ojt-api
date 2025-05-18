@@ -10,5 +10,5 @@ export class ScreenQueries extends CommonQueries {
   })
   @IsOptional()
   @IsEnum(['id', 'seat_capacity', 'theater_id', 'created_at', 'updated_at'])
-  declare sort: string;
+  declare sort?: string;
 }

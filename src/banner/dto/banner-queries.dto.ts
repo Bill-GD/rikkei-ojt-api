@@ -10,7 +10,7 @@ export class BannerQueries extends CommonQueries {
   })
   @IsOptional()
   @IsEnum(['id'])
-  declare sort: string;
+  declare sort?: string;
 
   @ApiPropertyOptional({
     name: 'type',
@@ -18,5 +18,5 @@ export class BannerQueries extends CommonQueries {
   })
   @IsOptional()
   @IsEnum(['image', 'video'])
-  type: string;
+  type?: string;
 }

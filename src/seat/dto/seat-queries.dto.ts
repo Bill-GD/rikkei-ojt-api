@@ -17,7 +17,7 @@ export class SeatQueries extends CommonQueries {
   })
   @IsOptional()
   @IsEnum(['id', 'created_at', 'updated_at'])
-  declare sort: string;
+  declare sort?: string;
 
   @ApiPropertyOptional({ enum: SeatType })
   @IsOptional()
