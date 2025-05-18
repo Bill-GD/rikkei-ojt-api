@@ -2,9 +2,11 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UserStatus } from '../users/dto/update-user-status.dto';
 import { Role } from '../users/entities/role.entity';
 import { UserRole } from '../users/entities/user-role.entity';
 import { User } from '../users/entities/user.entity';
@@ -43,8 +45,14 @@ export class AuthService {
       where: { email: dto.email },
       relations: ['userRoles', 'userRoles.role'],
     });
-    if (!user || user.status !== 'ACTIVE')
+
+    if (!user) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (user.status === UserStatus.BLOCKED) {
+      throw new ForbiddenException(`Email #${dto.email} is blocked`);
+    }
 
     const isMatch = await bcrypt.compare(dto.password, user.password);
     if (!isMatch) throw new UnauthorizedException('Invalid credentials');
@@ -52,7 +60,7 @@ export class AuthService {
     const payload = {
       sub: user.id,
       email: user.email,
-      roles: user.userRoles.map((ur) => ur.role.role_name),
+      roles: user.userRoles!.map((ur) => ur.role.role_name),
     };
 
     return this.jwtService.signAsync(payload);

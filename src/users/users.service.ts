@@ -1,12 +1,8 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
-import { FindOptionsWhere, Like, Not, Repository } from 'typeorm';
+import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -59,11 +55,13 @@ export class UsersService {
       order: query.sort ? { [query.sort]: query.getOrder() } : undefined,
       skip: query.getOffset(),
       take: query.getLimit(),
+      relations: ['userRoles', 'userRoles.role'],
     });
 
-    // for (const user of users) {
-    //   user.role = user.role.role.role_name;
-    // }
+    for (const user of users) {
+      user.roles = user.userRoles!.map((r) => r.role.role_name);
+      delete user.userRoles;
+    }
     return users;
   }
 

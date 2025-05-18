@@ -45,7 +45,9 @@ export class User {
   status: 'ACTIVE' | 'BLOCKED';
 
   @OneToMany(() => UserRole, (ur) => ur.user)
-  userRoles: UserRole[];
+  userRoles?: UserRole[];
+
+  roles: string[];
 
   @OneToMany(() => Booking, (booking) => booking.user)
   bookings: Booking[];
