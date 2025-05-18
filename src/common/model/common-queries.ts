@@ -4,13 +4,17 @@ import { IsEnum, IsInt, IsOptional } from 'class-validator';
 import config from '../../config/config';
 
 export class CommonQueries {
-  @ApiPropertyOptional({ type: 'integer' })
+  @ApiPropertyOptional({ type: 'integer', example: 1 })
   @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   @IsOptional()
   page?: number;
 
-  @ApiPropertyOptional({ type: 'integer' })
+  @ApiPropertyOptional({
+    type: 'integer',
+    example: config.queryLimit,
+    default: config.queryLimit,
+  })
   @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   @IsOptional()

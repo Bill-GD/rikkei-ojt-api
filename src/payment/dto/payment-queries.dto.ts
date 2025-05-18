@@ -5,11 +5,7 @@ import { PaymentMethod } from './payment-method.enum';
 import { PaymentStatus } from './payment-status.enum';
 
 export class PaymentQueries extends CommonQueries {
-  @ApiPropertyOptional({
-    name: 'sort',
-    enum: ['id', 'payment_time', 'amount'],
-    description: `Sort by one of the entity's properties`,
-  })
+  @ApiPropertyOptional({ enum: ['id', 'payment_time', 'amount'] })
   @IsOptional()
   @IsEnum(['id', 'payment_time', 'amount'])
   declare sort?: string;

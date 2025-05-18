@@ -4,20 +4,19 @@ import { CommonQueries } from '../../common/model/common-queries';
 
 export class BookingQueries extends CommonQueries {
   @ApiPropertyOptional({
-    name: 'sort',
     enum: ['id', 'total_seat', 'total_price_movie', 'created_at', 'updated_at'],
   })
   @IsOptional()
   @IsEnum(['id', 'total_seat', 'total_price_movie', 'created_at', 'updated_at'])
   declare sort?: string;
 
-  @ApiPropertyOptional({ type: 'integer' })
+  @ApiPropertyOptional({ type: 'integer', example: 1 })
   @IsOptional()
   @IsInt()
   @IsPositive()
   user_id?: number;
 
-  @ApiPropertyOptional({ type: 'integer' })
+  @ApiPropertyOptional({ type: 'integer', example: 1 })
   @IsOptional()
   @IsInt()
   @IsPositive()

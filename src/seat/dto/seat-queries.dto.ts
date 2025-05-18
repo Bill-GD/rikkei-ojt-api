@@ -1,5 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsEnum,
@@ -11,10 +10,7 @@ import { CommonQueries } from '../../common/model/common-queries';
 import SeatType from '../entities/seat-type.enum';
 
 export class SeatQueries extends CommonQueries {
-  @ApiPropertyOptional({
-    name: 'sort',
-    enum: ['id', 'created_at', 'updated_at'],
-  })
+  @ApiPropertyOptional({ enum: ['id', 'created_at', 'updated_at'] })
   @IsOptional()
   @IsEnum(['id', 'created_at', 'updated_at'])
   declare sort?: string;

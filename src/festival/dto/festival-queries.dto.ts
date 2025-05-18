@@ -6,6 +6,7 @@ export class FestivalQueries extends CommonQueries {
   @ApiPropertyOptional({
     type: 'string',
     description: 'Search for festival with title containing this',
+    example: 'Kỷ niệm',
   })
   @IsString()
   @IsOptional()

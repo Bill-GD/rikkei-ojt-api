@@ -3,21 +3,17 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { CommonQueries } from '../../common/model/common-queries';
 
 export class TheaterQueries extends CommonQueries {
-  @ApiPropertyOptional({
-    name: 'sort',
-    enum: ['id', 'name', 'created_at', 'updated_at'],
-    description: `Sort by one of the entity's properties`,
-  })
+  @ApiPropertyOptional({ enum: ['id', 'name', 'created_at', 'updated_at'] })
   @IsOptional()
   @IsEnum(['id', 'name', 'created_at', 'updated_at'])
   declare sort?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 'ABC Theater' })
   @IsOptional()
   @IsString()
   name?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 'ABC Street' })
   @IsOptional()
   @IsString()
   location?: string;

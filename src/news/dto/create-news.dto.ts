@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateNewsDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'Chương trình kỷ niệm' })
   @IsNotEmpty()
   @IsString()
   title: string;
