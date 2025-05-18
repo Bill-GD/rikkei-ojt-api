@@ -35,10 +35,12 @@ export class UpdateTicketPriceDto extends PartialType(CreateTicketPriceDto) {
   day_type?: boolean;
 
   @ApiPropertyOptional({ example: '10:00:00' })
+  @IsOptional()
   @IsString()
   start_time?: string;
 
   @ApiPropertyOptional({ example: '14:00:00' })
+  @IsOptional()
   @IsString()
   end_time?: string;
 }

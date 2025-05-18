@@ -13,10 +13,12 @@ export class TheaterQueries extends CommonQueries {
   declare sort?: string;
 
   @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   name?: string;
 
   @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   location?: string;
 }

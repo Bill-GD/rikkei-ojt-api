@@ -6,7 +6,6 @@ export class BannerQueries extends CommonQueries {
   @ApiPropertyOptional({
     name: 'sort',
     enum: ['id'],
-    description: `Sort by one of the entity's properties`,
   })
   @IsOptional()
   @IsEnum(['id'])
