@@ -1,4 +1,12 @@
-import { IsEnum, IsNumber, Min, IsNotEmpty, IsBoolean, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsEnum,
+  IsNumber,
+  Min,
+  IsNotEmpty,
+  IsBoolean,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { SeatType, MovieType } from '../entities/ticket-price.entity';
 
@@ -12,6 +20,7 @@ export class CreateTicketPriceDto {
   type_movie: MovieType;
 
   @ApiProperty({ type: 'number' })
+  @Transform(({ value }) => parseInt(value as string))
   @IsNumber()
   @Min(0)
   price: number;
@@ -20,6 +29,7 @@ export class CreateTicketPriceDto {
     description: 'false - ngày thường; true - cuối tuần/ngày lễ',
     type: 'boolean',
   })
+  @Transform(({ value }) => value === 'true' || value === true)
   @IsBoolean()
   day_type: boolean;
 

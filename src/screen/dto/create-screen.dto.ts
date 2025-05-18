@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateScreenDto {
@@ -8,12 +9,12 @@ export class CreateScreenDto {
   name: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @Transform(({ value }) => parseInt(value as string))
   @IsNumber()
   seat_capacity: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @Transform(({ value }) => parseInt(value as string))
   @IsNumber()
   theater_id: number;
 }

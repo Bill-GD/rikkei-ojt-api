@@ -6,7 +6,6 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
 import { Screen } from 'src/screen/entities/screen.entity';
 
 @Entity('theater')

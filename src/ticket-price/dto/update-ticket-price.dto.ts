@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsEnum,
   IsNumber,
@@ -21,16 +22,19 @@ export class UpdateTicketPriceDto extends PartialType(CreateTicketPriceDto) {
   @IsEnum(MovieType)
   type_movie?: MovieType;
 
-  @ApiPropertyOptional({ example: 100000 })
+  @ApiPropertyOptional({ type: 'integer', example: 100000 })
   @IsOptional()
+  @Transform(({ value }) => parseInt(value as string))
   @IsNumber()
   @Min(0)
   price?: number;
 
   @ApiPropertyOptional({
+    type: 'boolean',
     description: 'false - ngày thường; true - cuối tuần/ngày lễ',
   })
   @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
   @IsBoolean()
   day_type?: boolean;
 

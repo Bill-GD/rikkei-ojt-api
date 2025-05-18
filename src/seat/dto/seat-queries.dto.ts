@@ -22,7 +22,7 @@ export class SeatQueries extends CommonQueries {
   type?: SeatType;
 
   @ApiPropertyOptional({ type: 'boolean' })
-  // @Transform
+  @Transform(({ value }) => value === 'true' || value === true)
   @IsOptional()
   @IsBoolean()
   is_booked?: boolean;

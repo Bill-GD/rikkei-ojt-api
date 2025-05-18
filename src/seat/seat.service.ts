@@ -25,7 +25,7 @@ export class SeatService {
       where: FindOptionsWhere<Seat> = {};
 
     if (type) where.type = type;
-    if (is_booked) where.is_booked = is_booked;
+    if (is_booked !== undefined) where.is_booked = is_booked;
     if (seat_number) where.seat_number = seat_number;
     if (screen_id) where.screen_id = screen_id;
 
