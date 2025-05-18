@@ -4,17 +4,21 @@ import { IsEnum, IsInt, IsOptional } from 'class-validator';
 import config from '../../config/config';
 
 export class CommonQueries {
-  @ApiPropertyOptional({ type: 'integer' })
+  @ApiPropertyOptional({ type: 'integer', example: 1 })
   @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   @IsOptional()
-  page: number;
+  page?: number;
 
-  @ApiPropertyOptional({ type: 'integer' })
+  @ApiPropertyOptional({
+    type: 'integer',
+    example: config.queryLimit,
+    default: config.queryLimit,
+  })
   @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   @IsOptional()
-  limit: number;
+  limit?: number;
 
   @ApiPropertyOptional({
     name: 'sort',
@@ -22,16 +26,15 @@ export class CommonQueries {
     description: `Sort by one of the entity's properties`,
   })
   @IsOptional()
-  @IsEnum([''])
-  sort: string;
+  sort?: string;
 
   @ApiPropertyOptional({ enum: ['asc', 'desc'] })
   @IsOptional()
   @IsEnum(['asc', 'desc'])
-  order: string;
+  order?: string;
 
   getOffset() {
-    return this.page ? (this.page - 1) * this.limit : 0;
+    return this.page && this.limit ? (this.page - 1) * this.limit : 0;
   }
 
   getLimit() {

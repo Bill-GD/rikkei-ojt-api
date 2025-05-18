@@ -1,12 +1,15 @@
+import { Transform } from 'class-transformer';
 import { IsInt, IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateShowtimeDto {
   @ApiProperty({ example: 1 })
+  @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   screen_id: number;
 
   @ApiProperty({ example: 1 })
+  @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   movie_id: number;
 

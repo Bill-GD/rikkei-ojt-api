@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { BitBoolTransformer } from '../../common/utils/bit-bool-transformer';
 
 export enum SeatType {
   STANDARD = 'STANDARD',
@@ -25,7 +26,7 @@ export class TicketPrice {
   @Column({ type: 'double' })
   price: number;
 
-  @Column({ type: 'bit' })
+  @Column({ type: 'bit', transformer: new BitBoolTransformer() })
   // 0 - ngày thường; 1 - cuối tuần/ngày lễ
   day_type: boolean;
 

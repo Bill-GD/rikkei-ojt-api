@@ -1,22 +1,20 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { CommonQueries } from '../../common/model/common-queries';
 
 export class TheaterQueries extends CommonQueries {
-  @ApiPropertyOptional({
-    name: 'sort',
-    enum: ['id', 'name', 'created_at', 'updated_at'],
-    description: `Sort by one of the entity's properties`,
-  })
+  @ApiPropertyOptional({ enum: ['id', 'name', 'created_at', 'updated_at'] })
   @IsOptional()
   @IsEnum(['id', 'name', 'created_at', 'updated_at'])
-  declare sort: string;
+  declare sort?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 'ABC Theater' })
   @IsOptional()
-  name: string;
+  @IsString()
+  name?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 'ABC Street' })
   @IsOptional()
-  location: string;
+  @IsString()
+  location?: string;
 }

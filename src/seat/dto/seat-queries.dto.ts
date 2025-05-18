@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsBoolean,
@@ -11,13 +11,10 @@ import { CommonQueries } from '../../common/model/common-queries';
 import SeatType from '../entities/seat-type.enum';
 
 export class SeatQueries extends CommonQueries {
-  @ApiPropertyOptional({
-    name: 'sort',
-    enum: ['id', 'created_at', 'updated_at'],
-  })
+  @ApiPropertyOptional({ enum: ['id', 'created_at', 'updated_at'] })
   @IsOptional()
   @IsEnum(['id', 'created_at', 'updated_at'])
-  declare sort: string;
+  declare sort?: string;
 
   @ApiPropertyOptional({ enum: SeatType })
   @IsOptional()
@@ -25,13 +22,14 @@ export class SeatQueries extends CommonQueries {
   type?: SeatType;
 
   @ApiPropertyOptional({ type: 'boolean' })
-  // @Transform
+  @Transform(({ value }) => value === 'true' || value === true)
   @IsOptional()
   @IsBoolean()
   is_booked?: boolean;
 
   @ApiPropertyOptional({ type: 'number', example: 1 })
   @IsOptional()
+  @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   screen_id?: number;
 

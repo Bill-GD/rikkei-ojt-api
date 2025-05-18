@@ -3,22 +3,18 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { CommonQueries } from '../../common/model/common-queries';
 
 export class MovieQueries extends CommonQueries {
-  @ApiPropertyOptional({
-    name: 'sort',
-    enum: ['id', 'duration_min', 'release_date'],
-    description: `Sort by one of the entity's properties`,
-  })
+  @ApiPropertyOptional({ enum: ['id', 'duration_min', 'release_date'] })
   @IsOptional()
   @IsEnum(['id', 'duration_min', 'release_date'])
-  declare sort: string;
+  declare sort?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 'Minecraft Movie' })
   @IsOptional()
   @IsString()
-  title: string;
+  title?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 'Jared Hess' })
   @IsOptional()
   @IsString()
-  author: string;
+  author?: string;
 }

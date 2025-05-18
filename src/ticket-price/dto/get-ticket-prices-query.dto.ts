@@ -7,12 +7,12 @@ export class GetTicketPricesQueryDto extends CommonQueries {
   @ApiPropertyOptional({ enum: SeatType, description: 'Loại ghế' })
   @IsOptional()
   @IsEnum(SeatType)
-  type_seat: SeatType;
+  type_seat?: SeatType;
 
   @ApiPropertyOptional({ enum: MovieType, description: 'Loại phim' })
   @IsOptional()
   @IsEnum(MovieType)
-  type_movie: MovieType;
+  type_movie?: MovieType;
 
   @ApiPropertyOptional({
     name: 'sort',
@@ -21,5 +21,5 @@ export class GetTicketPricesQueryDto extends CommonQueries {
   })
   @IsOptional()
   @IsEnum(['id', 'price', 'start_time', 'end_time'])
-  declare sort: string;
+  declare sort?: string;
 }
