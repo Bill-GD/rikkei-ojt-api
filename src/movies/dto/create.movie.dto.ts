@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   ArrayNotEmpty,
   IsArray,
@@ -44,7 +45,9 @@ export class CreateMovieDto {
     type: 'integer',
     minimum: 1,
     description: 'The duration of the movie in minutes',
+    example: 100,
   })
+  @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   @Min(1)
   duration_min: number;

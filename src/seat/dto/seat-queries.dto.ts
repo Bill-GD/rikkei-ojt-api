@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsBoolean,
   IsEnum,
@@ -28,6 +29,7 @@ export class SeatQueries extends CommonQueries {
 
   @ApiPropertyOptional({ type: 'number', example: 1 })
   @IsOptional()
+  @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   screen_id?: number;
 
