@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, Min, IsNotEmpty, IsBoolean } from 'class-validator';
+import { IsEnum, IsNumber, Min, IsNotEmpty, IsBoolean, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { SeatType, MovieType } from '../entities/ticket-price.entity';
 
@@ -25,9 +25,11 @@ export class CreateTicketPriceDto {
 
   @ApiProperty({ example: '08:00:00' })
   @IsNotEmpty()
+  @IsString()
   start_time: string;
 
   @ApiProperty({ example: '12:00:00' })
   @IsNotEmpty()
+  @IsString()
   end_time: string;
 }

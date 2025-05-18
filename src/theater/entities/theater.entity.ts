@@ -23,11 +23,9 @@ export class Theater {
   @Column({ type: 'varchar', length: 11 })
   phone: string;
 
-  @ApiProperty()
   @CreateDateColumn({ type: 'datetime' })
   created_at: Date;
 
-  @ApiProperty()
   @UpdateDateColumn({ type: 'datetime' })
   updated_at: Date | null;
 

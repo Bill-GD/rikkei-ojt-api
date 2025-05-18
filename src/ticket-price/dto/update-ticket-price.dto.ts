@@ -3,8 +3,8 @@ import {
   IsNumber,
   IsOptional,
   Min,
-  IsNotEmpty,
   IsBoolean,
+  IsString,
 } from 'class-validator';
 import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { SeatType, MovieType } from '../entities/ticket-price.entity';
@@ -35,12 +35,10 @@ export class UpdateTicketPriceDto extends PartialType(CreateTicketPriceDto) {
   day_type?: boolean;
 
   @ApiPropertyOptional({ example: '10:00:00' })
-  @IsOptional()
-  @IsNotEmpty()
+  @IsString()
   start_time?: string;
 
   @ApiPropertyOptional({ example: '14:00:00' })
-  @IsOptional()
-  @IsNotEmpty()
+  @IsString()
   end_time?: string;
 }

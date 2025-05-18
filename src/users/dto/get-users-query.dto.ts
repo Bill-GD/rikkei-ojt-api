@@ -1,43 +1,42 @@
-import { IsOptional, IsEnum } from 'class-validator';
+import { IsOptional, IsEnum, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { CommonQueries } from '../../common/model/common-queries';
 
 export class GetUsersQueryDto extends CommonQueries {
-  @IsOptional()
-  @Transform(({ value }) => value.trim())
   @ApiPropertyOptional({
     description: 'Tìm kiếm tổng quát theo tên, email, phone, địa chỉ',
   })
+  @Transform(({ value }) => value.trim())
+  @IsString()
   search?: string;
 
-  @IsOptional()
-  @Transform(({ value }) => value.trim())
   @ApiPropertyOptional()
+  @Transform(({ value }) => value.trim())
+  @IsString()
   first_name?: string;
 
-  @IsOptional()
-  @Transform(({ value }) => value.trim())
   @ApiPropertyOptional()
+  @Transform(({ value }) => value.trim())
+  @IsString()
   last_name?: string;
 
-  @IsOptional()
-  @Transform(({ value }) => value.trim())
   @ApiPropertyOptional()
+  @Transform(({ value }) => value.trim())
+  @IsString()
   email?: string;
 
-  @IsOptional()
-  @Transform(({ value }) => value.trim())
   @ApiPropertyOptional()
+  @Transform(({ value }) => value.trim())
+  @IsString()
   phone?: string;
 
-  @IsOptional()
-  @Transform(({ value }) => value.trim())
   @ApiPropertyOptional()
+  @Transform(({ value }) => value.trim())
+  @IsString()
   address?: string;
 
   @ApiPropertyOptional({ enum: ['created_at', 'first_name', 'email'] })
-  @IsOptional()
   @IsEnum(['created_at', 'first_name', 'email'])
   declare sort: string;
 }

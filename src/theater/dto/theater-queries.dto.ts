@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { CommonQueries } from '../../common/model/common-queries';
 
 export class TheaterQueries extends CommonQueries {
@@ -13,10 +13,10 @@ export class TheaterQueries extends CommonQueries {
   declare sort?: string;
 
   @ApiPropertyOptional()
-  @IsOptional()
+  @IsString()
   name?: string;
 
   @ApiPropertyOptional()
-  @IsOptional()
+  @IsString()
   location?: string;
 }

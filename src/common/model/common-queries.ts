@@ -22,7 +22,6 @@ export class CommonQueries {
     description: `Sort by one of the entity's properties`,
   })
   @IsOptional()
-  @IsEnum([''])
   sort?: string;
 
   @ApiPropertyOptional({ enum: ['asc', 'desc'] })
