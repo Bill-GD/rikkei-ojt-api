@@ -1,10 +1,6 @@
 import { IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-
-export enum UserStatus {
-  ACTIVE = 'ACTIVE',
-  BLOCKED = 'BLOCKED',
-}
+import { UserStatus } from '../../common/enum/user-status.enum';
 
 export class UpdateUserStatusDto {
   @ApiProperty({
