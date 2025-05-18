@@ -2,12 +2,16 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { instanceToPlain } from 'class-transformer';
 import { Repository } from 'typeorm';
-import { Role } from '../users/entities/user/role.entity';
-import { UserRole } from '../users/entities/user/user-role.entity';
-import { User } from '../users/entities/user/user.entity';
+import { UserStatus } from '../common/enum/user-status.enum';
+import { Role } from '../users/entities/role.entity';
+import { UserRole } from '../users/entities/user-role.entity';
+import { User } from '../users/entities/user.entity';
+import { JwtUserPayload } from './dto/jwt-user-payload.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
@@ -23,9 +27,7 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    const existing = await this.userRepo.findOne({
-      where: { email: dto.email },
-    });
+    const existing = await this.userRepo.findOneBy({ email: dto.email });
     if (existing) throw new ConflictException('Email already exists');
 
     const hashed = await bcrypt.hash(dto.password, 10);
@@ -45,18 +47,24 @@ export class AuthService {
       where: { email: dto.email },
       relations: ['userRoles', 'userRoles.role'],
     });
-    if (!user || user.status !== 'ACTIVE')
+
+    if (!user) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (user.status === UserStatus.BLOCKED) {
+      throw new ForbiddenException(`Email #${dto.email} is blocked`);
+    }
 
     const isMatch = await bcrypt.compare(dto.password, user.password);
     if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      roles: user.userRoles.map((ur) => ur.role.role_name),
-    };
+    const payload = new JwtUserPayload(
+      user.id,
+      user.email,
+      user.userRoles!.map((ur) => ur.role.role_name),
+    );
 
-    return this.jwtService.signAsync(payload);
+    return this.jwtService.sign(instanceToPlain(payload));
   }
 }
