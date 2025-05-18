@@ -22,14 +22,14 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { UserRoles } from '../common/enum/user-role.enum';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
+import { RolesGuard } from '../common/guard/roles.guard';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { BannerService } from './banner.service';
 import { BannerQueries } from './dto/banner-queries.dto';
 import { CreateBannerDto } from './dto/create-banner.dto';
 import { UpdateBannerDto } from './dto/update-banner.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiBearerAuth()

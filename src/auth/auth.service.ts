@@ -10,6 +10,7 @@ import { UserStatus } from '../users/dto/update-user-status.dto';
 import { Role } from '../users/entities/role.entity';
 import { UserRole } from '../users/entities/user-role.entity';
 import { User } from '../users/entities/user.entity';
+import { JwtPayload } from './dto/jwt-payload.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
@@ -57,12 +58,12 @@ export class AuthService {
     const isMatch = await bcrypt.compare(dto.password, user.password);
     if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      roles: user.userRoles!.map((ur) => ur.role.role_name),
-    };
+    const payload = new JwtPayload(
+      user.id,
+      user.email,
+      user.userRoles!.map((ur) => ur.role.role_name),
+    );
 
-    return this.jwtService.signAsync(payload);
+    return this.jwtService.sign(payload);
   }
 }

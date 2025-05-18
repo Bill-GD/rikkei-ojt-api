@@ -16,12 +16,12 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { UserRoles } from '../common/enum/user-role.enum';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
+import { RolesGuard } from '../common/guard/roles.guard';
 import { ServiceResponse } from '../common/model/service-response';
 import { NewsQueries } from './dto/news-queries.dto';
 import { NewsService } from './news.service';
 import { UpdateNewsDto } from './dto/update-news.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiBearerAuth()

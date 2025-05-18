@@ -12,10 +12,10 @@ import {
   UploadedFile,
   NotFoundException,
 } from '@nestjs/common';
-import { Request } from 'express';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserRoles } from '../common/enum/user-role.enum';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
+import { RolesGuard } from '../common/guard/roles.guard';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -25,7 +25,6 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UpdateUserStatusDto } from './dto/update-user-status.dto';
 import { ApiBearerAuth, ApiResponse, ApiConsumes } from '@nestjs/swagger';
-import { RolesGuard } from '../auth/roles.guard';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)

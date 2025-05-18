@@ -18,10 +18,10 @@ import {
   ApiExtraModels,
   ApiResponse,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserRoles } from '../common/enum/user-role.enum';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
+import { RolesGuard } from '../common/guard/roles.guard';
 import { ServiceResponse } from '../common/model/service-response';
 import { CreateSeatDto } from '../seat/dto/create-seat.dto';
 import { SeatService } from '../seat/seat.service';

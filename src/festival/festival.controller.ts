@@ -22,6 +22,8 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { UserRoles } from '../common/enum/user-role.enum';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
+import { RolesGuard } from '../common/guard/roles.guard';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { CreateNewsDto } from '../news/dto/create-news.dto';
@@ -30,8 +32,6 @@ import { CreateFestivalDto } from './dto/create-festival.dto';
 import { FestivalQueries } from './dto/festival-queries.dto';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
 import { FestivalService } from './festival.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiBearerAuth()
