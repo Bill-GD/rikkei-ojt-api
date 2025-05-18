@@ -16,48 +16,8 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
-  async updateProfile(
-    userId: number,
-    dto: UpdateProfileDto,
-    avatarPath?: string,
-  ) {
-    if (dto.email) {
-      const existed = await this.userRepo.findOne({
-        where: { email: dto.email, id: Not(userId) },
-      });
-      if (existed) {
-        throw new ConflictException('Email is already in use');
-      }
-    }
-
-    const updateData: Partial<User> = {
-      ...dto,
-      updated_at: new Date(),
-    };
-
-    if (avatarPath) {
-      updateData.avatar = avatarPath;
-    }
-
-    await this.userRepo.update(userId, updateData);
-
-    // const updatedUser = await this.userRepo.findOne({
-    //   where: { id: userId },
-    //   select: [
-    //     'id',
-    //     'first_name',
-    //     'last_name',
-    //     'email',
-    //     'avatar',
-    //     'phone',
-    //     'address',
-    //     'created_at',
-    //     'updated_at',
-    //     'status',
-    //   ],
-    // });
-    //
-    // return updatedUser;
+  updateProfile(userId: number, dto: UpdateProfileDto) {
+    return this.userRepo.update(userId, dto);
   }
 
   async changePassword(userId: number, dto: ChangePasswordDto) {

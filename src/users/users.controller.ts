@@ -33,7 +33,7 @@ import { RolesGuard } from '../auth/roles.guard';
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @Patch('profile')
+  @Patch(':id/profile')
   @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
@@ -44,18 +44,14 @@ export class UsersController {
   @ApiResponse({ type: ServiceResponse })
   async updateProfile(
     @Req() req,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateProfileDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const avatarPath = file ? `uploads/${file.filename}` : undefined;
-    const updatedUser = await this.userService.updateProfile(
-      req.user.sub,
-      dto,
-      avatarPath,
-    );
-    return ServiceResponse.success('Profile updated successfully', {
-      updatedUser,
-    });
+    if (file) dto.avatar = `uploads/${file.filename}`;
+
+    await this.userService.updateProfile(id, dto);
+    return ServiceResponse.success(`Updated profile #${id} successfully`, null);
   }
 
   @Patch('change-password')
