@@ -20,15 +20,9 @@ import { TheaterQueries } from './dto/theater-queries.dto';
 import { TheaterService } from './theater.service';
 import { CreateTheaterDto } from './dto/create-theater.dto';
 import { UpdateTheaterDto } from './dto/update-theater.dto';
-import {
-  ApiBearerAuth,
-  ApiConsumes,
-  ApiExtraModels,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('theater')
 export class TheaterController {

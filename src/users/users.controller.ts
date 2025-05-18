@@ -24,9 +24,8 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UpdateUserStatusDto } from './dto/update-user-status.dto';
-import { ApiBearerAuth, ApiResponse, ApiConsumes } from '@nestjs/swagger';
+import { ApiResponse, ApiConsumes } from '@nestjs/swagger';
 
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UsersController {

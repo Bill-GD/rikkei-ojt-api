@@ -20,15 +20,9 @@ import { CreateGenreDto } from './dto/create-genre.dto';
 import { GenreQueries } from './dto/genre-queries.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { GenreService } from './genre.service';
-import {
-  ApiBearerAuth,
-  ApiConsumes,
-  ApiExtraModels,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('genres')
 export class GenreController {

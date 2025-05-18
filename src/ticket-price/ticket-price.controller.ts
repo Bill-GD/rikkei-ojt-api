@@ -13,7 +13,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiConsumes, ApiResponse } from '@nestjs/swagger';
+import { ApiConsumes, ApiResponse } from '@nestjs/swagger';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRoles } from '../common/enum/user-role.enum';
 import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
@@ -24,7 +24,6 @@ import { UpdateTicketPriceDto } from './dto/update-ticket-price.dto';
 import { TicketPriceService } from './ticket-price.service';
 import { GetTicketPricesQueryDto } from './dto/get-ticket-prices-query.dto';
 
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('ticket-price')
 export class TicketPriceController {

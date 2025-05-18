@@ -20,10 +20,9 @@ import { CreateShowtimeDto } from './dto/create-showtime.dto';
 import { UpdateShowtimeDto } from './dto/update-showtime.dto';
 import { GetShowtimesQueryDto } from './dto/get-showtimes-query.dto';
 import { Roles } from '../common/decorators/roles.decorator';
-import { ApiBearerAuth, ApiResponse, ApiConsumes } from '@nestjs/swagger';
+import { ApiResponse, ApiConsumes } from '@nestjs/swagger';
 import { ServiceResponse } from '../common/model/service-response';
 
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRoles.ROLE_ADMIN)
 @Controller('showtime')

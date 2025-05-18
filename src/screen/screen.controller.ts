@@ -12,12 +12,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiConsumes,
-  ApiExtraModels,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserRoles } from '../common/enum/user-role.enum';
 import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
@@ -30,7 +25,6 @@ import { ScreenQueries } from './dto/screen-queries.dto';
 import { UpdateScreenDto } from './dto/update-screen.dto';
 import { ScreenService } from './screen.service';
 
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('screen')
 export class ScreenController {

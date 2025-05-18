@@ -34,7 +34,6 @@ import { UpdateFestivalDto } from './dto/update-festival.dto';
 import { FestivalService } from './festival.service';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('festivals')
 export class FestivalController {
