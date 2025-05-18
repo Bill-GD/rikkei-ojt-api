@@ -7,9 +7,11 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  Query,
 } from '@nestjs/common';
-import { ApiConsumes, ApiResponse } from '@nestjs/swagger';
+import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { ServiceResponse } from '../common/model/service-response';
+import { SeatQueries } from './dto/seat-queries.dto';
 import { UpdateSeatDto } from './dto/update-seat.dto';
 import { SeatService } from './seat.service';
 
@@ -18,9 +20,10 @@ export class SeatController {
   constructor(private readonly seatService: SeatService) {}
 
   @Get()
+  @ApiExtraModels(SeatQueries)
   @ApiResponse({ type: ServiceResponse })
-  async findAll() {
-    const seats = await this.seatService.findAll();
+  async findAll(@Query() query: SeatQueries) {
+    const seats = await this.seatService.findAll(query);
     return ServiceResponse.success('Fetched all seats', seats);
   }
 
