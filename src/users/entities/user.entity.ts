@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { Booking } from '../../../booking/entities/booking.entity';
+import { Booking } from '../../booking/entities/booking.entity';
 import { UserRole } from './user-role.entity';
 
 @Entity()
@@ -35,17 +35,19 @@ export class User {
   @Column({ nullable: true })
   address: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'datetime' })
   created_at: Date;
 
-  @UpdateDateColumn({ nullable: true })
-  updated_at: Date;
+  @UpdateDateColumn({ type: 'datetime' })
+  updated_at: Date | null;
 
   @Column({ type: 'enum', enum: ['ACTIVE', 'BLOCKED'], default: 'ACTIVE' })
   status: 'ACTIVE' | 'BLOCKED';
 
   @OneToMany(() => UserRole, (ur) => ur.user)
-  userRoles: UserRole[];
+  userRoles?: UserRole[];
+
+  roles: string[];
 
   @OneToMany(() => Booking, (booking) => booking.user)
   bookings: Booking[];

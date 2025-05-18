@@ -1,62 +1,19 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Not, Like, FindOptionsWhere } from 'typeorm';
-import { UpdateProfileDto } from './dto/update-profile.dto';
-import { ChangePasswordDto } from './dto/change-password.dto';
 import * as bcrypt from 'bcrypt';
+import { plainToInstance } from 'class-transformer';
+import { FindOptionsWhere, Like, Repository } from 'typeorm';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
-import { User } from './entities/user/user.entity';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
-  async updateProfile(
-    userId: number,
-    dto: UpdateProfileDto,
-    avatarPath?: string,
-  ) {
-    if (dto.email) {
-      const existed = await this.userRepo.findOne({
-        where: { email: dto.email, id: Not(userId) },
-      });
-      if (existed) {
-        throw new ConflictException('Email is already in use');
-      }
-    }
-
-    const updateData: Partial<User> = {
-      ...dto,
-      updated_at: new Date(),
-    };
-
-    if (avatarPath) {
-      updateData.avatar = avatarPath;
-    }
-
-    await this.userRepo.update(userId, updateData);
-
-    const updatedUser = await this.userRepo.findOne({
-      where: { id: userId },
-      select: [
-        'id',
-        'first_name',
-        'last_name',
-        'email',
-        'avatar',
-        'phone',
-        'address',
-        'created_at',
-        'updated_at',
-        'status',
-      ],
-    });
-
-    return updatedUser;
+  updateProfile(userId: number, dto: UpdateProfileDto) {
+    return this.userRepo.update(userId, dto);
   }
 
   async changePassword(userId: number, dto: ChangePasswordDto) {
@@ -66,29 +23,15 @@ export class UsersService {
     const isMatch = await bcrypt.compare(dto.oldPassword, user.password);
     if (!isMatch) throw new UnauthorizedException('Old password is incorrect');
 
-    const hashed = await bcrypt.hash(dto.newPassword, 10);
-    user.password = hashed;
-    user.updated_at = new Date();
+    user.password = await bcrypt.hash(dto.newPassword, 10);
     await this.userRepo.save(user);
   }
 
   async getUsers(query: GetUsersQueryDto) {
-    const {
-      search = '',
-      order = 'DESC',
-      page = 1,
-      limit = 10,
-      sort_by = 'created_at',
-      first_name,
-      last_name,
-      email,
-      phone,
-      address,
-    } = query;
+    query = plainToInstance(GetUsersQueryDto, query);
+    const { search = '', first_name, last_name, email, phone, address } = query;
 
-    const skip = (page - 1) * limit;
-
-    let where: FindOptionsWhere<User>[] | FindOptionsWhere<User> = {};
+    let where: FindOptionsWhere<User>[] | FindOptionsWhere<User>;
 
     if (search) {
       where = [
@@ -107,34 +50,19 @@ export class UsersService {
       if (address) where.address = Like(`%${address}%`);
     }
 
-    const [users, total] = await this.userRepo.findAndCount({
+    const users = await this.userRepo.find({
       where,
-      order: { [sort_by]: order },
-      skip,
-      take: limit,
-      select: [
-        'id',
-        'first_name',
-        'last_name',
-        'email',
-        'avatar',
-        'phone',
-        'address',
-        'status',
-        'created_at',
-        'updated_at',
-      ],
+      order: query.sort ? { [query.sort]: query.getOrder() } : undefined,
+      skip: query.getOffset(),
+      take: query.getLimit(),
+      relations: ['userRoles', 'userRoles.role'],
     });
 
-    return {
-      data: users,
-      meta: {
-        total,
-        page,
-        limit,
-        last_page: Math.ceil(total / limit),
-      },
-    };
+    for (const user of users) {
+      user.roles = user.userRoles!.map((r) => r.role.role_name);
+      delete user.userRoles;
+    }
+    return users;
   }
 
   findOne(id: number) {

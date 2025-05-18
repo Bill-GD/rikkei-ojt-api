@@ -12,25 +12,19 @@ import {
   HttpStatus,
   NotFoundException,
 } from '@nestjs/common';
+import { UserRoles } from '../common/enum/user-role.enum';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
+import { RolesGuard } from '../common/guard/roles.guard';
 import { ShowtimeService } from './showtime.service';
 import { CreateShowtimeDto } from './dto/create-showtime.dto';
 import { UpdateShowtimeDto } from './dto/update-showtime.dto';
 import { GetShowtimesQueryDto } from './dto/get-showtimes-query.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
-import {
-  ApiBearerAuth,
-  ApiTags,
-  ApiResponse,
-  ApiConsumes,
-} from '@nestjs/swagger';
+import { ApiResponse, ApiConsumes } from '@nestjs/swagger';
 import { ServiceResponse } from '../common/model/service-response';
 
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('ROLE_ADMIN')
-@ApiTags('Showtime')
+@Roles(UserRoles.ROLE_ADMIN)
 @Controller('showtime')
 export class ShowtimeController {
   constructor(private readonly showtimeService: ShowtimeService) {}
