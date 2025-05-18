@@ -17,6 +17,7 @@ import { ApiBearerAuth, ApiConsumes, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
+import { UserRoles } from '../common/enum/user-role.enum';
 import { ServiceResponse } from '../common/model/service-response';
 import { CreateTicketPriceDto } from './dto/create-ticket-price.dto';
 import { UpdateTicketPriceDto } from './dto/update-ticket-price.dto';
@@ -30,7 +31,7 @@ export class TicketPriceController {
   constructor(private readonly ticketPriceService: TicketPriceService) {}
 
   @Post()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async create(@Body() dto: CreateTicketPriceDto) {
@@ -47,7 +48,7 @@ export class TicketPriceController {
   }
 
   @Patch(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async update(
@@ -66,7 +67,7 @@ export class TicketPriceController {
   }
 
   @Delete(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
   async delete(@Param('id', ParseIntPipe) id: number) {
     if (!(await this.ticketPriceService.findOne(id))) {
@@ -77,7 +78,7 @@ export class TicketPriceController {
   }
 
   @Get()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
   async getAll(@Query() query: GetTicketPricesQueryDto) {
     const result = await this.ticketPriceService.getAll(query);

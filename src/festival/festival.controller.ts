@@ -21,6 +21,7 @@ import {
   ApiExtraModels,
   ApiResponse,
 } from '@nestjs/swagger';
+import { UserRoles } from '../common/enum/user-role.enum';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { CreateNewsDto } from '../news/dto/create-news.dto';
@@ -43,7 +44,7 @@ export class FestivalController {
   ) {}
 
   @Post()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('image', {
@@ -66,7 +67,7 @@ export class FestivalController {
   }
 
   @Post(':id/news')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async createNews(
@@ -82,7 +83,7 @@ export class FestivalController {
   }
 
   @Get()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiExtraModels(FestivalQueries)
   @ApiResponse({ type: ServiceResponse })
   async findAll(@Query() query: FestivalQueries) {
@@ -91,7 +92,7 @@ export class FestivalController {
   }
 
   @Get(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const fes = await this.festivalService.findOne(id);
@@ -100,7 +101,7 @@ export class FestivalController {
   }
 
   @Patch(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('image', {
@@ -121,7 +122,7 @@ export class FestivalController {
   }
 
   @Delete(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.findOne(id);
     await this.festivalService.remove(id);

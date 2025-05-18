@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UserRoles } from '../common/enum/user-role.enum';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -22,20 +23,14 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UpdateUserStatusDto } from './dto/update-user-status.dto';
-import {
-  ApiTags,
-  ApiBearerAuth,
-  ApiResponse,
-  ApiConsumes,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiConsumes } from '@nestjs/swagger';
 import { RolesGuard } from '../auth/roles.guard';
 
-@ApiTags('Users')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(private readonly userService: UsersService) {}
 
   @Patch('profile')
   @UseGuards(JwtAuthGuard)
@@ -72,14 +67,14 @@ export class UsersController {
   }
 
   @Get()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_USER)
   async getUsers(@Query() query: GetUsersQueryDto) {
     const { data } = await this.userService.getUsers(query);
     return ServiceResponse.success('Fetched all users', data);
   }
 
   @Patch(':id/status')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async updateUserStatus(

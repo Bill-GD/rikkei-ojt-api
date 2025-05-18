@@ -12,6 +12,7 @@ import {
   UseGuards,
   NotFoundException,
 } from '@nestjs/common';
+import { UserRoles } from '../common/enum/user-role.enum';
 import { ServiceResponse } from '../common/model/service-response';
 import { TheaterQueries } from './dto/theater-queries.dto';
 import { TheaterService } from './theater.service';
@@ -34,7 +35,7 @@ export class TheaterController {
   constructor(private readonly theaterService: TheaterService) {}
 
   @Post()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async create(@Body() dto: CreateTheaterDto) {
@@ -47,7 +48,7 @@ export class TheaterController {
   }
 
   @Get()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiExtraModels(TheaterQueries)
   @ApiResponse({ type: ServiceResponse })
   async findAll(@Query() query: TheaterQueries) {
@@ -56,7 +57,7 @@ export class TheaterController {
   }
 
   @Get(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const theater = await this.theaterService.findOne(id);
@@ -65,7 +66,7 @@ export class TheaterController {
   }
 
   @Patch(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async update(
@@ -78,7 +79,7 @@ export class TheaterController {
   }
 
   @Delete(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.findOne(id);

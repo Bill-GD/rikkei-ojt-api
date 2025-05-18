@@ -12,6 +12,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { UserRoles } from '../common/enum/user-role.enum';
 import { ServiceResponse } from '../common/model/service-response';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { GenreQueries } from './dto/genre-queries.dto';
@@ -34,7 +35,7 @@ export class GenreController {
   constructor(private readonly genreService: GenreService) {}
 
   @Post()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async create(@Body() dto: CreateGenreDto) {
@@ -47,7 +48,7 @@ export class GenreController {
   }
 
   @Get()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiExtraModels(GenreQueries)
   @ApiResponse({ type: ServiceResponse })
   async findAll(@Query() query: GenreQueries) {
@@ -56,7 +57,7 @@ export class GenreController {
   }
 
   @Get(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const genre = await this.genreService.findOne(id);
@@ -65,7 +66,7 @@ export class GenreController {
   }
 
   @Patch(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async update(
@@ -78,7 +79,7 @@ export class GenreController {
   }
 
   @Delete(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.findOne(id);
