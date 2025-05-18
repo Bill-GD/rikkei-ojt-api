@@ -1,3 +1,5 @@
+import { Transform } from 'class-transformer';
+import { IsBoolean } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +12,7 @@ import {
 } from 'typeorm';
 import { Screen } from 'src/screen/entities/screen.entity';
 import { SeatBooking } from '../../booking/entities/seat-booking-entity';
+import { BitBoolTransformer } from '../../common/utils/bit-bool-transformer';
 import SeatType from './seat-type.enum';
 
 @Entity('seat')
@@ -23,7 +26,7 @@ export class Seat {
   @Column({ length: 50 })
   seat_number: string;
 
-  @Column({ default: false })
+  @Column('bit', { default: false, transformer: new BitBoolTransformer() })
   is_booked: boolean;
 
   @Column({ type: 'enum', enum: SeatType })
