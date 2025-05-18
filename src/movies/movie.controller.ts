@@ -71,12 +71,6 @@ export class MovieController {
     @Query('id', ParseIntPipe) movieId: number,
     @Body() dto: CreateBookingDto,
   ) {
-    dto.seat_ids = (dto.seat_ids as unknown as string)
-      .split(',')
-      .map((e) => e.trim())
-      .map((e) => parseInt(e, 10))
-      .filter((e) => !isNaN(e));
-
     for (const seatId of dto.seat_ids) {
       const seat = await this.seatService.findOne(seatId);
       if (!seat) {

@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   ArrayNotEmpty,
   IsArray,
@@ -44,7 +45,9 @@ export class CreateMovieDto {
     type: 'integer',
     minimum: 1,
     description: 'The duration of the movie in minutes',
+    example: 100,
   })
+  @Transform(({ value }) => parseInt(value as string))
   @IsInt()
   @Min(1)
   duration_min: number;
@@ -54,6 +57,13 @@ export class CreateMovieDto {
   release_date: Date;
 
   @ApiProperty({ type: 'array', example: [1] })
+  @Transform(({ value }) =>
+    (value as string)
+      .split(',')
+      .map((e) => e.trim())
+      .map((e) => parseInt(e, 10))
+      .filter((e) => !isNaN(e)),
+  )
   @ArrayNotEmpty()
   @IsArray()
   genre_ids: number[];

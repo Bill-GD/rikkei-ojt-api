@@ -6,13 +6,14 @@ export class FestivalQueries extends CommonQueries {
   @ApiPropertyOptional({
     type: 'string',
     description: 'Search for festival with title containing this',
+    example: 'Kỷ niệm',
   })
   @IsString()
   @IsOptional()
-  title: string;
+  title?: string;
 
   @ApiPropertyOptional({ enum: ['id', 'start_time', 'end_time'] })
   @IsOptional()
   @IsEnum(['id', 'start_time', 'end_time'])
-  declare sort: string;
+  declare sort?: string;
 }
