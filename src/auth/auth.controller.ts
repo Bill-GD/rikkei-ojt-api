@@ -33,4 +33,12 @@ export class AuthController {
     res.cookie('jwt-token', accessToken, { maxAge: 1000 * 60 * 60 * 24 });
     return ServiceResponse.success('Login successfully', { accessToken });
   }
+
+  @Post('logout')
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
+  @ApiResponse({ type: ServiceResponse })
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('jwt-token');
+    return ServiceResponse.success('Logout successfully', null);
+  }
 }
