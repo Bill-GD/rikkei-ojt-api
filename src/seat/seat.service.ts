@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { plainToInstance } from 'class-transformer';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { CreateSeatDto } from './dto/create-seat.dto';
+import { SeatQueries } from './dto/seat-queries.dto';
 import { UpdateSeatDto } from './dto/update-seat.dto';
 import { Seat } from './entities/seat.entity';
 
@@ -16,8 +18,21 @@ export class SeatService {
     return this.seatRepository.save(dto);
   }
 
-  findAll() {
-    return this.seatRepository.find();
+  findAll(query: SeatQueries) {
+    query = plainToInstance(SeatQueries, query);
+
+    const { type, is_booked } = query,
+      where: FindOptionsWhere<Seat> = {};
+
+    if (type) where.type = type;
+    if (is_booked) where.is_booked = is_booked;
+
+    return this.seatRepository.find({
+      where,
+      order: query.sort ? { [query.sort]: query.getOrder() } : undefined,
+      skip: query.getOffset(),
+      take: query.getLimit(),
+    });
   }
 
   findOne(id: number) {
