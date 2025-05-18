@@ -12,15 +12,11 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiConsumes,
-  ApiExtraModels,
-  ApiResponse,
-} from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles.guard';
+import { ApiConsumes, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { UserRoles } from '../common/enum/user-role.enum';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
+import { RolesGuard } from '../common/guard/roles.guard';
 import { ServiceResponse } from '../common/model/service-response';
 import { CreateSeatDto } from '../seat/dto/create-seat.dto';
 import { SeatService } from '../seat/seat.service';
@@ -29,7 +25,6 @@ import { ScreenQueries } from './dto/screen-queries.dto';
 import { UpdateScreenDto } from './dto/update-screen.dto';
 import { ScreenService } from './screen.service';
 
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('screen')
 export class ScreenController {
@@ -39,7 +34,7 @@ export class ScreenController {
   ) {}
 
   @Post()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async create(@Body() dto: CreateScreenDto) {
@@ -67,7 +62,7 @@ export class ScreenController {
   }
 
   @Get()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiExtraModels(ScreenQueries)
   @ApiResponse({ type: ServiceResponse })
   async findAll(@Query() query: ScreenQueries) {
@@ -76,7 +71,7 @@ export class ScreenController {
   }
 
   @Get(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const screen = await this.screenService.findOne(id);
@@ -85,7 +80,7 @@ export class ScreenController {
   }
 
   @Patch(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async update(
@@ -98,7 +93,7 @@ export class ScreenController {
   }
 
   @Delete(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.findOne(id);

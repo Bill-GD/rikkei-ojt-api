@@ -11,9 +11,14 @@ import {
   UseInterceptors,
   UploadedFile,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Request } from 'express';
+import { JwtUserPayload } from '../auth/dto/jwt-user-payload.dto';
+import { UserRoles } from '../common/enum/user-role.enum';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
+import { RolesGuard } from '../common/guard/roles.guard';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -22,23 +27,14 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UpdateUserStatusDto } from './dto/update-user-status.dto';
-import {
-  ApiTags,
-  ApiBearerAuth,
-  ApiResponse,
-  ApiConsumes,
-} from '@nestjs/swagger';
-import { RolesGuard } from '../auth/roles.guard';
+import { ApiResponse, ApiConsumes } from '@nestjs/swagger';
 
-@ApiTags('Users')
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(private readonly userService: UsersService) {}
 
-  @Patch('profile')
-  @UseGuards(JwtAuthGuard)
+  @Patch(':id/profile')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('avatar', {
@@ -47,39 +43,45 @@ export class UsersController {
   )
   @ApiResponse({ type: ServiceResponse })
   async updateProfile(
-    @Req() req,
+    @Req() req: Request,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateProfileDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const avatarPath = file ? `uploads/${file.filename}` : undefined;
-    const updatedUser = await this.userService.updateProfile(
-      req.user.sub,
-      dto,
-      avatarPath,
-    );
-    return ServiceResponse.success('Profile updated successfully', {
-      updatedUser,
-    });
+    if ((req.user as JwtUserPayload).sub !== id) {
+      throw new ForbiddenException(`User doesn't own the specified account`);
+    }
+
+    if (file) dto.avatar = `uploads/${file.filename}`;
+    await this.userService.updateProfile(id, dto);
+    return ServiceResponse.success(`Updated profile #${id} successfully`, null);
   }
 
   @Patch('change-password')
-  @UseGuards(JwtAuthGuard)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
-  async changePassword(@Req() req, @Body() dto: ChangePasswordDto) {
-    await this.userService.changePassword(req.user.sub, dto);
+  async changePassword(
+    @Req() req: Request,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: ChangePasswordDto,
+  ) {
+    if ((req.user as JwtUserPayload).sub !== id) {
+      throw new ForbiddenException(`User doesn't own the specified account`);
+    }
+
+    await this.userService.changePassword(id, dto);
     return ServiceResponse.success('Password changed successfully', null);
   }
 
   @Get()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   async getUsers(@Query() query: GetUsersQueryDto) {
-    const { data } = await this.userService.getUsers(query);
-    return ServiceResponse.success('Fetched all users', data);
+    const users = await this.userService.getUsers(query);
+    return ServiceResponse.success('Fetched all users', users);
   }
 
   @Patch(':id/status')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async updateUserStatus(
@@ -90,9 +92,6 @@ export class UsersController {
     if (!user) throw new NotFoundException(`User #${id} not found`);
 
     await this.userService.updateUserStatus(id, dto.status);
-    return ServiceResponse.success(
-      `Updated status of user #${id} successfully`,
-      null,
-    );
+    return ServiceResponse.success(`User #${id} is now ${dto.status}`, null);
   }
 }

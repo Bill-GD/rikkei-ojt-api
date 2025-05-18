@@ -21,6 +21,9 @@ import {
   ApiExtraModels,
   ApiResponse,
 } from '@nestjs/swagger';
+import { UserRoles } from '../common/enum/user-role.enum';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
+import { RolesGuard } from '../common/guard/roles.guard';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
 import { CreateNewsDto } from '../news/dto/create-news.dto';
@@ -29,11 +32,8 @@ import { CreateFestivalDto } from './dto/create-festival.dto';
 import { FestivalQueries } from './dto/festival-queries.dto';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
 import { FestivalService } from './festival.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('festivals')
 export class FestivalController {
@@ -43,7 +43,7 @@ export class FestivalController {
   ) {}
 
   @Post()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('image', {
@@ -66,7 +66,7 @@ export class FestivalController {
   }
 
   @Post(':id/news')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
   async createNews(
@@ -82,7 +82,7 @@ export class FestivalController {
   }
 
   @Get()
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiExtraModels(FestivalQueries)
   @ApiResponse({ type: ServiceResponse })
   async findAll(@Query() query: FestivalQueries) {
@@ -91,7 +91,7 @@ export class FestivalController {
   }
 
   @Get(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const fes = await this.festivalService.findOne(id);
@@ -100,7 +100,7 @@ export class FestivalController {
   }
 
   @Patch(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('image', {
@@ -121,7 +121,7 @@ export class FestivalController {
   }
 
   @Delete(':id')
-  @Roles('ROLE_ADMIN')
+  @Roles(UserRoles.ROLE_ADMIN)
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.findOne(id);
     await this.festivalService.remove(id);

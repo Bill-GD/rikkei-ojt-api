@@ -1,13 +1,14 @@
-import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { ApiConsumes, ApiResponse } from '@nestjs/swagger';
 import { ServiceResponse } from '../common/model/service-response';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('register')
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
@@ -24,8 +25,20 @@ export class AuthController {
   @Post('login')
   @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
   @ApiResponse({ type: ServiceResponse })
-  async login(@Body() dto: LoginDto) {
+  async login(
+    @Res({ passthrough: true }) res: Response,
+    @Body() dto: LoginDto,
+  ) {
     const accessToken = await this.authService.login(dto);
+    res.cookie('jwt-token', accessToken, { maxAge: 1000 * 60 * 60 * 24 });
     return ServiceResponse.success('Login successfully', { accessToken });
+  }
+
+  @Post('logout')
+  @ApiConsumes('application/x-www-form-urlencoded', 'application/json')
+  @ApiResponse({ type: ServiceResponse })
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('jwt-token');
+    return ServiceResponse.success('Logout successfully', null);
   }
 }
