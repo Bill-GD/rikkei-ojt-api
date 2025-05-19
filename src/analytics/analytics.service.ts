@@ -1,51 +1,70 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Movie } from '../movies/entities/movie.entity';
-import { Repository, Between, LessThan, MoreThan } from 'typeorm';
+import { DataSource } from 'typeorm';
+import { DateRangeDto } from './dto/dateRange.dto';
 
 @Injectable()
 export class AnalyticsService {
-  constructor(
-    @InjectRepository(Movie)
-    private readonly movieRepository: Repository<Movie>,
-  ) {}
+  constructor(private readonly dataSource: DataSource) {}
 
-  async getMovieStatusStats(fromStr: string, toStr: string) {
-    const from = new Date(fromStr);
-    const to = new Date(toStr);
+  async getMovieByStatus() {
+    return this.dataSource.query(`
+      SELECT
+        CASE
+          WHEN m.release_date > CURRENT_DATE THEN 'COMING_SOON'
+          WHEN m.release_date <= CURRENT_DATE AND EXISTS (
+            SELECT 1 FROM showtime s WHERE s.movie_id = m.id
+              AND s.start_time <= CURRENT_TIMESTAMP 
+              AND s.end_time >= CURRENT_TIMESTAMP
+          ) THEN 'NOW_SHOWING'
+          ELSE 'ENDED'
+        END AS status,
+        COUNT(*) AS count
+      FROM movie m
+      GROUP BY status
+    `);
+  }
 
-    if (isNaN(from.getTime()) || isNaN(to.getTime())) {
-      throw new Error('Invalid date format');
-    }
-    if (from > to) {
-      throw new Error('From date must be less than to date');
-    }
+  async getMovieByGenre() {
+    return this.dataSource.query(`
+      SELECT g.genre_name, COUNT(*) as movie_count
+      FROM movie m
+      JOIN movie_genre mg ON m.id = mg.movie_id
+      JOIN genre g ON g.id = mg.genre_id
+      GROUP BY g.genre_name
+    `);
+  }
 
-    const nowShowing = await this.movieRepository.find({
-      where: {
-        release_date: Between(from, to),
-      },
-      order: { release_date: 'DESC' },
-    });
+  async getWeeklyRevenue() {
+    return this.dataSource.query(`
+    SELECT 
+      CONCAT(YEAR(created_at), '-', WEEK(created_at, 1)) AS week,
+      SUM(total_price_movie) as total_revenue
+    FROM booking
+    GROUP BY week
+    ORDER BY week;
+  `);
+  }
 
-    const comingSoon = await this.movieRepository.find({
-      where: {
-        release_date: MoreThan(to),
-      },
-      order: { release_date: 'ASC' },
-    });
+  async getBookingStatusRatio() {
+    return this.dataSource.query(`
+    SELECT 'ALL' AS status, COUNT(*) AS count
+    FROM booking
+  `);
+  }
 
-    const noLongerShowing = await this.movieRepository.find({
-      where: {
-        release_date: LessThan(from),
-      },
-      order: { release_date: 'DESC' },
-    });
-
-    return {
-      nowShowing,
-      comingSoon,
-      noLongerShowing,
-    };
+  async getMovieRevenue(query: DateRangeDto) {
+    const { startDate, endDate } = query;
+    return this.dataSource.query(
+      `SELECT 
+      m.title,
+      SUM(b.total_price_movie) AS total_revenue
+      FROM movie m
+      JOIN showtime s ON m.id = s.movie_id
+      JOIN booking b ON s.id = b.showtime_id
+      WHERE (? IS NULL OR b.created_at >= ?)
+        AND (? IS NULL OR b.created_at <= ?)
+      GROUP BY m.title`,
+      [startDate, startDate, endDate, endDate],
+    );
   }
 }
