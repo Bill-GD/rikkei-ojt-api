@@ -18,7 +18,7 @@ import { MovieModule } from './movies/movie.module';
 import { GenreModule } from './genre/genre.module';
 import { SeatModule } from './seat/seat.module';
 import { ShowtimeModule } from './showtime/showtime.module';
-import { AnalyticsModule } from './analytics/analytics.module';
+import { AnalyticsModule } from './Movie_Analytics/movieAnalytics.module';
 
 @Module({
   imports: [

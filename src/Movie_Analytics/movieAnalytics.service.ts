@@ -6,7 +6,7 @@ import { DateRangeDto } from './dto/dateRange.dto';
 export class AnalyticsService {
   constructor(private readonly dataSource: DataSource) {}
 
-  async getMovieByStatus() {
+  async getMovieByStatus(): Promise<{ status: string; count: number }[]> {
     return this.dataSource.query(`
       SELECT
         CASE
@@ -24,7 +24,7 @@ export class AnalyticsService {
     `);
   }
 
-  async getMovieByGenre() {
+  async getMovieByGenre(): Promise<{ genre_name: string; movie_count: number }[]> {
     return this.dataSource.query(`
       SELECT g.genre_name, COUNT(*) as movie_count
       FROM movie m
@@ -34,7 +34,7 @@ export class AnalyticsService {
     `);
   }
 
-  async getWeeklyRevenue() {
+  async getWeeklyRevenue(): Promise<{ week: string; total_revenue: number }[]> {
     return this.dataSource.query(`
     SELECT 
       CONCAT(YEAR(created_at), '-', WEEK(created_at, 1)) AS week,
@@ -45,14 +45,14 @@ export class AnalyticsService {
   `);
   }
 
-  async getBookingStatusRatio() {
+  async getBookingStatusRatio(): Promise<{ status: string; count: number }[]> {
     return this.dataSource.query(`
     SELECT 'ALL' AS status, COUNT(*) AS count
     FROM booking
   `);
   }
 
-  async getMovieRevenue(query: DateRangeDto) {
+  async getMovieRevenue(query: DateRangeDto): Promise<{ title: string; total_revenue: number }[]> {
     const { startDate, endDate } = query;
     return this.dataSource.query(
       `SELECT 

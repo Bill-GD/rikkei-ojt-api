@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { AnalyticsService } from './analytics.service';
+import { AnalyticsService } from './movieAnalytics.service';
 import { DateRangeDto } from './dto/dateRange.dto';
 import { ApiTags } from '@nestjs/swagger';
 
