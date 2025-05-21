@@ -40,4 +40,30 @@ export class FestivalService {
   remove(id: number) {
     return this.festivalRepository.delete(id);
   }
+
+  async getStats() {
+    const total = await this.festivalRepository.count();
+
+    const completed = await this.festivalRepository
+        .createQueryBuilder('festival')
+        .where('festival.end_time < NOW()')
+        .getCount();
+
+    const upcoming = await this.festivalRepository
+        .createQueryBuilder('festival')
+        .where('festival.start_time > NOW()')
+        .getCount();
+
+    const ongoing = await this.festivalRepository
+        .createQueryBuilder('festival')
+        .where('festival.start_time <= NOW() AND festival.end_time >= NOW()')
+        .getCount();
+
+    return {
+      total,
+      completed,
+      upcoming,
+      ongoing,
+    };
+  }
 }

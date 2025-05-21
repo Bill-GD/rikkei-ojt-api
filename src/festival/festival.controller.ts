@@ -125,4 +125,10 @@ export class FestivalController {
       null,
     );
   }
+
+  @Get('stats')
+  @Roles(UserRoles.ROLE_ADMIN)
+  async getFestivalStats() {
+    return this.festivalService.getStats();
+  }
 }

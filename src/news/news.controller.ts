@@ -62,4 +62,10 @@ export class NewsController {
     await this.newsService.remove(id);
     return ServiceResponse.success(`Deleted news #${id}`, null);
   }
+
+  @Get('stats')
+  @Roles(UserRoles.ROLE_ADMIN)
+  async getNewsStats() {
+    return this.newsService.getStats();
+  }
 }
