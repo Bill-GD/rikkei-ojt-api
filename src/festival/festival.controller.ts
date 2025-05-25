@@ -85,6 +85,14 @@ export class FestivalController {
     return ServiceResponse.success('Fetched all festivals', festivals);
   }
 
+  @Get('stats')
+  @Roles(UserRoles.ROLE_ADMIN)
+  @ApiResponse({ type: ServiceResponse })
+  async getFestivalStats() {
+    const stats = await this.festivalService.getStats();
+    return ServiceResponse.success('Fetched stats of festival', stats);
+  }
+
   @Get(':id')
   @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
@@ -124,11 +132,5 @@ export class FestivalController {
       `Deleted festival #${id} successfully`,
       null,
     );
-  }
-
-  @Get('stats')
-  @Roles(UserRoles.ROLE_ADMIN)
-  async getFestivalStats() {
-    return this.festivalService.getStats();
   }
 }
