@@ -9,7 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Screen } from 'src/screen/entities/screen.entity';
-import { SeatBooking } from '../../booking/entities/seat-booking-entity';
+import { SeatBooking } from '../../booking/entities/seat-booking.entity';
 import { BitBoolTransformer } from '../../common/utils/bit-bool-transformer';
 import SeatType from './seat-type.enum';
 

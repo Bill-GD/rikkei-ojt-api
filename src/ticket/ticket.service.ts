@@ -14,8 +14,6 @@ export class TicketService {
   constructor(
     @InjectRepository(TicketPrice)
     private readonly ticketPriceRepo: Repository<TicketPrice>,
-    // @InjectRepository(Movie)
-    // private readonly movieRepo: Repository<Movie>,
     @InjectRepository(Booking)
     private readonly bookingRepo: Repository<Booking>,
     @InjectRepository(Theater)

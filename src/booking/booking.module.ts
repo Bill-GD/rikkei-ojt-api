@@ -10,7 +10,7 @@ import { TicketPrice } from '../ticket/entities/ticket-price.entity';
 import { BookingService } from './booking.service';
 import { BookingController } from './booking.controller';
 import { Booking } from './entities/booking.entity';
-import { SeatBooking } from './entities/seat-booking-entity';
+import { SeatBooking } from './entities/seat-booking.entity';
 
 @Module({
   imports: [

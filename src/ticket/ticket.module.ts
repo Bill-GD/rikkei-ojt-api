@@ -10,5 +10,6 @@ import { TicketPrice } from './entities/ticket-price.entity';
   imports: [TypeOrmModule.forFeature([TicketPrice, Booking, Theater])],
   providers: [TicketService],
   controllers: [TicketController],
+  exports: [TypeOrmModule, TicketService],
 })
 export class TicketModule {}
