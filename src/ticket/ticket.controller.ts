@@ -62,10 +62,12 @@ export class TicketController {
   async getStats() {
     const total = await this.ticketPriceService.getTicketSoldCount();
     const byTheater = await this.ticketPriceService.getCountByTheater();
+    const byMovie = await this.ticketPriceService.getCountByMovie();
 
     return ServiceResponse.success(`Fetched ticket stats`, {
       total,
       byTheater,
+      byMovie,
     });
   }
 

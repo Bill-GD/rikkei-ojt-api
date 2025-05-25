@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
 import { Booking } from '../booking/entities/booking.entity';
+import { Movie } from '../movies/entities/movie.entity';
 import { Theater } from '../theater/entities/theater.entity';
 import { TicketPrice } from './entities/ticket-price.entity';
 import { CreateTicketPriceDto } from './dto/create-ticket-price.dto';
@@ -18,6 +19,8 @@ export class TicketService {
     private readonly bookingRepo: Repository<Booking>,
     @InjectRepository(Theater)
     private readonly theaterRepo: Repository<Theater>,
+    @InjectRepository(Movie)
+    private readonly movieRepo: Repository<Movie>,
   ) {}
 
   async create(dto: CreateTicketPriceDto) {
@@ -74,15 +77,31 @@ export class TicketService {
     });
 
     return theaters.map((th) => {
-      let totalSeat = 0;
+      let ticketCount = 0;
       const { name, id } = th;
 
       th.screens?.forEach((sc) => {
         sc.showtimes?.forEach((sh) => {
-          sh.bookings?.forEach((b) => (totalSeat += b.total_seat));
+          sh.bookings?.forEach((b) => (ticketCount += b.total_seat));
         });
       });
-      return { id, name, totalSeat };
+      return { id, name, ticketCount };
+    });
+  }
+
+  async getCountByMovie() {
+    const movies = await this.movieRepo.find({
+      relations: ['showtimes', 'showtimes.bookings'],
+    });
+
+    return movies.map((m) => {
+      let ticketCount = 0;
+      const { title, id } = m;
+
+      m.showtimes?.forEach((sh) => {
+        sh.bookings?.forEach((b) => (ticketCount += b.total_seat));
+      });
+      return { id, title, ticketCount };
     });
   }
 }
