@@ -20,7 +20,7 @@ import { SeatModule } from './seat/seat.module';
 import { ShowtimeModule } from './showtime/showtime.module';
 import { BookingModule } from './booking/booking.module';
 import { PaymentModule } from './payment/payment.module';
-import { AnalyticsModule } from './movie-analytics/movieAnalytics.module';
+
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -44,12 +44,9 @@ import { AnalyticsModule } from './movie-analytics/movieAnalytics.module';
     ShowtimeModule,
     BookingModule,
     PaymentModule,
-    AnalyticsModule,
   ],
 })
 export class AppModule implements NestModule {
-  constructor(private dataSource: DataSource) {}
-
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(morgan('dev')).forRoutes('*');
   }

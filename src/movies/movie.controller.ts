@@ -20,6 +20,7 @@ import { BookingService } from '../booking/booking.service';
 import { CreateBookingDto } from '../booking/dto/create-booking.dto';
 import { ServiceResponse } from '../common/model/service-response';
 import { createSingleMulterStorage } from '../common/utils/multerStorage';
+import { DateRangeDto } from './dto/date-range.dto';
 import { SeatService } from '../seat/seat.service';
 import { ShowtimeService } from '../showtime/showtime.service';
 import { CreateMovieDto } from './dto/create.movie.dto';
@@ -107,6 +108,27 @@ export class MovieController {
   async findAll(@Query() query: MovieQueries) {
     const movies = await this.movieService.findAll(query);
     return ServiceResponse.success('Fetched all movies', movies);
+  }
+
+  @Get('movie-status')
+  @ApiResponse({ type: ServiceResponse })
+  async getMovieByStatus() {
+    const stats = await this.movieService.getMovieByStatus();
+    return ServiceResponse.success('Fetched stats', stats);
+  }
+
+  @Get('movie-by-genre')
+  @ApiResponse({ type: ServiceResponse })
+  async getMovieByGenre() {
+    const stats = await this.movieService.getMovieByGenre();
+    return ServiceResponse.success('Fetched stats', stats);
+  }
+
+  @Get('movie-revenue')
+  @ApiResponse({ type: ServiceResponse })
+  async getMovieRevenue(@Query() query: DateRangeDto) {
+    const stats = await this.movieService.getMovieRevenue(query);
+    return ServiceResponse.success('Fetched stats', stats);
   }
 
   @Get(':id')
