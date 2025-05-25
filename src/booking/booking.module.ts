@@ -6,11 +6,11 @@ import { Movie } from '../movies/entities/movie.entity';
 import { MovieService } from '../movies/movie.service';
 import { Seat } from '../seat/entities/seat.entity';
 import { SeatService } from '../seat/seat.service';
-import { TicketPrice } from '../ticket-price/entities/ticket-price.entity';
+import { TicketPrice } from '../ticket/entities/ticket-price.entity';
 import { BookingService } from './booking.service';
 import { BookingController } from './booking.controller';
 import { Booking } from './entities/booking.entity';
-import { SeatBooking } from './entities/seat-booking-entity';
+import { SeatBooking } from './entities/seat-booking.entity';
 
 @Module({
   imports: [

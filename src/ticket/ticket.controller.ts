@@ -21,13 +21,13 @@ import { RolesGuard } from '../common/guard/roles.guard';
 import { ServiceResponse } from '../common/model/service-response';
 import { CreateTicketPriceDto } from './dto/create-ticket-price.dto';
 import { UpdateTicketPriceDto } from './dto/update-ticket-price.dto';
-import { TicketPriceService } from './ticket-price.service';
+import { TicketService } from './ticket.service';
 import { GetTicketPricesQueryDto } from './dto/get-ticket-prices-query.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('ticket-price')
-export class TicketPriceController {
-  constructor(private readonly ticketPriceService: TicketPriceService) {}
+@Controller('ticket')
+export class TicketController {
+  constructor(private readonly ticketPriceService: TicketService) {}
 
   @Post()
   @Roles(UserRoles.ROLE_ADMIN)
@@ -43,6 +43,32 @@ export class TicketPriceController {
       { id: newTicket.id },
       HttpStatus.CREATED,
     );
+  }
+
+  @Get()
+  @Roles(UserRoles.ROLE_ADMIN)
+  @ApiResponse({ type: ServiceResponse })
+  async getAll(@Query() query: GetTicketPricesQueryDto) {
+    const result = await this.ticketPriceService.getAll(query);
+    return ServiceResponse.success(
+      'Fetched ticket prices successfully',
+      result,
+    );
+  }
+
+  @Get('stats')
+  @Roles(UserRoles.ROLE_ADMIN)
+  @ApiResponse({ type: ServiceResponse })
+  async getStats() {
+    const total = await this.ticketPriceService.getTicketSoldCount();
+    const byTheater = await this.ticketPriceService.getCountByTheater();
+    const byMovie = await this.ticketPriceService.getCountByMovie();
+
+    return ServiceResponse.success(`Fetched ticket stats`, {
+      total,
+      byTheater,
+      byMovie,
+    });
   }
 
   @Patch(':id')
@@ -73,16 +99,5 @@ export class TicketPriceController {
     }
     await this.ticketPriceService.delete(id);
     return ServiceResponse.success(`Deleted ticket price #${id}`, null);
-  }
-
-  @Get()
-  @Roles(UserRoles.ROLE_ADMIN)
-  @ApiResponse({ type: ServiceResponse })
-  async getAll(@Query() query: GetTicketPricesQueryDto) {
-    const result = await this.ticketPriceService.getAll(query);
-    return ServiceResponse.success(
-      'Fetched ticket prices successfully',
-      result,
-    );
   }
 }

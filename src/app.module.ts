@@ -1,7 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import * as morgan from 'morgan';
 import { join } from 'path';
 import 'dotenv/config';
@@ -13,7 +12,7 @@ import { NewsModule } from './news/news.module';
 import { TheaterModule } from './theater/theater.module';
 import { UsersModule } from './users/users.module';
 import { ScreenModule } from './screen/screen.module';
-import { TicketPriceModule } from './ticket-price/ticket-price.module';
+import { TicketModule } from './ticket/ticket.module';
 import { MovieModule } from './movies/movie.module';
 import { GenreModule } from './genre/genre.module';
 import { SeatModule } from './seat/seat.module';
@@ -37,7 +36,7 @@ import { PaymentModule } from './payment/payment.module';
     UsersModule,
     TheaterModule,
     ScreenModule,
-    TicketPriceModule,
+    TicketModule,
     MovieModule,
     GenreModule,
     SeatModule,

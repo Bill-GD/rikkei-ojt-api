@@ -5,15 +5,12 @@ import { FindOptionsWhere, Repository } from 'typeorm';
 import { Movie } from '../movies/entities/movie.entity';
 import SeatType from '../seat/entities/seat-type.enum';
 import { Seat } from '../seat/entities/seat.entity';
-import {
-  MovieType,
-  TicketPrice,
-} from '../ticket-price/entities/ticket-price.entity';
+import { MovieType, TicketPrice } from '../ticket/entities/ticket-price.entity';
 import { BookingPriceDto } from './dto/booking-price.dto';
 import { BookingQueries } from './dto/booking-queries.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
-import { SeatBooking } from './entities/seat-booking-entity';
+import { SeatBooking } from './entities/seat-booking.entity';
 import { Booking } from './entities/booking.entity';
 
 @Injectable()
