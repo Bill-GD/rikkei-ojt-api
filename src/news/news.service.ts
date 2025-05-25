@@ -43,4 +43,9 @@ export class NewsService {
   remove(id: number) {
     return this.newsRepo.delete(id);
   }
+
+  async getStats() {
+    const total = await this.newsRepo.count();
+    return { total };
+  }
 }
