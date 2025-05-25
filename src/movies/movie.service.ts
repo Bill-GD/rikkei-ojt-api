@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { Genre } from '../genre/entities/genre.entity';
+import { DateRangeDto } from './dto/date-range.dto';
 import { CreateMovieDto } from './dto/create.movie.dto';
 import { MovieQueries } from './dto/movie-queries.dto';
 import { UpdateMovieDto } from './dto/update.movie.dto';
@@ -75,5 +76,75 @@ export class MovieService {
 
   remove(id: number) {
     return this.movieRepo.delete(id);
+  }
+
+  async getMovieByStatus() {
+    const movies = await this.movieRepo.find({
+      relations: ['showtimes'],
+    });
+
+    const statusCount: Record<string, number> = {
+      coming_soon: 0,
+      showing: 0,
+      ended: 0,
+    };
+
+    const now = new Date();
+
+    for (const movie of movies) {
+      if (movie.release_date > now) {
+        statusCount.coming_soon++;
+      } else if (
+        movie.release_date <= now &&
+        movie.showtimes?.some((s) => new Date(s.end_time) >= now)
+      ) {
+        statusCount.showing++;
+      } else {
+        statusCount.ended++;
+      }
+    }
+
+    return Object.entries(statusCount).map(([status, count]) => ({
+      status,
+      count,
+    }));
+  }
+
+  async getMovieByGenre() {
+    const genres = await this.genreRepo.find({
+      relations: ['movieGenres', 'movieGenres.movie'],
+    });
+
+    return genres.map((genre) => ({
+      genre: genre.genre_name,
+      movie_count: genre.movieGenres?.length || 0,
+    }));
+  }
+
+  async getMovieRevenue(query: DateRangeDto) {
+    const { startDate, endDate } = query;
+
+    const movies = await this.movieRepo.find({
+      relations: ['showtimes', 'showtimes.bookings'],
+    });
+
+    return movies.map((movie) => {
+      let total_revenue = 0;
+      for (const showtime of movie.showtimes) {
+        for (const booking of showtime.bookings) {
+          const createdAt = new Date(booking.created_at);
+          if (
+            (!startDate || createdAt >= new Date(startDate)) &&
+            (!endDate || createdAt <= new Date(endDate))
+          ) {
+            total_revenue += booking.total_price_movie;
+          }
+        }
+      }
+      return {
+        title: movie.title,
+        total_revenue,
+      };
+    });
   }
 }

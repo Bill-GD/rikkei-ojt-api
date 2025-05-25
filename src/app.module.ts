@@ -47,8 +47,6 @@ import { PaymentModule } from './payment/payment.module';
   ],
 })
 export class AppModule implements NestModule {
-  constructor(private dataSource: DataSource) {}
-
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(morgan('dev')).forRoutes('*');
   }

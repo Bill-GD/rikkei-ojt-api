@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { MovieGenre } from './movie-genre.entity';
+import { Showtime } from 'src/showtime/entities/showtime.entity';
 
 @Entity()
 export class Movie {
@@ -45,4 +46,7 @@ export class Movie {
 
   @OneToMany(() => MovieGenre, (mg) => mg.movie)
   movieGenres: MovieGenre[];
+
+  @OneToMany(() => Showtime, (st) => st.movie)
+  showtimes: Showtime[];
 }
