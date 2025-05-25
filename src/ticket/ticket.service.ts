@@ -68,9 +68,21 @@ export class TicketService {
     return this.bookingRepo.sum('total_seat');
   }
 
-  getCountByTheater() {
-    return this.theaterRepo.find({
-      relations: ['screens', 'screen.showtimes', 'screen.showtimes.bookings'],
+  async getCountByTheater() {
+    const theaters = await this.theaterRepo.find({
+      relations: ['screens', 'screens.showtimes', 'screens.showtimes.bookings'],
+    });
+
+    return theaters.map((th) => {
+      let totalSeat = 0;
+      const { name, id } = th;
+
+      th.screens?.forEach((sc) => {
+        sc.showtimes?.forEach((sh) => {
+          sh.bookings?.forEach((b) => (totalSeat += b.total_seat));
+        });
+      });
+      return { id, name, totalSeat };
     });
   }
 }
