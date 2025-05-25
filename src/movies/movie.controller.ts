@@ -110,21 +110,21 @@ export class MovieController {
     return ServiceResponse.success('Fetched all movies', movies);
   }
 
-  @Get('movie-status')
+  @Get('count-status')
   @ApiResponse({ type: ServiceResponse })
   async getMovieByStatus() {
     const stats = await this.movieService.getMovieByStatus();
     return ServiceResponse.success('Fetched stats', stats);
   }
 
-  @Get('movie-by-genre')
+  @Get('count-genre')
   @ApiResponse({ type: ServiceResponse })
   async getMovieByGenre() {
     const stats = await this.movieService.getMovieByGenre();
     return ServiceResponse.success('Fetched stats', stats);
   }
 
-  @Get('movie-revenue')
+  @Get('revenue')
   @ApiResponse({ type: ServiceResponse })
   async getMovieRevenue(@Query() query: DateRangeDto) {
     const stats = await this.movieService.getMovieRevenue(query);
