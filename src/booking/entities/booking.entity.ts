@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Showtime } from '../../showtime/entities/showtime.entity';
 import { User } from '../../users/entities/user.entity';
-import { SeatBooking } from './seat-booking-entity';
+import { SeatBooking } from './seat-booking.entity';
 
 @Entity('booking')
 export class Booking {

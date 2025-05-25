@@ -29,5 +29,5 @@ export class Theater {
   updated_at: Date | null;
 
   @OneToMany(() => Screen, (screen) => screen.theater)
-  screen: Screen[];
+  screens: Screen[];
 }
