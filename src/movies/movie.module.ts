@@ -10,7 +10,7 @@ import { SeatService } from '../seat/seat.service';
 import { Showtime } from '../showtime/entities/showtime.entity';
 import { ShowtimeService } from '../showtime/showtime.service';
 import { TicketPrice } from '../ticket/entities/ticket-price.entity';
-import { TicketPriceService } from '../ticket/ticket-price.service';
+import { TicketService } from '../ticket/ticket.service';
 import { MovieGenre } from './entities/movie-genre.entity';
 import { Movie } from './entities/movie.entity';
 import { MovieService } from './movie.service';
@@ -34,7 +34,7 @@ import { MovieController } from './movie.controller';
     BookingService,
     SeatService,
     MovieService,
-    TicketPriceService,
+    TicketService,
     GenreService,
     ShowtimeService,
   ],
