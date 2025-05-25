@@ -33,6 +33,14 @@ export class NewsController {
     return ServiceResponse.success('Got all news', allNews);
   }
 
+  @Get('stats')
+  @Roles(UserRoles.ROLE_ADMIN)
+  @ApiResponse({ type: ServiceResponse })
+  async getNewsStats() {
+    const stats = await this.newsService.getStats();
+    return ServiceResponse.success('Fetched stats of news', stats);
+  }
+
   @Get(':id')
   @Roles(UserRoles.ROLE_ADMIN)
   @ApiResponse({ type: ServiceResponse })
