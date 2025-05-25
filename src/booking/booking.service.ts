@@ -8,7 +8,7 @@ import { Seat } from '../seat/entities/seat.entity';
 import {
   MovieType,
   TicketPrice,
-} from '../ticket-price/entities/ticket-price.entity';
+} from '../ticket/entities/ticket-price.entity';
 import { BookingPriceDto } from './dto/booking-price.dto';
 import { BookingQueries } from './dto/booking-queries.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
