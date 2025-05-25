@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Showtime } from '../../showtime/entities/showtime.entity';
 
 @Entity('screen')
 export class Screen {
@@ -27,7 +28,7 @@ export class Screen {
   })
   seats: Seat[];
 
-  @ManyToOne(() => Theater, (theater) => theater.screen, {
+  @ManyToOne(() => Theater, (theater) => theater.screens, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'theater_id' })
@@ -35,6 +36,9 @@ export class Screen {
 
   @Column('int')
   theater_id: number;
+
+  @OneToMany(() => Showtime, (s) => s.screen)
+  showtimes: Showtime[];
 
   @CreateDateColumn({ type: 'datetime' })
   created_at: Date;
