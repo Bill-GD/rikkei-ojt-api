@@ -1,4 +1,3 @@
 - Project ported from GitLab  
-  &rarr; Issues & PR missing  
-  &rarr; 1 wrong commit author  
+  &rarr; Issues & PR missing   
   &rarr; Repo members missing  
