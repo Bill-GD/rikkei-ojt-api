@@ -31,7 +31,7 @@ create table if not exists theater (
   location   varchar(255) not null,
   phone      varchar(11),
   created_at datetime default current_timestamp,
-  update_at  datetime default null
+  updated_at datetime default null
 );
 
 create table if not exists screen (
@@ -43,7 +43,6 @@ create table if not exists screen (
   updated_at    datetime default null,
   constraint positive_seat_capacity check (seat_capacity >= 0),
   foreign key (theater_id) references theater (id) on delete cascade
-
 );
 
 create table if not exists genre (
@@ -95,7 +94,7 @@ create table if not exists booking (
   total_seat        int,
   total_price_movie double,
   created_at        datetime default current_timestamp,
-  update_at         datetime default null,
+  updated_at        datetime default null,
   foreign key (user_id) references user (id) on delete cascade,
   foreign key (showtime_id) references showtime (id) on delete cascade,
   constraint positive_seat check ( total_seat >= 0 ),
